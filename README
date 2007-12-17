@@ -1,0 +1,58 @@
+= Easy IMplemented XML
+:lang:ja
+Easy IMplemented XML(EimXML)は、RubyスクリプトからXMLを作成するためのライブラリです。
+動作が軽くなるように、単純さを心がけて実装しています。
+
+:lang:en
+Easy IMplemented XML(EimXML) is library to construct XML on Ruby.
+For light weight performance, this library is implemented simply.
+
+:lang:
+= URLs
+* Document(Japanese)[http://eimxml.rubyforge.org/ja/]
+* Document(English)[http://eimxml.rubyforge.org/en/]
+* MercurialRepository[https://hg.hinet.mydns.jp/eim_xml/]
+
+= Sample
+:lang:ja
+例えば、次のようなHTMLを作成する場合は
+
+:lang:en
+For example, to construct html like bellow
+
+:lang:
+ <html>
+  <head>
+   <title>TITLE</title>
+  </head>
+  <body>
+   <p>Texts...</p>
+  </body>
+ </html>
+
+:lang:ja
+スクリプトは以下のように記述します。
+
+:lang:en
+write script like bellow.
+
+:lang:
+ #!/usr/bin/ruby
+ # require "rubygems"
+ require "eim_xml/xhtml"
+
+ include EimXML::XHTML
+ html = HTML.new do |html|
+	 html << Head.new do |head|
+		 head << Title.new do |title|
+			 title << "TITLE"
+		 end
+	 end
+	 html << Body.new do |body|
+		 body << P.new do |par|
+			 par << "Text..."
+		 end
+	 end
+ end
+
+ html.write($stdout, false)
