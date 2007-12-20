@@ -143,8 +143,8 @@ module EimXML
 		end
 		alias << add
 
-		def write(dst=String.new, level=0, is_head=true)
-			nest = NEST*level
+		def write(dst=String.new, nest_level=0, is_head=true)
+			nest = NEST*nest_level
 			head = is_head ? nest : ""
 			lf = @hold_space ? "" : "\n"
 
@@ -159,11 +159,11 @@ module EimXML
 				dst << "#{head}<#{@name}#{attributes} />"
 			when 1
 				dst << "#{head}<#{@name}#{attributes}>"
-				write_content_to(dst, @contents[0], level, false)
+				write_content_to(dst, @contents[0], nest_level, false)
 				dst << "</#{@name}>"
 			else
 				dst << "#{head}<#{@name}#{attributes}>#{lf}"
-				@contents.each {|i| write_content_to(dst, i, level+1, !@hold_space) << lf}
+				@contents.each {|i| write_content_to(dst, i, nest_level+1, !@hold_space) << lf}
 				dst << "#{@hold_space ? "" : nest}</#{@name}>"
 			end
 		end
@@ -173,9 +173,9 @@ module EimXML
 		end
 		alias :inspect :to_s
 
-		def write_content_to(dst, c, level, is_head)
-			return c.write(dst, level, is_head) if c.is_a?(Element)
-			dst << (is_head ? NEST*level : "") + (c.is_a?(PCString) ? c.to_s : PCString.encode(c))
+		def write_content_to(dst, c, nest_level, is_head)
+			return c.write(dst, nest_level, is_head) if c.is_a?(Element)
+			dst << (is_head ? NEST*nest_level : "") + (c.is_a?(PCString) ? c.to_s : PCString.encode(c))
 		end
 		private :write_content_to
 
