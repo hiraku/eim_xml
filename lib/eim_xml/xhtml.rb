@@ -28,7 +28,7 @@ module EimXML::XHTML
 			super(:html, attributes)
 		end
 
-		def write(dst=String.new, write_declarations=true)
+		def to_xml(dst=String.new, write_declarations=true)
 			if write_declarations
 				dst << EimXML::XML_DECLARATION << "\n"
 				dst << DocType::XHTML_MATHML << "\n"

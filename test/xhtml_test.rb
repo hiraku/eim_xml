@@ -50,7 +50,7 @@ class XHTMLTest < Test::Unit::TestCase
 
 		s1 = ""
 		s2 = ""
-		assert_equal(decs+h.write(s1, false), h.write(s2))
+		assert_equal(decs+h.to_xml(s1, false), h.to_xml(s2))
 	end
 
 	def test_head
