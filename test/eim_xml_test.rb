@@ -259,12 +259,13 @@ class ElementTest < Test::Unit::TestCase
 	end
 
 	def test_new_with_block
-		b = nil
+		base = nil
 		e = Element.new("base") do |b|
 			b["attr"]="value"
 			b << Element.new("sub")
+			base = b
 		end
-		assert_same(e, b)
+		assert_same(e, base)
 		e2 = Element.new("base", "attr"=>"value")
 		e2 << Element.new("sub")
 		assert_equal(e, e2)
