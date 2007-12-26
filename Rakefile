@@ -40,7 +40,7 @@ task :test => "test:apart"
 namespace :test do
 	FileList["test/*_test.rb"].sort{|a,b| File.mtime(a)<=>File.mtime(b)}.reverse.each do |i|
 		Rake::TestTask.new(:apart) do |t|
-			t.test_files = i
+			t.test_files = [i]
 		end
 	end
 	task(:apart).comment = "Run tests separately"
