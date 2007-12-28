@@ -37,10 +37,8 @@ module EimXML
 		alias to_s encoded_string
 
 		def self.encode(s)
-			s.gsub(/&\#?\w+;|[&\"\'<>]/) do |m|
+			s.gsub(/[&\"\'<>]/) do |m|
 				case m
-				when /&\#?\w+;/
-					m
 				when "&"
 					"&amp;"
 				when '"'

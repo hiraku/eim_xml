@@ -91,7 +91,23 @@ module EimXML
 
 		def parse_string(hold_space)
 			s = @scanner[0]
-			s.strip! unless hold_space
+			s = s.strip unless hold_space
+			s = s.gsub(/&(amp|quot|apos|lt|gt);/) do
+				case $1
+				when "amp"
+					"&"
+				when "quot"
+					'"'
+				when "apos"
+					"'"
+				when "lt"
+					"<"
+				when "gt"
+					">"
+				else
+					raise "must not happen"
+				end
+			end
 			PCString.new(s)
 		end
 		protected :parse_string

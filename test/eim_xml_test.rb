@@ -11,10 +11,8 @@ class PCStringTest < Test::Unit::TestCase
 
 	def test_encode
 		assert_equal("&lt;&gt;&quot;&apos;&amp;", PCString.encode("<>\"'&"))
-		assert_equal("&test;", PCString.encode("&test;"))
-		assert_equal("&\#0ax;", PCString.encode("&#0ax;"))
-		assert_equal("&amp;test", PCString.encode("&test"))
-		assert_equal("&amp;\#0ax", PCString.encode("&#0ax"))
+		assert_equal("&amp;test;", PCString.encode("&test;"))
+		assert_equal("&amp;amp;", PCString.encode("&amp;"))
 	end
 
 	def test_new
