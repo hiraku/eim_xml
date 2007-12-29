@@ -134,12 +134,10 @@ module EimXML
 		def add(v)
 			case v
 			when nil
-			when Element, PCString
-				@contents << v
 			when Array
 				v.each{|i| self.add(i)}
 			else
-				@contents << v.to_s
+				@contents << v
 			end
 			self
 		end

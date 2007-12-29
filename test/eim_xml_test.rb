@@ -106,7 +106,8 @@ class ElementTest < Test::Unit::TestCase
 		assert_equal(0, e.contents.size, "add nil")
 
 		e = Element.new("el").add(:symbol)
-		assert_equal(["symbol"], e.contents, "add anything(which has to_s)")
+		assert_equal([:symbol], e.contents, "add anything(which has to_s)")
+		assert_equal("<el>symbol</el>", e.to_xml)
 
 		e = Element.new("super") << Element.new("sub")
 		assert_equal(:super, e.name)
