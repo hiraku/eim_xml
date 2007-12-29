@@ -165,9 +165,8 @@ module EimXML
 				dst << "#{@hold_space ? "" : nest}</#{@name}>"
 			end
 		end
-		def to_s(*args)
-			args.unshift("")
-			to_xml(*args)
+		def to_s
+			to_xml
 		end
 		alias :inspect :to_s
 
