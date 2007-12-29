@@ -35,7 +35,6 @@ module EimXML
 	class PCString
 		attr_reader :encoded_string
 		alias to_s encoded_string
-		alias to_xml encoded_string
 
 		def self.encode(s)
 			s.gsub(/[&\"\'<>]/) do |m|
@@ -60,6 +59,10 @@ module EimXML
 
 		def ==(other)
 			other.is_a?(PCString) ? @encoded_string==other.encoded_string : false
+		end
+
+		def to_xml(dst=String.new)
+			dst << encoded_string
 		end
 	end
 
@@ -177,8 +180,15 @@ module EimXML
 		alias :inspect :to_s
 
 		def content_to_xml(dst, c, nest_level, is_head)
-			return c.to_xml_with_indent(dst, nest_level, is_head) if c.is_a?(Element)
-			dst << (is_head ? NEST*nest_level : "") + (c.is_a?(PCString) ? c.to_s : PCString.encode(c))
+			case
+			when c.respond_to?(:to_xml_with_indent)
+				c.to_xml_with_indent(dst, nest_level, is_head)
+			when c.respond_to?(:to_xml)
+				dst << (is_head ? NEST*nest_level : "")
+				c.to_xml(dst)
+			else
+				dst << (is_head ? NEST*nest_level : "") << PCString.encode(c.to_s)
+			end
 		end
 		private :content_to_xml
 
