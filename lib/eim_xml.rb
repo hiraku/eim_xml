@@ -142,7 +142,7 @@ module EimXML
 		end
 		alias << add
 
-		def to_xml(dst=String.new, nest_level=0, is_head=true)
+		def to_xml_with_indent(dst=String.new, nest_level=0, is_head=true)
 			nest = NEST*nest_level
 			head = is_head ? nest : ""
 			lf = @hold_space ? "" : "\n"
@@ -166,13 +166,14 @@ module EimXML
 				dst << "#{@hold_space ? "" : nest}</#{@name}>"
 			end
 		end
+
 		def to_s
-			to_xml
+			to_xml_with_indent
 		end
 		alias :inspect :to_s
 
 		def content_to_xml(dst, c, nest_level, is_head)
-			return c.to_xml(dst, nest_level, is_head) if c.is_a?(Element)
+			return c.to_xml_with_indent(dst, nest_level, is_head) if c.is_a?(Element)
 			dst << (is_head ? NEST*nest_level : "") + (c.is_a?(PCString) ? c.to_s : PCString.encode(c))
 		end
 		private :content_to_xml
