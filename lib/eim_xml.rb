@@ -35,6 +35,7 @@ module EimXML
 	class PCString
 		attr_reader :encoded_string
 		alias to_s encoded_string
+		alias to_xml encoded_string
 
 		def self.encode(s)
 			s.gsub(/[&\"\'<>]/) do |m|

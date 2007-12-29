@@ -27,6 +27,10 @@ class PCStringTest < Test::Unit::TestCase
 
 		assert_not_equal(p1, "str")
 	end
+
+	def test_to_xml
+		assert_equal("&amp;amp;", PCString.new("&amp;").to_xml)
+	end
 end
 
 class ElementTest < Test::Unit::TestCase
