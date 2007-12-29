@@ -149,6 +149,17 @@ class ElementTest < Test::Unit::TestCase
 		assert_equal("<el a1='a1' />", e.to_xml_with_indent)
 	end
 
+	def test_to_xml
+		el = Element.new("el")
+		ex = "<el />"
+		assert_equal(ex, el.to_xml)
+
+		s = ""
+		r = el.to_xml(s)
+		assert_equal(ex, r)
+		assert_equal(s.object_id, r.object_id)
+	end
+
 	def test_spcial_string
 		e = Element.new("el") << "&\"'<>"
 		e << PCString.new("&\"'<>", true)

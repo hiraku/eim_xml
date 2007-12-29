@@ -167,8 +167,12 @@ module EimXML
 			end
 		end
 
+		def to_xml(dst=String.new)
+			to_xml_with_indent(dst)
+		end
+
 		def to_s
-			to_xml_with_indent
+			to_xml
 		end
 		alias :inspect :to_s
 
