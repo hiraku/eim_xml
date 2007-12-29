@@ -27,14 +27,6 @@ module EimXML::XHTML
 		def initialize(attributes=nil)
 			super(:html, attributes)
 		end
-
-		def to_xml(dst=String.new, write_declarations=true)
-			if write_declarations
-				dst << EimXML::XML_DECLARATION << "\n"
-				dst << DocType::XHTML_MATHML << "\n"
-			end
-			super(dst)
-		end
 	end
 
 	class Simple_ < Base_

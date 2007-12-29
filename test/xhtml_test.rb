@@ -32,27 +32,6 @@ class XHTMLTest < Test::Unit::TestCase
 		assert_match(HTML.new(:key=>"v"), DSL.html(:key=>"v"))
 	end
 
-	def test_html_with_declarations
-		decs = EimXML::XML_DECLARATION + "\n" + DocType::XHTML_MATHML + "\n"
-		h = HTML.new
-		assert_equal(decs + "<html />", h.to_s)
-
-		h = HTML.new
-		assert_equal("<html />", h.to_s(false))
-
-		h = HTML.new do |h|
-			h << BODY.new do |b|
-				b << "test"
-			end
-		end
-
-		assert_equal(decs+h.to_s(false), h.to_s)
-
-		s1 = ""
-		s2 = ""
-		assert_equal(decs+h.to_xml(s1, false), h.to_xml(s2))
-	end
-
 	def test_head
 		assert_equal(:head, HEAD.new.name)
 		assert_kind_of(HEAD, DSL.head)
