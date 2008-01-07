@@ -36,7 +36,7 @@ task :publish => [:clobber_rdoc, "rdoc:ja", "rdoc:en"] do
 end
 
 ### Test ###
-task :test => "test:apart"
+task :test => "test:lump"
 namespace :test do
 	FileList["test/*_test.rb"].sort{|a,b| File.mtime(a)<=>File.mtime(b)}.reverse.each do |i|
 		Rake::TestTask.new(:apart) do |t|
