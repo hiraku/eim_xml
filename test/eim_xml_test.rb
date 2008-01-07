@@ -459,15 +459,20 @@ end
 
 class DSLTeset < Test::Unit::TestCase
 	def test_element
-		inner = nil
+		outer = inner = nil
 		e2 = nil
+		block_executed = false
 		e = EimXML::DSL.element(:out, :key1=>"v1") do
-			inner = self
+			outer = self
 			e2 = element(:in, :key2=>"v2") do
+				block_executed = true
+				inner = self
 				element(:deep)
 			end
 		end
-		assert_equal(e.object_id, inner.object_id)
+		assert(block_executed)
+		assert_equal(e.object_id, outer.object_id)
+		assert_equal(e2.object_id, inner.object_id)
 		assert_equal(:out, e.name)
 		assert_equal("v1", e[:key1])
 		assert_equal(:in, e[0].name)
