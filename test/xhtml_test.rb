@@ -17,6 +17,10 @@ class XHTMLTest < Test::Unit::TestCase
 		assert_raise(NoMethodError){DSL.base_}
 	end
 
+	def setup
+		@od = OpenDSL.new
+	end
+
 	def test_html
 		h = HTML.new(:attr=>"value")
 		assert_equal(Element.new(:html, :attr=>"value"), h)
@@ -30,46 +34,55 @@ class XHTMLTest < Test::Unit::TestCase
 
 		assert_raise(NoMethodError){EimXML::DSL.html}
 		assert_match(HTML.new(:key=>"v"), DSL.html(:key=>"v"))
+		@od.html(:key=>"v").should == HTML.new(:key=>"v")
 	end
 
 	def test_head
 		assert_equal(:head, HEAD.new.name)
 		assert_kind_of(HEAD, DSL.head)
+		@od.head.should be_kind_of(HEAD)
 	end
 
 	def test_meta
 		assert_equal(:meta, META.new.name)
 		assert_kind_of(META, DSL.meta)
+		@od.meta.should be_kind_of(META)
 	end
 
 	def test_link
 		assert_equal(:link, LINK.new.name)
 		assert_kind_of(LINK, DSL.link)
+		@od.link.should be_kind_of(LINK)
 	end
 
 	def test_style
 		assert_equal(:style, STYLE.new.name)
 		assert_kind_of(STYLE, DSL.style)
+		@od.style.should be_kind_of(STYLE)
 	end
 
 	def test_script
 		assert_equal(:script, SCRIPT.new.name)
 		assert_kind_of(SCRIPT, DSL.script)
+		@od.script.should be_kind_of(SCRIPT)
 	end
 
 	def test_title
 		assert_equal(:title, TITLE.new.name)
 		assert_kind_of(TITLE, DSL.title)
+		@od.title.should be_kind_of(TITLE)
 	end
 
 	def test_body
 		assert_equal(:body, BODY.new.name)
 		assert_kind_of(BODY, DSL.body)
+		@od.body.should be_kind_of(BODY)
 	end
 
 	def test_pre
 		assert_equal(:pre, PRE.new.name)
 		assert_kind_of(PRE, DSL.pre)
+		@od.pre.should be_kind_of(PRE)
 	end
 
 	def test_hn
@@ -89,20 +102,22 @@ class XHTMLTest < Test::Unit::TestCase
 		assert_equal("test", h[0])
 
 		[
-			[H1, DSL.h1],
-			[H2, DSL.h2],
-			[H3, DSL.h3],
-			[H4, DSL.h4],
-			[H5, DSL.h5],
-			[H6, DSL.h6]
-		].each do |klass, method|
-			assert_kind_of(klass, method)
+			[H1, DSL.h1, @od.h1],
+			[H2, DSL.h2, @od.h2],
+			[H3, DSL.h3, @od.h3],
+			[H4, DSL.h4, @od.h4],
+			[H5, DSL.h5, @od.h5],
+			[H6, DSL.h6, @od.h6]
+		].each do |klass, dsl, od|
+			dsl.should be_kind_of(klass)
+			od.should be_kind_of(klass)
 		end
 	end
 
 	def test_p
 		assert_equal(:p, P.new.name)
 		assert_kind_of(P, DSL.p)
+		@od.p.should be_kind_of(P)
 	end
 
 	def test_kp
@@ -126,66 +141,79 @@ class XHTMLTest < Test::Unit::TestCase
 	def test_a
 		assert_equal(:a, A.new.name)
 		assert_kind_of(A, DSL.a)
+		@od.a.should be_kind_of(A)
 	end
 
 	def test_em
 		assert_equal(:em, EM.new.name)
 		assert_kind_of(EM, DSL.em)
+		@od.em.should be_kind_of(EM)
 	end
 
 	def test_strong
 		assert_equal(:strong, STRONG.new.name)
 		assert_kind_of(STRONG, DSL.strong)
+		@od.strong.should be_kind_of(STRONG)
 	end
 
 	def test_div
 		assert_equal(:div, DIV.new.name)
 		assert_kind_of(DIV, DSL.div)
+		@od.div.should be_kind_of(DIV)
 	end
 
 	def test_ul
 		assert_equal(:ul, UL.new.name)
 		assert_kind_of(UL, DSL.ul)
+		@od.ul.should be_kind_of(UL)
 	end
 
 	def test_ol
 		assert_equal(:ol, OL.new.name)
 		assert_kind_of(OL, DSL.ol)
+		@od.ol.should be_kind_of(OL)
 	end
 
 	def test_li
 		assert_equal(:li, LI.new.name)
 		assert_kind_of(LI, DSL.li)
+		@od.li.should be_kind_of(LI)
 	end
 
 	def test_table
 		assert_equal(:table, TABLE.new.name)
 		assert_kind_of(TABLE, DSL.table)
+		@od.table.should be_kind_of(TABLE)
 	end
 
 	def test_caption
 		assert_equal(:caption, CAPTION.new.name)
 		assert_kind_of(CAPTION, DSL.caption)
+		@od.caption.should be_kind_of(CAPTION)
 	end
 
 	def test_tr
 		assert_equal(:tr, TR.new.name)
 		assert_kind_of(TR, DSL.tr)
+		@od.tr.should be_kind_of(TR)
 	end
 
 	def test_th
 		assert_equal(:th, TH.new.name)
 		assert_kind_of(TH, DSL.th)
+		@od.th.should be_kind_of(TH)
 	end
 
 	def test_td
 		assert_equal(:td, TD.new.name)
 		assert_kind_of(TD, DSL.td)
+		@od.td.should be_kind_of(TD)
 	end
 
 	def test_form
 		assert_equal(:form, FORM.new.name)
 		assert_kind_of(FORM, DSL.form)
+		@od.form.should be_kind_of(FORM)
 	end
 
 	def test_text_area
@@ -196,6 +224,10 @@ class XHTMLTest < Test::Unit::TestCase
 		t = DSL.textarea("t")
 		assert_kind_of(TEXTAREA, t)
 		assert_equal("t", t[:name])
+
+		t = @od.textarea("t")
+		t.should be_kind_of(TEXTAREA)
+		t[:name].should == "t"
 	end
 
 	def test_input
@@ -209,6 +241,10 @@ class XHTMLTest < Test::Unit::TestCase
 		i = DSL.input(:dummy, :n, :v)
 		assert_kind_of(INPUT, i)
 		assert_match(INPUT.new(:dummy, :n, :v), i)
+
+		i = @od.input(:dummy, :n, :v)
+		i.should be_kind_of(INPUT)
+		i.should == INPUT.new(:dummy, :n, :v)
 	end
 
 	def test_hidden
@@ -219,6 +255,10 @@ class XHTMLTest < Test::Unit::TestCase
 		h = DSL.hidden(:n, :v)
 		assert_kind_of(HIDDEN, h)
 		assert_match(HIDDEN.new(:n, :v), h)
+
+		h = @od.hidden(:n, :v)
+		h.should be_kind_of(HIDDEN)
+		h.should == HIDDEN.new(:n, :v)
 	end
 
 	def test_submit
@@ -238,6 +278,14 @@ class XHTMLTest < Test::Unit::TestCase
 		s = DSL.submit(:name=>:s, :value=>:v)
 		assert_equal(:s, s[:name])
 		assert_equal(:v, s[:value])
+
+		s = @od.submit
+		s.should be_kind_of(SUBMIT)
+		s.should == SUBMIT.new
+		s[:name].should be_nil
+		s[:value].should be_nil
+		s = @od.submit(:name=>:s, :value=>:v)
+		s.should == SUBMIT.new(:name=>:s, :value=>:v)
 	end
 
 	def test_text
@@ -249,5 +297,38 @@ class XHTMLTest < Test::Unit::TestCase
 		t = DSL.text(:n, :v)
 		assert_kind_of(TEXT, t)
 		assert_match(TEXT.new(:n, :v), t)
+
+		t = @od.text(:n, :v)
+		t.should be_kind_of(TEXT)
+		t.should == TEXT.new(:n, :v)
+	end
+end
+
+describe EimXML::XHTML::OpenDSL do
+	it "replace EimXML::XHTML::DSL" do
+		e = EimXML::XHTML::OpenDSL.html do |d|
+			d.head do
+				d.title.add "Title"
+			end
+			d.body do
+				d.h1.add "Sample"
+				d.p do
+					d.add "text"
+					d.add "next"
+				end
+			end
+		end
+		e.should == EimXML::XHTML::DSL.html do
+			head do
+				title.add "Title"
+			end
+			body do
+				h1.add "Sample"
+				p do
+					add "text"
+					add "next"
+				end
+			end
+		end
 	end
 end

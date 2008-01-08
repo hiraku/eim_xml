@@ -15,6 +15,9 @@ module EimXML::XHTML
 		end
 	end
 
+	class OpenDSL < EimXML::OpenDSL
+	end
+
 	class Base_ < EimXML::Element
 		include DSL
 	end
@@ -110,6 +113,7 @@ module EimXML::XHTML
 		v = const_get(c)
 		if v.is_a?(Class) && /_$/ !~ v.name
 			DSL.register v
+			OpenDSL.register v
 		end
 	end
 end

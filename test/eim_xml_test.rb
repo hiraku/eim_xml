@@ -5,6 +5,7 @@
 
 require "test/unit"
 require "eim_xml"
+require "spec"
 
 class PCStringTest < Test::Unit::TestCase
 	include EimXML
@@ -518,6 +519,113 @@ class DSLTeset < Test::Unit::TestCase
 			exp << EimXML::Element.new(:mid) << EimXML::Element.new(:mid2)
 			exp[0] << EimXML::Element.new(:in)
 			assert_equal(exp, e)
+		end
+	end
+end
+
+describe EimXML::OpenDSL do
+	it "scope of block is one of outside" do
+		@scope_checker_variable = 1
+		block_executed = false
+		d = EimXML::OpenDSL.new do |d|
+			block_executed = true
+			d.should be_kind_of(EimXML::OpenDSL)
+			d.container.should be_nil
+			d.element(:base, :key1=>"v1") do
+				@scope_checker_variable.should == 1
+				self.should_not be_kind_of(EimXML::Element)
+				d.container.should be_kind_of(EimXML::Element)
+				d.container.should == EimXML::Element.new(:base, :key1=>"v1")
+				d.element(:sub, :key2=>"v2") do
+					d.container.should be_kind_of(EimXML::Element)
+					d.container.should == EimXML::Element.new(:sub, :key2=>"v2")
+				end
+				d.element(:sub2).should == EimXML::Element.new(:sub2)
+			end
+		end
+		block_executed.should be_true
+	end
+
+	it "DSL methods return element" do
+		d = EimXML::OpenDSL.new
+		d.container.should be_nil
+		r = d.element(:base, :key1=>"v1") do
+			d.element(:sub, :key2=>"v2")
+		end
+		r.should == EimXML::DSL.element(:base, :key1=>"v1") do
+			element(:sub, :key2=>"v2")
+		end
+	end
+
+	it "DSL method's block given instance of OpenDSL" do
+		EimXML::OpenDSL.new.element(:base) do |d|
+			d.should be_kind_of(EimXML::OpenDSL)
+			d.container.name.should == :base
+			d.element(:sub) do |d2|
+				d2.object_id.should == d.object_id
+			end
+		end
+	end
+
+	it "ensure reset container when error raised" do
+		EimXML::OpenDSL.new do |d|
+			begin
+				d.element(:base) do
+					begin
+						d.element(:sub) do
+							raise "OK"
+						end
+					rescue RuntimeError => e
+						raise unless e.message=="OK"
+						d.container.name.should == :base
+						raise
+					end
+				end
+			rescue RuntimeError => e
+				raise unless e.message=="OK"
+				d.container.should == nil
+			end
+		end
+	end
+
+	it "respond to add" do
+		r = EimXML::OpenDSL.new.element(:base) do |d|
+			d.add "text"
+			d.element(:sub) do
+				s = EimXML::Element.new(:sub)
+				s.add("sub text")
+				d.add("sub text").should == s
+			end
+		end
+
+		r.should == EimXML::DSL.element(:base) do
+			add "text"
+			element(:sub) do
+				add "sub text"
+			end
+		end
+	end
+
+	it "respond to <<" do
+		r = EimXML::OpenDSL.new.element(:base) do |d|
+			b = EimXML::Element.new(:base)
+			b << "text" << "next"
+			(d << "text" << "next").should == b
+		end
+		r.should == EimXML::DSL.element(:base) do
+			add "text"
+			add "next"
+		end
+	end
+
+	it "can call directly element method" do
+		r = EimXML::OpenDSL.element(:base) do |d|
+			d.element(:sub)
+			d.element(:sub2)
+		end
+		r.should == EimXML::DSL.element(:base) do
+			element(:sub)
+			element(:sub2)
 		end
 	end
 end

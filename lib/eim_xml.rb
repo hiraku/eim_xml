@@ -32,6 +32,47 @@ module EimXML
 		end
 	end
 
+	class OpenDSL
+		def self.register_base(dsl, binding, *args)
+			args.each do |klass, name|
+				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
+				src = "def #{name}(*arg)\n" <<
+					"e=#{klass}.new(*arg)\n" <<
+					"oc=@container\n" <<
+					"oc << e if oc.is_a?(Element)\n" <<
+					"@container = e\n" <<
+					"begin\n" <<
+					"yield(self) if block_given?\n" <<
+					"e\n" <<
+					"ensure\n" <<
+					"@container = oc\n" <<
+					"end\n" <<
+					"end\n"
+				eval(src, binding, __FILE__, __LINE__-12)
+
+				src = "def self.#{name}(*arg, &proc)\n" <<
+					"self.new.#{name}(*arg, &proc)\n" <<
+					"end"
+				eval(src, binding, __FILE__, __LINE__-3)
+			end
+		end
+
+		def self.register(*args)
+			register_base(self, binding, *args)
+		end
+
+		attr_reader :container
+		def initialize
+			@container = nil
+			yield(self) if block_given?
+		end
+
+		def add(v)
+			@container.add(v)
+		end
+		alias :<< :add
+	end
+
 	class PCString
 		attr_reader :encoded_string
 		alias to_s encoded_string
@@ -276,4 +317,5 @@ module EimXML
 	end
 
 	DSL.register Element
+	OpenDSL.register Element
 end
