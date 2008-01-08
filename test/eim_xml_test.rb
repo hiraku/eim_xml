@@ -458,48 +458,59 @@ class SymbolKeyHashTest < Test::Unit::TestCase
 	end
 end
 
-class DSLTeset < Test::Unit::TestCase
-	def test_element
+describe EimXML::DSL do
+	it "scope is in each element" do
 		outer = inner = nil
-		e2 = nil
+		e3 = e2 = nil
 		block_executed = false
-		e = EimXML::DSL.element(:out, :key1=>"v1") do
+		e = EimXML::DSL.element(:out, :k1=>"v1") do
 			outer = self
-			e2 = element(:in, :key2=>"v2") do
+			e2 = element(:in, :k2=>"v2") do
 				block_executed = true
 				inner = self
-				element(:deep)
+				e3 = element(:deep)
 			end
 		end
-		assert(block_executed)
-		assert_equal(e.object_id, outer.object_id)
-		assert_equal(e2.object_id, inner.object_id)
-		assert_equal(:out, e.name)
-		assert_equal("v1", e[:key1])
-		assert_equal(:in, e[0].name)
-		assert_equal("v2", e[0][:key2])
-		assert_equal(:deep, e[0][0].name)
-	end
 
-	module Dummy
-		def self.register(*args)
-			EimXML::DSL.register_base(self, binding, *args)
+		block_executed.should == true
+		outer.object_id.should == e.object_id
+		inner.object_id.should == e2.object_id
+		e.name.should == :out
+		e[:k1].should == "v1"
+		e[0].name.should == :in
+		e[0][:k2].should == "v2"
+		e[0][0].name.should == :deep
+		e2.object_id.should == e[0].object_id
+		e3.object_id.should == e[0][0].object_id
+	end
+end
+
+describe EimXML::DSL, "with original DSL module" do
+	before do
+		m = Module.new
+		module m::Dummy
+			def self.register(*args)
+				EimXML::DSL.register_base(self, binding, *args)
+			end
+
+			register([EimXML::Element, "call"])
+			register(EimXML::Element)
+			register(String, Array, Object)
 		end
-
-		register([EimXML::Element, "call"])
-		register(EimXML::Element)
-		register(String, Array, Object)
+		@d = m::Dummy
 	end
 
-	def test_register
-		assert_raise(NoMethodError){EimXML::DSL.call(:dummy)}
-		assert_kind_of(EimXML::Element, Dummy.call(:dummy))
-		assert_kind_of(EimXML::Element, Dummy.element(:dummy))
-		assert_kind_of(String, Dummy.string)
-		assert_kind_of(Array, Dummy.array)
-		assert_kind_of(Object, Dummy.object)
+	it "register" do
+		lambda{EimXML::DSL.call(:dummy)}.should raise_error(NoMethodError)
+		@d.call(:dummy).should be_kind_of(EimXML::Element)
+		@d.element(:dummy).should be_kind_of(EimXML::Element)
+		@d.string.should be_kind_of(String)
+		@d.array.should be_kind_of(Array)
+		@d.object.should be_kind_of(Object)
 	end
+end
 
+class DSLTeset < Test::Unit::TestCase
 	class Included < Test::Unit::TestCase
 		include EimXML::DSL
 
