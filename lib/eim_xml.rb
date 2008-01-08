@@ -7,29 +7,47 @@
 module EimXML
 	XML_DECLARATION = %[<?xml version="1.0"?>]
 
-	module DSL
-		def self.register_base(mod, binding, *args)
-			args.each do |klass, name|
-				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
-				src = "def self.#{name}(*arg, &proc)\n" <<
-					"r = #{klass.name}.new(*arg)\n" <<
-					"r.instance_eval(&proc) if proc\n" <<
-					"r\n" <<
-					"end\n"
-				eval(src, binding, __FILE__, __LINE__-5)
-
-				src = "def #{name}(*arg, &proc)\n" <<
-					"e=#{mod}.#{name}(*arg, &proc)\n" <<
-					"add(e) if self.is_a?(EimXML::Element)\n" <<
-					"e\n" <<
-					"end\n"
-				eval(src, binding, __FILE__, __LINE__-4)
-			end
+	class BaseDSL
+		def initialize
+			@container = nil
+			yield(self) if block_given?
 		end
+
+		def add(v)
+			@container.add(v)
+		end
+		alias << add
 
 		def self.register(*args)
-			register_base(self, binding, *args)
+			args.each do |klass, name|
+				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
+				l = __LINE__+1
+				src = "def #{name}(*arg, &proc)\n" <<
+					"e = #{klass}.new(*arg)\n" <<
+					"@container << e if @container\n" <<
+					"if proc\n" <<
+					"oc = @container\n" <<
+					"@container = e\n" <<
+					"begin\n" <<
+					"instance_eval(&proc)\n" <<
+					"ensure\n" <<
+					"@container = oc\n" <<
+					"end\n" <<
+					"end\n" <<
+					"e\n" <<
+					"end"
+				eval(src, binding, __FILE__, l)
+
+				l = __LINE__+1
+				src = "def self.#{name}(*arg, &proc)\n" <<
+					"new.#{name}(*arg, &proc)\n" <<
+					"end"
+				eval(src, binding, __FILE__, l)
+			end
 		end
+	end
+
+	class DSL < BaseDSL
 	end
 
 	class OpenDSL
@@ -137,7 +155,6 @@ module EimXML
 	end
 
 	class Element
-		include DSL
 		attr_reader :name, :attributes, :contents
 
 		NEST = " "

@@ -5,21 +5,13 @@ module EimXML::XHTML
 		XHTML_MATHML = %[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">]
 	end
 
-	module DSL
-		def self.register(*args)
-			EimXML::DSL.register_base(self, binding, *args)
-		end
-
-		def kp(*args)
-			Kernel.p(*args)
-		end
+	class DSL < EimXML::BaseDSL
 	end
 
 	class OpenDSL < EimXML::OpenDSL
 	end
 
 	class Base_ < EimXML::Element
-		include DSL
 	end
 
 	class HTML < Base_

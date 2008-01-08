@@ -120,24 +120,6 @@ class XHTMLTest < Test::Unit::TestCase
 		@od.p.should be_kind_of(P)
 	end
 
-	def test_kp
-		io = StringIO.new
-		assert_nothing_raised do
-			stdout = $stdout
-			begin
-				$stdout = io
-				DSL.p do
-					kp("a")
-					kp("b", "c")
-				end
-			ensure
-				$stdout = stdout
-			end
-		end
-
-		assert_equal(%["a"\n"b"\n"c"\n], io.string)
-	end
-
 	def test_a
 		assert_equal(:a, A.new.name)
 		assert_kind_of(A, DSL.a)

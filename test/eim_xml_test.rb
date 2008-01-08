@@ -459,7 +459,7 @@ class SymbolKeyHashTest < Test::Unit::TestCase
 end
 
 describe EimXML::DSL do
-	it "scope is in each element" do
+	it "scope is in instance of EimXML::DSL" do
 		outer = inner = nil
 		e3 = e2 = nil
 		block_executed = false
@@ -473,8 +473,10 @@ describe EimXML::DSL do
 		end
 
 		block_executed.should == true
-		outer.object_id.should == e.object_id
-		inner.object_id.should == e2.object_id
+		outer.should be_kind_of(EimXML::DSL)
+		inner.should be_kind_of(EimXML::DSL)
+		outer.object_id.should == inner.object_id
+
 		e.name.should == :out
 		e[:k1].should == "v1"
 		e[0].name.should == :in
@@ -485,51 +487,23 @@ describe EimXML::DSL do
 	end
 end
 
-describe EimXML::DSL, "with original DSL module" do
-	before do
-		m = Module.new
-		module m::Dummy
-			def self.register(*args)
-				EimXML::DSL.register_base(self, binding, *args)
-			end
-
-			register([EimXML::Element, "call"])
-			register(EimXML::Element)
-			register(String, Array, Object)
-		end
-		@d = m::Dummy
+module Module.new::TMP
+	class DSL1 < EimXML::BaseDSL
+		register([EimXML::Element, "call"])
+		register(Hash)
+		register(String, Array, Object)
 	end
 
-	it "register" do
-		lambda{EimXML::DSL.call(:dummy)}.should raise_error(NoMethodError)
-		@d.call(:dummy).should be_kind_of(EimXML::Element)
-		@d.element(:dummy).should be_kind_of(EimXML::Element)
-		@d.string.should be_kind_of(String)
-		@d.array.should be_kind_of(Array)
-		@d.object.should be_kind_of(Object)
-	end
-end
-
-class DSLTeset < Test::Unit::TestCase
-	class Included < Test::Unit::TestCase
-		include EimXML::DSL
-
-		def test_element
-			e = nil
-			assert_nothing_raised{e =element(:out)}
-			assert_equal(EimXML::Element.new(:out), e)
-
-			e = element(:out) do
-				element(:mid) do
-					element(:in)
-				end
-				element(:mid2)
-			end
-
-			exp = EimXML::Element.new(:out)
-			exp << EimXML::Element.new(:mid) << EimXML::Element.new(:mid2)
-			exp[0] << EimXML::Element.new(:in)
-			assert_equal(exp, e)
+	describe DSL1, "subclass of EimXML::BaseDSL" do
+		it "register" do
+			lambda{EimXML::DSL.call(:dummy)}.should raise_error(NoMethodError)
+			lambda{EimXML::BaseDSL.call(:dummy)}.should raise_error(NoMethodError)
+			lambda{DSL1.element(:dummy)}.should raise_error(NoMethodError)
+			DSL1.call(:dummy).should be_kind_of(EimXML::Element)
+			DSL1.hash.should be_kind_of(Hash)
+			DSL1.string.should be_kind_of(String)
+			DSL1.array.should be_kind_of(Array)
+			DSL1.object.should be_kind_of(Object)
 		end
 	end
 end
