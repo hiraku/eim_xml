@@ -1,7 +1,7 @@
 require "rake/clean"
-require "rake/testtask"
 require "rake/rdoctask"
 require "rake/gempackagetask"
+require "spec/rake/spectask"
 
 FILES = FileList["**/*"].exclude("pkg", "html")
 
@@ -38,15 +38,23 @@ end
 ### Test ###
 task :test => "test:lump"
 namespace :test do
-	FileList["test/*_test.rb"].sort{|a,b| File.mtime(a)<=>File.mtime(b)}.reverse.each do |i|
-		Rake::TestTask.new(:apart) do |t|
-			t.test_files = [i]
+	def set_spec_options(spec)
+		spec.ruby_opts << "-rtest/unit"
+		spec.spec_opts << "-c"
+		spec.libs << "lib"
+	end
+	TEST_FILES = FileList["test/**/*_test.rb"]
+	TEST_FILES.sort{|a,b| File.mtime(a)<=>File.mtime(b)}.reverse.each do |i|
+		Spec::Rake::SpecTask.new(:apart) do |s|
+			s.spec_files = [i]
+			set_spec_options(s)
 		end
 	end
 	task(:apart).comment = "Run tests separately"
 
-	Rake::TestTask.new(:lump) do |t|
-		t.test_files = FileList["test/*_test.rb"]
+	Spec::Rake::SpecTask.new(:lump) do |s|
+		s.spec_files = TEST_FILES
+		set_spec_options(s)
 	end
 	task(:lump).comment = "Run all tests in a lump"
 end
