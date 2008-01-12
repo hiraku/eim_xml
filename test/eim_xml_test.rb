@@ -541,12 +541,16 @@ describe EimXML::OpenDSL do
 	end
 
 	it "DSL method's block given instance of OpenDSL" do
-		EimXML::OpenDSL.new.element(:base) do |d|
+		e = EimXML::OpenDSL.new.element(:base) do |d|
 			d.should be_kind_of(EimXML::OpenDSL)
 			d.container.name.should == :base
 			d.element(:sub) do |d2|
 				d2.object_id.should == d.object_id
 			end
+		end
+
+		e.should == EimXML::DSL.element(:base) do
+			element(:sub)
 		end
 	end
 
