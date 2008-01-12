@@ -487,24 +487,22 @@ describe EimXML::DSL do
 	end
 end
 
-module Module.new::TMP
+describe "Subclass of EimXML::BaseDSL" do
 	class DSL1 < EimXML::BaseDSL
 		register([EimXML::Element, "call"])
 		register(Hash)
 		register(String, Array, Object)
 	end
 
-	describe DSL1, "subclass of EimXML::BaseDSL" do
-		it "register" do
-			lambda{EimXML::DSL.call(:dummy)}.should raise_error(NoMethodError)
-			lambda{EimXML::BaseDSL.call(:dummy)}.should raise_error(NoMethodError)
-			lambda{DSL1.element(:dummy)}.should raise_error(NoMethodError)
-			DSL1.call(:dummy).should be_kind_of(EimXML::Element)
-			DSL1.hash.should be_kind_of(Hash)
-			DSL1.string.should be_kind_of(String)
-			DSL1.array.should be_kind_of(Array)
-			DSL1.object.should be_kind_of(Object)
-		end
+	it "register" do
+		lambda{EimXML::DSL.call(:dummy)}.should raise_error(NoMethodError)
+		lambda{EimXML::BaseDSL.call(:dummy)}.should raise_error(NoMethodError)
+		lambda{DSL1.element(:dummy)}.should raise_error(NoMethodError)
+		DSL1.call(:dummy).should be_kind_of(EimXML::Element)
+		DSL1.hash.should be_kind_of(Hash)
+		DSL1.string.should be_kind_of(String)
+		DSL1.array.should be_kind_of(Array)
+		DSL1.object.should be_kind_of(Object)
 	end
 end
 
