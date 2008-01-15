@@ -214,12 +214,14 @@ class ElementTest < Test::Unit::TestCase
 	def test_hold_space
 		e = Element.new("el") << "Line1" << "Line2"
 		s = Element.new("sub") << "Sub1" << "Sub2"
+		ss = Element.new("subsub") << "ss1" << "ss2"
+		s << ss
 		e << s
 		e.hold_space
-		assert_equal("<el>Line1Line2<sub>\n  Sub1\n  Sub2\n </sub></el>", e.to_s)
+		assert_equal("<el>Line1Line2<sub>Sub1Sub2<subsub>ss1ss2</subsub></sub></el>", e.to_s)
 
 		e.unhold_space
-		assert_equal("<el>\n Line1\n Line2\n <sub>\n  Sub1\n  Sub2\n </sub>\n</el>", e.to_s)
+		assert_equal("<el>\n Line1\n Line2\n <sub>\n  Sub1\n  Sub2\n  <subsub>\n   ss1\n   ss2\n  </subsub>\n </sub>\n</el>", e.to_s)
 
 		e = Element.new("e")
 		assert_equal(e.object_id, e.hold_space.object_id)

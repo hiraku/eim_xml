@@ -202,9 +202,11 @@ module EimXML
 		alias << add
 
 		def to_xml_with_indent(dst=String.new, nest_level=0, is_head=true)
-			nest = NEST*nest_level
+			nest_level = -1 if @hold_space
+			hold_space = @hold_space || (nest_level<0)
+			nest = nest_level<0 ? "" : NEST*nest_level
 			head = is_head ? nest : ""
-			lf = @hold_space ? "" : "\n"
+			lf = hold_space ? "" : "\n"
 
 			attributes = ""
 			@attributes.each do |k, v|
@@ -221,7 +223,7 @@ module EimXML
 				dst << "</#{@name}>"
 			else
 				dst << "#{head}<#{@name}#{attributes}>#{lf}"
-				@contents.each {|i| content_to_xml(dst, i, nest_level+1, !@hold_space) << lf}
+				@contents.each {|i| content_to_xml(dst, i, nest_level<0 ? -1 : nest_level+1, !hold_space) << lf}
 				dst << "#{@hold_space ? "" : nest}</#{@name}>"
 			end
 		end
@@ -240,10 +242,10 @@ module EimXML
 			when c.respond_to?(:to_xml_with_indent)
 				c.to_xml_with_indent(dst, nest_level, is_head)
 			when c.respond_to?(:to_xml)
-				dst << (is_head ? NEST*nest_level : "")
+				dst << (is_head && nest_level>=0 ? NEST*nest_level : "")
 				c.to_xml(dst)
 			else
-				dst << (is_head ? NEST*nest_level : "") << PCString.encode(c.to_s)
+				dst << (is_head && nest_level>=0 ? NEST*nest_level : "") << PCString.encode(c.to_s)
 			end
 		end
 		private :content_to_xml
