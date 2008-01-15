@@ -53,6 +53,9 @@ module EimXML::XHTML
 	class UL < Simple_; end
 	class OL < Simple_; end
 	class LI < Simple_; end
+	class DL < Simple_; end
+	class DT < Simple_; end
+	class DD < Simple_; end
 	class TABLE < Simple_; end
 	class CAPTION < Simple_; end
 	class TR < Simple_; end

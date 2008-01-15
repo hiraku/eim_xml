@@ -162,6 +162,24 @@ class XHTMLTest < Test::Unit::TestCase
 		@od.li.should be_kind_of(LI)
 	end
 
+	def test_dl
+		DL.new.name.should == :dl
+		DSL.dl.should be_kind_of(DL)
+		@od.dl.should be_kind_of(DL)
+	end
+
+	def test_dt
+		DT.new.name.should == :dt
+		DSL.dt.should be_kind_of(DT)
+		@od.dt.should be_kind_of(DT)
+	end
+
+	def test_dd
+		DD.new.name.should == :dd
+		DSL.dd.should be_kind_of(DD)
+		@od.dd.should be_kind_of(DD)
+	end
+
 	def test_table
 		assert_equal(:table, TABLE.new.name)
 		assert_kind_of(TABLE, DSL.table)
