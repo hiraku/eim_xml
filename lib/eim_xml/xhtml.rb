@@ -37,7 +37,12 @@ module EimXML::XHTML
 	class SCRIPT < Simple_; end
 	class TITLE < Simple_; end
 	class BODY < Simple_; end
-	class PRE < Simple_; end
+	class PRE < Simple_
+		def initialize(attributes=nil)
+			super
+			hold_space
+		end
+	end
 	class FORM < Simple_; end
 	class H1 < Simple_; end
 	class H2 < Simple_; end

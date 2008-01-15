@@ -83,6 +83,7 @@ class XHTMLTest < Test::Unit::TestCase
 		assert_equal(:pre, PRE.new.name)
 		assert_kind_of(PRE, DSL.pre)
 		@od.pre.should be_kind_of(PRE)
+		PRE.new.hold_space?.should be_true
 	end
 
 	def test_hn
