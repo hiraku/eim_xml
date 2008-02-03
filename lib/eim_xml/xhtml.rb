@@ -15,12 +15,18 @@ module EimXML::XHTML
 	end
 
 	class HTML < Base_
+		attr_accessor :prefix
 		module NameSpace
 			XHTML = "http://www.w3.org/1999/xhtml"
 		end
 
 		def initialize(attributes=nil)
 			super(:html, attributes)
+		end
+
+		def to_xml(s="")
+			s << @prefix << "\n" if @prefix
+			super(s)
 		end
 	end
 

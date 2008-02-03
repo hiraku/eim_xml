@@ -35,6 +35,11 @@ class XHTMLTest < Test::Unit::TestCase
 		assert_raise(NoMethodError){EimXML::DSL.html}
 		assert_match(HTML.new(:key=>"v"), DSL.html(:key=>"v"))
 		@od.html(:key=>"v").should == HTML.new(:key=>"v")
+
+		h = HTML.new
+		h.to_xml.should == "<html />"
+		h.prefix='<?xml version="1.0"?>'
+		h.to_xml.should == %[<?xml version="1.0"?>\n<html />]
 	end
 
 	def test_head
