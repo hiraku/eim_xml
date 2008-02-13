@@ -370,7 +370,7 @@ class ElementTest < Test::Unit::TestCase
 		assert(e !~ Element.new(:tag, :a=>"v"))
 	end
 
-	def test_has
+	def test_has?
 		e = Element.new(:base) do |b|
 			b <<= Element.new(:sub) do |s|
 				s <<= Element.new(:deep) do |d|
@@ -396,6 +396,34 @@ class ElementTest < Test::Unit::TestCase
 		assert(e.has?(Element.new(:sub, "sym"=>"v1")))
 		assert(e.has?(Element.new(:sub, "string"=>:v2)))
 		assert(e.has?(Element.new(:sub, :string=>:v2)))
+	end
+
+	def test_has_element?
+		e = Element.new(:base) do |b|
+			b <<= Element.new(:sub) do |s|
+				s <<= Element.new(:deep) do |d|
+					d << "text"
+				end
+			end
+			b <<= Element.new(:sub, :attr=>"value")
+		end
+
+		assert(e.has_element?(:base))
+		assert(e.has_element?(:sub))
+		assert(e.has_element?(:sub, :attr=>"value"))
+		assert(!e.has_element?(:sub, :attr=>"value", :attr2=>""))
+		assert(e.has_element?(:deep))
+		assert(! e.has_element?(:deep, {}, false))
+
+		assert(e.has_element?(String))
+
+		e = DSL.element(:base) do
+			element(:sub, :sym=>:v1, "string"=>"v2")
+		end
+		assert(e.has_element?(Element.new(:sub, :sym=>"v1")))
+		assert(e.has_element?(Element.new(:sub, "sym"=>"v1")))
+		assert(e.has_element?(Element.new(:sub, "string"=>:v2)))
+		assert(e.has_element?(Element.new(:sub, :string=>:v2)))
 	end
 
 	def test_find

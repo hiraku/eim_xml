@@ -320,6 +320,7 @@ module EimXML
 				end
 			end
 		end
+		alias has_element? has?
 
 		def find(name, attrs=nil)
 			r = []
