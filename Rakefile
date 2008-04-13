@@ -66,7 +66,7 @@ def build_gem(unstable=false)
 	spec = Gem::Specification.new do |spec|
 		spec.name = "eimxml"
 		spec.rubyforge_project = "eimxml"
-		spec.version = "0.0.1"
+		spec.version = ENV["VER"] or raise "Need VER=x.y.z(.?)"
 		spec.summary = "Easy IMplemented XML"
 		spec.author = "KURODA Hiraku"
 		spec.email = "hiraku@hinet.mydns.jp"
