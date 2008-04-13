@@ -3,7 +3,7 @@ require "rake/rdoctask"
 require "rake/gempackagetask"
 require "spec/rake/spectask"
 
-FILES = FileList["**/*"].exclude("pkg", "html")
+FILES = FileList["**/*"].exclude(/^pkg/, /\.html$/)
 
 task :default => :test
 
