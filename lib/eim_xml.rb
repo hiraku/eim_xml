@@ -120,7 +120,7 @@ module EimXML
 			other.is_a?(PCString) ? @encoded_string==other.encoded_string : false
 		end
 
-		def to_xml(dst=String.new)
+		def to_xml(dst=String.new, *)
 			dst << encoded_string
 		end
 	end
@@ -239,12 +239,9 @@ module EimXML
 		alias :inspect :to_s
 
 		def content_to_xml(dst, c, nest_level, increment_nest_level)
-			case c
-			when Element
+			if c.respond_to?(:to_xml)
 				nest_level+=1 if nest_level and increment_nest_level
 				c.to_xml(dst, nest_level)
-			when PCString
-				c.to_xml(dst)
 			else
 				dst << PCString.encode(c.to_s)
 			end
