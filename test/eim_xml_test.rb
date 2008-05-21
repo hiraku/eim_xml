@@ -118,37 +118,37 @@ class ElementTest < Test::Unit::TestCase
 	def test_to_xml_with_indent
 		e = Element.new("el")
 		s = String.new
-		assert_equal(s.object_id, e.to_xml_with_indent(s).object_id)
+
+		assert_equal(s.object_id, e.to_xml(s).object_id)
 		assert_equal("<el />", s)
 
 		e = Element.new("super")
 		e << Element.new("sub")
-		assert_equal("<super><sub /></super>", e.to_xml_with_indent)
+		assert_equal("<super><sub /></super>", e.to_xml)
 		e << Element.new("sub2")
-		assert_equal("<super>\n <sub />\n <sub2 />\n</super>", e.to_xml_with_indent)
-		assert_equal(" <super>\n  <sub />\n  <sub2 />\n </super>", e.to_xml_with_indent("", 1))
-		assert_equal("<super>\n  <sub />\n  <sub2 />\n </super>", e.to_xml_with_indent("", 1, false))
+		assert_equal("<super>\n <sub />\n <sub2 />\n</super>", e.to_xml)
+		assert_equal("<super>\n  <sub />\n  <sub2 />\n </super>", e.to_xml("", 1))
 
 		s = Element.new("supersuper")
 		s << e
-		assert_equal("<supersuper><super>\n <sub />\n <sub2 />\n</super></supersuper>", s.to_xml_with_indent)
+		assert_equal("<supersuper><super>\n <sub />\n <sub2 />\n</super></supersuper>", s.to_xml)
 
 		e = Element.new("el") << "str"
 		s = Element.new("sub")
 		s << "inside"
 		e << s
-		assert_equal("<el>\n str\n <sub>inside</sub>\n</el>", e.to_xml_with_indent)
+		assert_equal("<el>\n str\n <sub>inside</sub>\n</el>", e.to_xml)
 
 		e = Element.new("el")
 		e.attributes["a1"] = "v1"
 		e.attributes["a2"] = "'\"<>&"
-		s = e.to_xml_with_indent
+		s = e.to_xml
 		assert_match(/\A<el ([^>]*) \/>\z/, s)
 		assert_match(/a1='v1'/, s)
 		assert_match(/a2='&apos;&quot;&lt;&gt;&amp;'/, s)
 
 		e = Element.new("el", {"a1"=>nil})
-		assert_equal("<el a1='a1' />", e.to_xml_with_indent)
+		assert_equal("<el a1='a1' />", e.to_xml)
 	end
 
 	def test_to_xml

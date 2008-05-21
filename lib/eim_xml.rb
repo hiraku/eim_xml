@@ -201,11 +201,10 @@ module EimXML
 		end
 		alias << add
 
-		def to_xml_with_indent(dst=String.new, nest_level=0, is_head=true)
-			nest_level = -1 if @hold_space
-			hold_space = @hold_space || (nest_level<0)
-			nest = nest_level<0 ? "" : NEST*nest_level
-			head = is_head ? nest : ""
+		def to_xml(dst=String.new, nest_level=0)
+			nest_level = nil if @hold_space
+			hold_space = @hold_space || (not nest_level)
+			nest = nest_level ? NEST*(nest_level) : ""
 			lf = hold_space ? "" : "\n"
 
 			attributes = ""
@@ -216,20 +215,22 @@ module EimXML
 
 			case @contents.size
 			when 0
-				dst << "#{head}<#{@name}#{attributes} />"
+				dst << "<#{@name}#{attributes} />"
 			when 1
-				dst << "#{head}<#{@name}#{attributes}>"
+				dst << "<#{@name}#{attributes}>"
 				content_to_xml(dst, @contents[0], nest_level, false)
 				dst << "</#{@name}>"
 			else
-				dst << "#{head}<#{@name}#{attributes}>#{lf}"
-				@contents.each {|i| content_to_xml(dst, i, nest_level<0 ? -1 : nest_level+1, !hold_space) << lf}
-				dst << "#{@hold_space ? "" : nest}</#{@name}>"
+				dst << "<#{@name}#{attributes}>" << lf
+				nest4contents = nest_level ? NEST*(nest_level+1) : ""
+				@contents.each do |c|
+					dst << nest4contents
+					content_to_xml(dst, c, nest_level, true)
+					dst << lf
+				end
+				dst << nest
+				dst << "</#{@name}>"
 			end
-		end
-
-		def to_xml(dst=String.new)
-			to_xml_with_indent(dst)
 		end
 
 		def to_s
@@ -237,15 +238,15 @@ module EimXML
 		end
 		alias :inspect :to_s
 
-		def content_to_xml(dst, c, nest_level, is_head)
-			case
-			when c.respond_to?(:to_xml_with_indent)
-				c.to_xml_with_indent(dst, nest_level, is_head)
-			when c.respond_to?(:to_xml)
-				dst << (is_head && nest_level>=0 ? NEST*nest_level : "")
+		def content_to_xml(dst, c, nest_level, increment_nest_level)
+			case c
+			when Element
+				nest_level+=1 if nest_level and increment_nest_level
+				c.to_xml(dst, nest_level)
+			when PCString
 				c.to_xml(dst)
 			else
-				dst << (is_head && nest_level>=0 ? NEST*nest_level : "") << PCString.encode(c.to_s)
+				dst << PCString.encode(c.to_s)
 			end
 		end
 		private :content_to_xml
