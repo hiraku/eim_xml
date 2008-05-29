@@ -321,11 +321,11 @@ module EimXML
 		alias has_element? has?
 
 		def find(name, attrs=nil)
-			r = []
+			r = Element.new(:found)
 			r << self if match?(name, attrs)
 			@contents.each do |i|
 				if i.is_a?(Element)
-					r.concat(i.find(name, attrs))
+					r.contents.concat(i.find(name, attrs).contents)
 				else
 					r << i if name.is_a?(Module) && i.is_a?(name)
 				end

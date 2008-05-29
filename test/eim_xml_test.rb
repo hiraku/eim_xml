@@ -435,11 +435,13 @@ class ElementTest < Test::Unit::TestCase
 		e = Element.new(:base)
 		e << "1st" << s1 << s2
 
-		assert_equal([d], e.find(:deep))
-		assert_equal([s1, s2], e.find(:sub))
-		assert_equal([e, s1, d, s2], e.find(//))
+		assert_kind_of(Element, e.find(:deep))
+		assert_equal(:found, e.find(:deep).name)
+		assert_equal([d], e.find(:deep).contents)
+		assert_equal([s1, s2], e.find(:sub).contents)
+		assert_equal([e, s1, d, s2], e.find(//).contents)
 
-		assert_equal(["1st", "2nd", "3rd"], e.find(String))
+		assert_equal(["1st", "2nd", "3rd"], e.find(String).contents)
 	end
 end
 
