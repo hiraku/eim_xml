@@ -282,6 +282,15 @@ module EimXML
 
 			obj.attributes.all? do |k, v|
 				v===@attributes[k]
+			end and obj.contents.all? do |i|
+				case i
+				when Element
+					has_element?(i)
+				when String
+					@contents.include?(i)
+				when Regexp
+					@contents.any?{|c| c.is_a?(String) and i=~c}
+				end					
 			end
 		end
 		alias :=~ :match?

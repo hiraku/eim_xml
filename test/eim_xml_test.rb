@@ -332,6 +332,17 @@ class ElementTest < Test::Unit::TestCase
 		assert(e.match?(Element))
 		assert(!e.match?(Dummy))
 		assert(!e.match?(String))
+
+		e = Element.new(:element)
+		e << Element.new(:sub)
+		e << "text"
+		assert(e.match?(DSL.element(:element){element(:sub)}))
+		assert(!e.match?(DSL.element(:element){element(:other)}))
+		assert(e.match?(DSL.element(:element){add("text")}))
+		assert(!e.match?(DSL.element(:element){add("other")}))
+		assert(e.match?(DSL.element(:element){add(/ex/)}))
+		assert(!e.match?(DSL.element(:element){add(/th/)}))
+		assert(!e.match?(DSL.element(:element){add(/sub/)}))
 	end
 
 	def test_match_operator
