@@ -307,6 +307,7 @@ module EimXML
 			end
 		end
 		alias has_element? has?
+		alias include? has?
 
 		def find(obj, dst=Element.new(:found))
 			return find(Element.new(obj, dst)) if dst.is_a?(Hash)

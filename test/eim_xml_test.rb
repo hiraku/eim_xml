@@ -367,31 +367,14 @@ class ElementTest < Test::Unit::TestCase
 			b <<= Element.new(:sub, :attr=>"value")
 		end
 
+		assert(e.include?(:sub))
+		assert(e.has_element?(:sub))
 		assert(e.has?(:sub))
 		assert(e.has?(:sub, :attr=>"value"))
 		assert(!e.has?(:sub, :attr=>"value", :attr2=>""))
 		assert(e.has?(:deep))
 
 		assert(e.has?(String))
-	end
-
-	def test_has_element?
-		e = Element.new(:base) do |b|
-			b <<= Element.new(:sub) do |s|
-				s <<= Element.new(:deep) do |d|
-					d << "text"
-				end
-			end
-			b <<= Element.new(:sub, :attr=>"value")
-		end
-
-		assert(!e.has_element?(:base))
-		assert(e.has_element?(:sub))
-		assert(e.has_element?(:sub, :attr=>"value"))
-		assert(!e.has_element?(:sub, :attr=>"value", :attr2=>""))
-		assert(e.has_element?(:deep))
-
-		assert(e.has_element?(String))
 	end
 
 	def test_find
