@@ -313,61 +313,37 @@ class ElementTest < Test::Unit::TestCase
 		e = Element.new(:tag, :attr=>"value")
 		assert(e.match?(:tag))
 		assert(e.match?(:tag, :attr=>"value"))
-		assert(! e.match?(:t))
-		assert(! e.match?(:tag, :attr2=>"value"))
-		assert(! e.match?(:tag, :attr=>"value2"))
+		assert(!e.match?(:t))
+		assert(!e.match?(:tag, :attr2=>"value"))
+		assert(!e.match?(:tag, :attr=>"value2"))
+		assert(e.match?(:tag, :attr=>/val/))
 
 		assert(e.match?(Element.new(:tag)))
 		assert(e.match?(Element.new(:tag, :attr=>"value")))
-		assert(! e.match?(Element.new(:t)))
-		assert(! e.match?(Element.new(:tag, :attr2=>"value")))
-		assert(! e.match?(Element.new(:tag, :attr=>"value2")))
+		assert(e.match?(Element.new(:tag, :attr=>/alu/)))
+		assert(!e.match?(Element.new(:t)))
+		assert(!e.match?(Element.new(:tag, :attr2=>"value")))
+		assert(!e.match?(Element.new(:tag, :attr=>"value2")))
+		assert(!e.match?(Element.new(:tag, :attr=>/aul/)))
 
 		assert(e.match?(/ag/))
-		assert(e.match?(/ag/, /tt/=>/al/))
-		assert(! e.match?(/elem/))
-		assert(! e.match?(/tag/, /attr2/=>/val/))
-		assert(! e.match?(/tag/, /attr/=>/v2/))
-
-		assert(e.match?(:tag, :attr=>/val/))
-		assert(e.match?(/t/, /at/=>"value"))
-
-		e = Element.new(:tag, :attr1=>"value", :attr2=>"test")
-		assert(e.match?(:tag, /attr/=>"value"))
-		assert(e.match?(:tag, /attr/=>/t/))
+		assert(!e.match?(/elem/))
 
 		assert(e.match?(Element))
 		assert(!e.match?(Dummy))
 		assert(!e.match?(String))
-
-		e1 = Element.new(:tag, :attr=>:value)
-		e2 = Element.new(:tag, :attr=>"value")
-		assert(e1.match?(e2))
-		assert(e2.match?(e1))
-	end
-
-	def test_match_by_array
-		e = Element.new(:tag, :attr=>"value", :a2=>"v2")
-		assert(e.match?([:tag]))
-		assert(e.match?([:tag, {:attr=>"value"}]))
-		assert(e.match?([:tag, {:attr=>"value", :a2=>"v2"}]))
-		assert(e.match?([/tag/, {/a/=>/v/}]))
 	end
 
 	def test_match_operator
 		e = Element.new(:tag, :attr=>"value", :a2=>"v2")
 		assert_match(:tag, e)
 		assert_match(Element.new(:tag), e)
-		assert_match([:tag], e)
-		assert_match([:tag, {:attr=>"value"}], e)
 		assert_match(Element.new(:tag, :a2=>"v2"), e)
-		assert_match([/t/, {/a/=>/v/}], e)
+		assert_match(Element.new(:tag, :attr=>/alu/), e)
 
 		assert(e !~ :t)
 		assert(e !~ Element.new(:t))
-		assert(e !~ [:t])
-		assert(e !~ [:tag, {:a=>"v"}])
-		assert(e !~ Element.new(:tag, :a=>"v"))
+		assert(e !~ Element.new(:tag, :attr=>/aul/))
 	end
 
 	def test_has?
@@ -380,21 +356,12 @@ class ElementTest < Test::Unit::TestCase
 			b <<= Element.new(:sub, :attr=>"value")
 		end
 
-		assert(e.has?(:base))
 		assert(e.has?(:sub))
 		assert(e.has?(:sub, :attr=>"value"))
 		assert(!e.has?(:sub, :attr=>"value", :attr2=>""))
 		assert(e.has?(:deep))
 
 		assert(e.has?(String))
-
-		e = DSL.element(:base) do
-			element(:sub, :sym=>:v1, "string"=>"v2")
-		end
-		assert(e.has?(Element.new(:sub, :sym=>"v1")))
-		assert(e.has?(Element.new(:sub, "sym"=>"v1")))
-		assert(e.has?(Element.new(:sub, "string"=>:v2)))
-		assert(e.has?(Element.new(:sub, :string=>:v2)))
 	end
 
 	def test_has_element?
@@ -407,21 +374,13 @@ class ElementTest < Test::Unit::TestCase
 			b <<= Element.new(:sub, :attr=>"value")
 		end
 
-		assert(e.has_element?(:base))
+		assert(!e.has_element?(:base))
 		assert(e.has_element?(:sub))
 		assert(e.has_element?(:sub, :attr=>"value"))
 		assert(!e.has_element?(:sub, :attr=>"value", :attr2=>""))
 		assert(e.has_element?(:deep))
 
 		assert(e.has_element?(String))
-
-		e = DSL.element(:base) do
-			element(:sub, :sym=>:v1, "string"=>"v2")
-		end
-		assert(e.has_element?(Element.new(:sub, :sym=>"v1")))
-		assert(e.has_element?(Element.new(:sub, "sym"=>"v1")))
-		assert(e.has_element?(Element.new(:sub, "string"=>:v2)))
-		assert(e.has_element?(Element.new(:sub, :string=>:v2)))
 	end
 
 	def test_find
@@ -438,7 +397,7 @@ class ElementTest < Test::Unit::TestCase
 		assert_equal([d], e.find(:deep).contents)
 		assert_equal([s1, s2], e.find(:sub).contents)
 		assert_equal([e, s1, d, s2], e.find(//).contents)
-
+		assert_equal([s2], e.find(:sub, :attr=>"value").contents)
 		assert_equal(["1st", "2nd", "3rd"], e.find(String).contents)
 	end
 end
