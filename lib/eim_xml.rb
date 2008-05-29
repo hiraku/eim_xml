@@ -270,8 +270,8 @@ module EimXML
 			@attributes.delete(key.to_sym)
 		end
 
-		def match?(obj, attr=nil)
-			return match?(Element.new(obj, attr)) if attr
+		def match(obj, attr=nil)
+			return match(Element.new(obj, attr)) if attr
 			return obj=~@name.to_s if obj.is_a?(Regexp)
 			return @name==obj if obj.is_a?(Symbol)
 			return is_a?(obj) if obj.is_a?(Module)
@@ -293,14 +293,14 @@ module EimXML
 				end					
 			end
 		end
-		alias :=~ :match?
+		alias :=~ :match
 
 		def has?(obj, attr=nil)
 			return has?(Element.new(obj, attr)) if attr
 
 			@contents.any? do |i|
 				if i.is_a?(Element)
-					i.match?(obj) || i.has?(obj)
+					i.match(obj) || i.has?(obj)
 				else
 					obj.is_a?(Module) && i.is_a?(obj)
 				end
@@ -311,7 +311,7 @@ module EimXML
 		def find(obj, dst=Element.new(:found))
 			return find(Element.new(obj, dst)) if dst.is_a?(Hash)
 
-			dst << self if match?(obj)
+			dst << self if match(obj)
 			@contents.each do |i|
 				case
 				when i.is_a?(Element)
