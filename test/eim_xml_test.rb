@@ -385,7 +385,6 @@ class ElementTest < Test::Unit::TestCase
 		assert(e.has?(:sub, :attr=>"value"))
 		assert(!e.has?(:sub, :attr=>"value", :attr2=>""))
 		assert(e.has?(:deep))
-		assert(! e.has?(:deep, {}, false))
 
 		assert(e.has?(String))
 
@@ -413,7 +412,6 @@ class ElementTest < Test::Unit::TestCase
 		assert(e.has_element?(:sub, :attr=>"value"))
 		assert(!e.has_element?(:sub, :attr=>"value", :attr2=>""))
 		assert(e.has_element?(:deep))
-		assert(! e.has_element?(:deep, {}, false))
 
 		assert(e.has_element?(String))
 

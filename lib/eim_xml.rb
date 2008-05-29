@@ -304,15 +304,11 @@ module EimXML
 		end
 		alias :=~ :match?
 
-		def has?(name, attrs=nil, find_deep=true)
+		def has?(name, attrs=nil)
 			return true if match?(name, attrs)
 			@contents.any? do |i|
 				if i.is_a?(Element)
-					if find_deep
-						i=~[name, attrs] || i.has?(name, attrs, find_deep)
-					else
-						i=~[name, attrs]
-					end
+						i=~[name, attrs] || i.has?(name, attrs)
 				else
 					name.is_a?(Module) && i.is_a?(name)
 				end
