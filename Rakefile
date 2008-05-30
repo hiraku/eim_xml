@@ -5,7 +5,7 @@ require "spec/rake/spectask"
 
 FILES = FileList["**/*"].exclude(/^pkg/, /\.html$/)
 
-task :default => :test
+task :default => :spec
 
 ### Document ###
 RDOC_DIR = "./html/"
@@ -35,28 +35,55 @@ task :publish => [:clobber_rdoc, "rdoc:ja", "rdoc:en"] do
 	Rake::RubyForgePublisher.new("eimxml", "hiraku").upload
 end
 
-### Test ###
-task :test => "test:lump"
-namespace :test do
-	def set_spec_options(spec)
-		spec.ruby_opts << "-rtest/unit"
-		spec.spec_opts << "-c"
+### Spec ###
+task :spec => "spec:lump"
+SPECS = FileList["spec/**/*_spec.rb"]
+namespace :spec do
+	def set_spec_opts(spec)
 		spec.libs << "lib"
+		spec.spec_opts << "-c"
+		spec.ruby_opts << "-rtest/unit"
 	end
-	TEST_FILES = FileList["test/**/*_test.rb"]
-	TEST_FILES.sort{|a,b| File.mtime(a)<=>File.mtime(b)}.reverse.each do |i|
-		Spec::Rake::SpecTask.new(:apart) do |s|
-			s.spec_files = [i]
-			set_spec_options(s)
+
+
+	SPECS.sort{|a,b| File.mtime(a)<=>File.mtime(b)}.reverse.each do |f|
+		desc ""
+		s = Spec::Rake::SpecTask.new(:apart) do |s|
+			s.spec_files = f
+			set_spec_opts(s)
 		end
 	end
-	task(:apart).comment = "Run tests separately"
+	task(:apart).comment = "Run specs separately"
 
+	desc "Run all spec in a lump"
 	Spec::Rake::SpecTask.new(:lump) do |s|
-		s.spec_files = TEST_FILES
-		set_spec_options(s)
+		s.spec_files = SPECS
+		set_spec_opts(s)
 	end
-	task(:lump).comment = "Run all tests in a lump"
+
+	`grep -Rn spec_here spec`.split(/\n/).each do |l|
+		next unless l=~/\A(.*?):(\d+):/
+		file = $1
+		line = $2.to_i
+		Spec::Rake::SpecTask.new(:here) do |s|
+			s.spec_files = file
+			set_spec_opts(s)
+			s.spec_opts << "-l#{line}"
+		end
+	end
+
+	desc "Show all pending spec"
+	task :pending do
+		grep = `grep -ERn "^[[:space:]]+it([[:space:]]+|$)" *`.split(/\n/)
+		puts grep.select{|i| i !~ /\s+do\s*\Z/}
+	end
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |s|
+	s.spec_files = SPECS
+	set_spec_opts(s)
+	s.rcov = true
+	s.rcov_opts << "-x ^#{Regexp.escape(ENV['GEM_HOME'])}"
 end
 
 ### Build GEM ###
