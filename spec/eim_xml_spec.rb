@@ -350,24 +350,24 @@ class << Object.new
 			e.should_not =~ Element.new(:tag, :attr=>/aul/)
 		end
 
-		it "#has?" do
-			e = Element.new(:base) do |b|
-				b <<= Element.new(:sub) do |s|
-					s <<= Element.new(:deep) do |d|
-						d << "text"
+		%w[has? has_element? include?].each do |method|
+			it "##{method}" do
+				e = Element.new(:base) do |b|
+					b <<= Element.new(:sub) do |s|
+						s <<= Element.new(:deep) do |d|
+							d << "text"
+						end
 					end
+					b <<= Element.new(:sub, :attr=>"value")
 				end
-				b <<= Element.new(:sub, :attr=>"value")
+
+				e.send(method, :sub).should be_true
+				e.send(method, :sub, :attr=>"value").should be_true
+				e.send(method, :sub, :attr=>"value", :attr2=>"").should be_false
+				e.send(method, :deep).should be_true
+
+				e.send(method, String).should be_true
 			end
-
-			e.include?(:sub).should be_true
-			e.has_element?(:sub).should be_true
-			e.has?(:sub).should be_true
-			e.has?(:sub, :attr=>"value").should be_true
-			e.has?(:sub, :attr=>"value", :attr2=>"").should be_false
-			e.has?(:deep).should be_true
-
-			e.has?(String).should be_true
 		end
 
 		it "#find" do
