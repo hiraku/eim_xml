@@ -319,6 +319,9 @@ class << Object.new
 			e.match(Element.new(:tag, :attr=>"value2")).should be_false
 			e.match(Element.new(:tag, :attr=>/aul/)).should be_false
 
+			e.match(Element.new(:tag, :attr=>nil)).should be_false
+			e.match(Element.new(:tag, :nonattr=>nil)).should be_true
+
 			(!!e.match(/ag/)).should be_true
 			(!!e.match(/elem/)).should be_false
 
