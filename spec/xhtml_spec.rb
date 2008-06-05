@@ -297,6 +297,18 @@ class << Object.new
 			t.should be_kind_of(TEXT)
 			t.should == TEXT.new(:n, :v)
 		end
+
+		it "BR" do
+			BR.new.name.should == :br
+			DSL.br.should be_kind_of(BR)
+			OpenDSL.br.should be_kind_of(BR)
+		end
+
+		it "HR" do
+			HR.new.name.should == :hr
+			DSL.hr.should be_kind_of(HR)
+			OpenDSL.hr.should be_kind_of(HR)
+		end
 	end
 
 	describe EimXML::XHTML::OpenDSL do

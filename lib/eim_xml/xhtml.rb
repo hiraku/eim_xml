@@ -72,6 +72,8 @@ module EimXML::XHTML
 	class TR < Simple_; end
 	class TH < Simple_; end
 	class TD < Simple_; end
+	class BR < Simple_; end
+	class HR < Simple_; end
 
 	module Hn
 		def self.new(level, attr=nil, &proc)
