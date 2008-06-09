@@ -209,6 +209,28 @@ class << Object.new
 			FORM.new.name.should == :form
 			DSL.form.should be_kind_of(FORM)
 			OpenDSL.form.should be_kind_of(FORM)
+
+			FORM.new.should_not include(HIDDEN)
+		end
+
+		it "FORM.new should be able to receive CGI::Session object and set random token" do
+			s = mock("session")
+			h = {}
+			s.should_receive(:[]).any_number_of_times{|k| h[k]}
+			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
+			f = FORM.new(:session=>s)
+			h["token"].size.should == 40
+			h["token"].should =~ /\A[0-9a-f]{40}\z/
+			f.should include(HIDDEN.new("token", h["token"]))
+			s = mock("session")
+			h = {}
+			s.should_receive(:[]).any_number_of_times{|k| h[k]}
+			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
+			f = FORM.new(:session=>s, :session_name=>"random_key")
+			h["token"].should be_nil
+			h["random_key"].size.should == 40
+			h["random_key"].should =~ /\A[0-9a-f]{40}\z/
+			f.should include(HIDDEN.new("random_key", h["random_key"]))
 		end
 
 		it "TEXTAREA" do

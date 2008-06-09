@@ -49,7 +49,20 @@ module EimXML::XHTML
 			hold_space
 		end
 	end
-	class FORM < Simple_; end
+	class FORM < Simple_
+		def initialize(attributes=nil)
+			if attributes
+				if s = attributes.delete(:session)
+					name = attributes.delete(:session_name) || "token"
+					require "digest/sha1"
+					token = Digest::SHA1.hexdigest("#{$$}#{Time.now}#{rand}")
+					s[name] = token
+				end
+			end
+			super
+			add(HIDDEN.new(name, token)) if token
+		end
+	end
 	class H1 < Simple_; end
 	class H2 < Simple_; end
 	class H3 < Simple_; end
