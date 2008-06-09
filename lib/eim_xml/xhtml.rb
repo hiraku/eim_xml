@@ -130,6 +130,12 @@ module EimXML::XHTML
 		end
 	end
 
+	class PASSWORD < INPUT
+		def initialize(name, value=nil, opt={})
+			super(:password, name, value, opt)
+		end
+	end
+
 	constants.each do |c|
 		v = const_get(c)
 		if v.is_a?(Class) && /_$/ !~ v.name

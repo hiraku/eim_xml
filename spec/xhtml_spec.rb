@@ -320,6 +320,21 @@ class << Object.new
 			t.should == TEXT.new(:n, :v)
 		end
 
+		it "PASSWORD" do
+			PASSWORD.new(:item).should == Element.new(:input, :type=>:password, :name=>:item)
+			PASSWORD.new("item").should == Element.new(:input, :type=>:password, :name=>"item")
+			PASSWORD.new(:item, "txt").should == Element.new(:input, :type=>:password, :name=>:item, :value=>"txt")
+			PASSWORD.new(:item, "txt", :class=>"c").should == Element.new(:input, :type=>:password, :name=>:item, :value=>"txt", :class=>"c")
+
+			t = DSL.password(:n, :v)
+			t.should be_kind_of(PASSWORD)
+			t.should =~ PASSWORD.new(:n, :v)
+
+			t = OpenDSL.password(:n, :v)
+			t.should be_kind_of(PASSWORD)
+			t.should == PASSWORD.new(:n, :v)
+		end
+
 		it "BR" do
 			BR.new.name.should == :br
 			DSL.br.should be_kind_of(BR)
