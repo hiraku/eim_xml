@@ -56,7 +56,7 @@ module EimXML::XHTML
 					name = attributes.delete(:session_name) || "token"
 					require "digest/sha1"
 					token = Digest::SHA1.hexdigest("#{$$}#{Time.now}#{rand}")
-					s[name] = token
+					s[name] = token unless s[name]
 				end
 			end
 			super

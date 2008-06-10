@@ -222,6 +222,7 @@ class << Object.new
 			h["token"].size.should == 40
 			h["token"].should =~ /\A[0-9a-f]{40}\z/
 			f.should include(HIDDEN.new(:name=>"token", :value=>h["token"]))
+
 			s = mock("session")
 			h = {}
 			s.should_receive(:[]).any_number_of_times{|k| h[k]}
@@ -231,6 +232,15 @@ class << Object.new
 			h["random_key"].size.should == 40
 			h["random_key"].should =~ /\A[0-9a-f]{40}\z/
 			f.should include(HIDDEN.new(:name=>"random_key", :value=>h["random_key"]))
+
+			s = mock("session")
+			h = {}
+			s.should_receive(:[]).any_number_of_times{|k| h[k]}
+			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
+			FORM.new(:session=>s)
+			token = s["token"]
+			FORM.new(:session=>s)
+			s["token"].should == token
 		end
 
 		it "TEXTAREA" do
