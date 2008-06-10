@@ -60,7 +60,7 @@ module EimXML::XHTML
 				end
 			end
 			super
-			add(HIDDEN.new(name, token)) if token
+			add(HIDDEN.new(:name=>name, :value=>token)) if token
 		end
 	end
 	class H1 < Simple_; end
@@ -97,42 +97,38 @@ module EimXML::XHTML
 	end
 
 	class TEXTAREA < Base_
-		def initialize(name, opt={})
-			super(:textarea, {:name=>name}.merge(opt))
+		def initialize(opt={})
+			super(:textarea, opt)
 		end
 	end
 
 	class INPUT < Base_
-		def initialize(type, name, value, opt={})
-			attr = {:type=>type}
-			attr[:name]=name if name
-			attr[:value]=value if value
-			super(:input, attr.merge(opt))
+		def initialize(opt={})
+			super(:input, opt)
 		end
 	end
 
 	class HIDDEN < INPUT
-		def initialize(name, value, opt={})
-			super(:hidden, name, value, opt)
+		def initialize(opt={})
+			super(opt.merge(:type=>:hidden))
 		end
 	end
 
 	class SUBMIT < INPUT
 		def initialize(opt={})
-			opt = opt.dup
-			super(:submit, opt.delete(:name), opt.delete(:value), opt)
+			super(opt.merge(:type=>:submit))
 		end
 	end
 
 	class TEXT < INPUT
-		def initialize(name, value=nil, opt={})
-			super(:text, name, value, opt)
+		def initialize(opt={})
+			super(opt.merge(:type=>:text))
 		end
 	end
 
 	class PASSWORD < INPUT
-		def initialize(name, value=nil, opt={})
-			super(:password, name, value, opt)
+		def initialize(opt={})
+			super(opt.merge(:type=>:password))
 		end
 	end
 

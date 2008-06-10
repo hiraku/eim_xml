@@ -221,7 +221,7 @@ class << Object.new
 			f = FORM.new(:session=>s)
 			h["token"].size.should == 40
 			h["token"].should =~ /\A[0-9a-f]{40}\z/
-			f.should include(HIDDEN.new("token", h["token"]))
+			f.should include(HIDDEN.new(:name=>"token", :value=>h["token"]))
 			s = mock("session")
 			h = {}
 			s.should_receive(:[]).any_number_of_times{|k| h[k]}
@@ -230,52 +230,52 @@ class << Object.new
 			h["token"].should be_nil
 			h["random_key"].size.should == 40
 			h["random_key"].should =~ /\A[0-9a-f]{40}\z/
-			f.should include(HIDDEN.new("random_key", h["random_key"]))
+			f.should include(HIDDEN.new(:name=>"random_key", :value=>h["random_key"]))
 		end
 
 		it "TEXTAREA" do
-			TEXTAREA.new("item").should == Element.new(:textarea, :name=>"item")
-			TEXTAREA.new(:item).should == Element.new(:textarea, :name=>:item)
-			TEXTAREA.new("item", :class=>"cv").should == Element.new(:textarea, :name=>"item", :class=>"cv")
+			TEXTAREA.new(:name=>"item").should == Element.new(:textarea, :name=>"item")
+			TEXTAREA.new(:name=>:item).should == Element.new(:textarea, :name=>:item)
+			TEXTAREA.new(:name=>"item", :class=>"cv").should == Element.new(:textarea, :name=>"item", :class=>"cv")
 
-			t = DSL.textarea("t")
+			t = DSL.textarea(:name=>"t")
 			t.should be_kind_of(TEXTAREA)
 			t[:name].should == "t"
 
-			t = OpenDSL.textarea("t")
+			t = OpenDSL.textarea(:name=>"t")
 			t.should be_kind_of(TEXTAREA)
 			t[:name].should == "t"
 		end
 
 		it "INPUT" do
-			INPUT.new(:test, :item, "v").should == Element.new(:input, :type=>:test, :name=>:item, :value=>"v")
-			INPUT.new("test", "item", "v").should == Element.new(:input, :type=>"test", :name=>"item", :value=>"v")
-			INPUT.new(:test, :item, "v", :class=>"c").should == Element.new(:input, :type=>:test, :name=>:item, :value=>"v", :class=>"c")
+			INPUT.new(:type=>:test, :name=>:item, :value=>"v").should == Element.new(:input, :type=>:test, :name=>:item, :value=>"v")
+			INPUT.new(:type=>"test", :name=>"item", :value=>"v").should == Element.new(:input, :type=>"test", :name=>"item", :value=>"v")
+			INPUT.new(:type=>:test, :name=>:item, :value=>"v", :class=>"c").should == Element.new(:input, :type=>:test, :name=>:item, :value=>"v", :class=>"c")
 
-			INPUT.new(:submit, nil, "v").should == Element.new(:input, :type=>:submit, :value=>"v")
-			INPUT.new(:submit, "item", nil).should == Element.new(:input, :type=>:submit, :name=>"item")
+			INPUT.new(:type=>:submit, :value=>"v").should == Element.new(:input, :type=>:submit, :value=>"v")
+			INPUT.new(:type=>:submit, :name=>"item").should == Element.new(:input, :type=>:submit, :name=>"item")
 
-			i = DSL.input(:dummy, :n, :v)
+			i = DSL.input(:type=>:dummy, :name=>:n, :value=>:v)
 			i.should be_kind_of(INPUT)
-			i.should =~ INPUT.new(:dummy, :n, :v)
+			i.should =~ INPUT.new(:type=>:dummy, :name=>:n, :value=>:v)
 
-			i = OpenDSL.input(:dummy, :n, :v)
+			i = OpenDSL.input(:type=>:dummy, :name=>:n, :value=>:v)
 			i.should be_kind_of(INPUT)
-			i.should == INPUT.new(:dummy, :n, :v)
+			i.should == INPUT.new(:type=>:dummy, :name=>:n, :value=>:v)
 		end
 
 		it "HIDDEN" do
-			HIDDEN.new("item", "v").should == Element.new(:input, :type=>:hidden, :name=>"item", :value=>"v")
-			HIDDEN.new(:item, "v").should == Element.new(:input, :type=>:hidden, :name=>:item, :value=>"v")
-			HIDDEN.new(:item, "v", :class=>"c").should == Element.new(:input, :type=>:hidden, :name=>:item, :value=>"v", :class=>"c")
+			HIDDEN.new(:name=>"item", :value=>"v").should == Element.new(:input, :type=>:hidden, :name=>"item", :value=>"v")
+			HIDDEN.new(:name=>:item, :value=>"v").should == Element.new(:input, :type=>:hidden, :name=>:item, :value=>"v")
+			HIDDEN.new(:name=>:item, :value=>"v", :class=>"c").should == Element.new(:input, :type=>:hidden, :name=>:item, :value=>"v", :class=>"c")
 
-			h = DSL.hidden(:n, :v)
+			h = DSL.hidden(:name=>:n, :value=>:v)
 			h.should be_kind_of(HIDDEN)
-			h.should =~ HIDDEN.new(:n, :v)
+			h.should =~ HIDDEN.new(:name=>:n, :value=>:v)
 
-			h = OpenDSL.hidden(:n, :v)
+			h = OpenDSL.hidden(:name=>:n, :value=>:v)
 			h.should be_kind_of(HIDDEN)
-			h.should == HIDDEN.new(:n, :v)
+			h.should == HIDDEN.new(:name=>:n, :value=>:v)
 		end
 
 		it "SUBMIT" do
@@ -306,33 +306,33 @@ class << Object.new
 		end
 
 		it "TEXT" do
-			TEXT.new(:item).should == Element.new(:input, :type=>:text, :name=>:item)
-			TEXT.new("item").should == Element.new(:input, :type=>:text, :name=>"item")
-			TEXT.new(:item, "txt").should == Element.new(:input, :type=>:text, :name=>:item, :value=>"txt")
-			TEXT.new(:item, "txt", :class=>"c").should == Element.new(:input, :type=>:text, :name=>:item, :value=>"txt", :class=>"c")
+			TEXT.new(:name=>:item).should == Element.new(:input, :type=>:text, :name=>:item)
+			TEXT.new(:name=>"item").should == Element.new(:input, :type=>:text, :name=>"item")
+			TEXT.new(:name=>:item, :value=>"txt").should == Element.new(:input, :type=>:text, :name=>:item, :value=>"txt")
+			TEXT.new(:name=>:item, :value=>"txt", :class=>"c").should == Element.new(:input, :type=>:text, :name=>:item, :value=>"txt", :class=>"c")
 
-			t = DSL.text(:n, :v)
+			t = DSL.text(:name=>:n, :value=>:v)
 			t.should be_kind_of(TEXT)
-			t.should =~ TEXT.new(:n, :v)
+			t.should =~ TEXT.new(:name=>:n, :value=>:v)
 
-			t = OpenDSL.text(:n, :v)
+			t = OpenDSL.text(:name=>:n, :value=>:v)
 			t.should be_kind_of(TEXT)
-			t.should == TEXT.new(:n, :v)
+			t.should == TEXT.new(:name=>:n, :value=>:v)
 		end
 
 		it "PASSWORD" do
-			PASSWORD.new(:item).should == Element.new(:input, :type=>:password, :name=>:item)
-			PASSWORD.new("item").should == Element.new(:input, :type=>:password, :name=>"item")
-			PASSWORD.new(:item, "txt").should == Element.new(:input, :type=>:password, :name=>:item, :value=>"txt")
-			PASSWORD.new(:item, "txt", :class=>"c").should == Element.new(:input, :type=>:password, :name=>:item, :value=>"txt", :class=>"c")
+			PASSWORD.new(:name=>:item).should == Element.new(:input, :type=>:password, :name=>:item)
+			PASSWORD.new(:name=>"item").should == Element.new(:input, :type=>:password, :name=>"item")
+			PASSWORD.new(:name=>:item, :value=>"txt").should == Element.new(:input, :type=>:password, :name=>:item, :value=>"txt")
+			PASSWORD.new(:name=>:item, :value=>"txt", :class=>"c").should == Element.new(:input, :type=>:password, :name=>:item, :value=>"txt", :class=>"c")
 
-			t = DSL.password(:n, :v)
+			t = DSL.password(:name=>:n, :value=>:v)
 			t.should be_kind_of(PASSWORD)
-			t.should =~ PASSWORD.new(:n, :v)
+			t.should =~ PASSWORD.new(:name=>:n, :value=>:v)
 
-			t = OpenDSL.password(:n, :v)
+			t = OpenDSL.password(:name=>:n, :value=>:v)
 			t.should be_kind_of(PASSWORD)
-			t.should == PASSWORD.new(:n, :v)
+			t.should == PASSWORD.new(:name=>:n, :value=>:v)
 		end
 
 		it "BR" do
