@@ -239,7 +239,7 @@ class << Object.new
 			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
 			FORM.new(:session=>s)
 			token = s["token"]
-			FORM.new(:session=>s)
+			FORM.new(:session=>s).should include(HIDDEN.new(:name=>"token", :value=>token))
 			s["token"].should == token
 		end
 
