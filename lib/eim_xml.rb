@@ -201,6 +201,10 @@ module EimXML
 		end
 		alias << add
 
+		def need_format?(o)
+			o==nil || o.respond_to?(:to_xml) && !(o.is_a?(PCString))
+		end
+
 		def to_xml(dst=String.new, nest_level=0)
 			nest_level = nil if @hold_space
 			hold_space = @hold_space || (not nest_level)
@@ -221,14 +225,15 @@ module EimXML
 				content_to_xml(dst, @contents[0], nest_level, false)
 				dst << "</#{@name}>"
 			else
-				dst << "<#{@name}#{attributes}>" << lf
+				dst << "<#{@name}#{attributes}>"
 				nest4contents = nest_level ? NEST*(nest_level+1) : ""
+				prev = nil
 				@contents.each do |c|
-					dst << nest4contents
+					dst << lf << nest4contents if need_format?(prev) && need_format?(c)
 					content_to_xml(dst, c, nest_level, true)
-					dst << lf
+					prev = c
 				end
-				dst << nest
+				dst << lf << nest if need_format?(prev)
 				dst << "</#{@name}>"
 			end
 		end

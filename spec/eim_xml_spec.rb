@@ -129,7 +129,7 @@ class << Object.new
 			s = Element.new("sub")
 			s << "inside"
 			e << s
-			e.to_xml.should == "<el>\n str\n <sub>inside</sub>\n</el>"
+			e.to_xml.should == "<el>str<sub>inside</sub>\n</el>"
 
 			e = Element.new("el")
 			e.attributes["a1"] = "v1"
@@ -154,11 +154,34 @@ class << Object.new
 			r.object_id.should == s.object_id
 		end
 
+		it "#to_xml should return xml-string not formatted previous and after string" do
+			EimXML::DSL.element(:e){
+				add("s1")
+				add("s2")
+			}.to_xml.should == "<e>s1s2</e>"
+
+			EimXML::DSL.element(:e){
+				element(:e)
+				element(:e)
+				add("s")
+			}.to_xml.should == "<e>\n <e />\n <e />s</e>"
+
+			x = EimXML::DSL.element(:e) do
+				add("s")
+				element(:e) do
+					element(:e)
+					add("s")
+				end
+				add("s")
+			end
+			x.to_xml.should == "<e>s<e>\n  <e />s</e>s</e>"
+		end
+
 		it "encode special characters" do
 			e = Element.new("el") << "&\"'<>"
 			e << PCString.new("&\"'<>", true)
 			e.attributes["key"] = PCString.new("&\"'<>", true)
-			e.to_s.should == %[<el key='&\"'<>'>\n &amp;&quot;&apos;&lt;&gt;\n &\"'<>\n</el>]
+			e.to_s.should == %[<el key='&\"'<>'>&amp;&quot;&apos;&lt;&gt;&\"'<></el>]
 		end
 
 		it "#dup" do
@@ -204,16 +227,24 @@ class << Object.new
 		end
 
 		it "#hold_space" do
-			e = Element.new("el") << "Line1" << "Line2"
-			s = Element.new("sub") << "Sub1" << "Sub2"
-			ss = Element.new("subsub") << "ss1" << "ss2"
-			s << ss
-			e << s
+			e = EimXML::DSL.element(:el) do
+				add("Line1")
+				add("Line2")
+				element(:sub) do
+					add("Sub1")
+					add("Sub2")
+					element(:subsub) do
+						add("ss1")
+						add("ss2")
+					end
+				end
+			end
+
 			e.hold_space
 			e.to_s.should == "<el>Line1Line2<sub>Sub1Sub2<subsub>ss1ss2</subsub></sub></el>"
 
 			e.unhold_space
-			e.to_s.should == "<el>\n Line1\n Line2\n <sub>\n  Sub1\n  Sub2\n  <subsub>\n   ss1\n   ss2\n  </subsub>\n </sub>\n</el>"
+			e.to_s.should == "<el>Line1Line2<sub>Sub1Sub2<subsub>ss1ss2</subsub>\n </sub>\n</el>"
 
 			e = Element.new("e")
 			e.hold_space.object_id.should == e.object_id
