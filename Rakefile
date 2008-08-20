@@ -6,6 +6,7 @@ require "spec/rake/spectask"
 FILES = FileList["**/*"].exclude(/^pkg/, /\.html$/)
 
 task :default => :spec
+task :here => "spec:here"
 
 ### Document ###
 RDOC_DIR = "./html/"
@@ -61,8 +62,10 @@ namespace :spec do
 		set_spec_opts(s)
 	end
 
+	flg = false
 	`grep -Rn spec_here spec`.split(/\n/).each do |l|
 		next unless l=~/\A(.*?):(\d+):/
+		flg = true
 		file = $1
 		line = $2.to_i
 		Spec::Rake::SpecTask.new(:here) do |s|
@@ -71,6 +74,8 @@ namespace :spec do
 			s.spec_opts << "-l#{line}"
 		end
 	end
+	task :here => :spec unless flg
+	task(:here).comment = "Run spec only marked '# spec_here' or all"
 
 	desc "Show all pending spec"
 	task :pending do
