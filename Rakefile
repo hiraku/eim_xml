@@ -62,7 +62,6 @@ namespace :spec do
 		set_spec_opts(s)
 	end
 
-	flg = false
 	`grep -Rn spec_here spec`.split(/\n/).each do |l|
 		next unless l=~/\A(.*?):(\d+):/
 		flg = true
@@ -74,7 +73,7 @@ namespace :spec do
 			s.spec_opts << "-l#{line}"
 		end
 	end
-	task :here => :spec unless flg
+	task :here => :spec unless Rake::Task.task_defined?("rake:spec:here")
 	task(:here).comment = "Run spec only marked '# spec_here' or all"
 
 	desc "Show all pending spec"
