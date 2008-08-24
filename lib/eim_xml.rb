@@ -9,12 +9,12 @@ module EimXML
 
 	class BaseDSL
 		def initialize
-			@container = nil
+			@_container = nil
 			yield(self) if block_given?
 		end
 
 		def add(v)
-			@container.add(v)
+			@_container.add(v)
 		end
 		alias << add
 
@@ -24,14 +24,14 @@ module EimXML
 				l = __LINE__+1
 				src = "def #{name}(*arg, &proc)\n" <<
 					"e = #{klass}.new(*arg)\n" <<
-					"@container << e if @container\n" <<
+					"@_container << e if @_container\n" <<
 					"if proc\n" <<
-					"oc = @container\n" <<
-					"@container = e\n" <<
+					"oc = @_container\n" <<
+					"@_container = e\n" <<
 					"begin\n" <<
 					"instance_eval(&proc)\n" <<
 					"ensure\n" <<
-					"@container = oc\n" <<
+					"@_container = oc\n" <<
 					"end\n" <<
 					"end\n" <<
 					"e\n" <<
@@ -56,14 +56,14 @@ module EimXML
 				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
 				src = "def #{name}(*arg)\n" <<
 					"e=#{klass}.new(*arg)\n" <<
-					"oc=@container\n" <<
+					"oc=@_container\n" <<
 					"oc << e if oc.is_a?(Element)\n" <<
-					"@container = e\n" <<
+					"@_container = e\n" <<
 					"begin\n" <<
 					"yield(self) if block_given?\n" <<
 					"e\n" <<
 					"ensure\n" <<
-					"@container = oc\n" <<
+					"@_container = oc\n" <<
 					"end\n" <<
 					"end\n"
 				eval(src, binding, __FILE__, __LINE__-12)
@@ -79,16 +79,17 @@ module EimXML
 			register_base(self, binding, *args)
 		end
 
-		attr_reader :container
 		def initialize
-			@container = nil
+			@_container = nil
 			yield(self) if block_given?
 		end
 
 		def add(v)
-			@container.add(v)
+			@_container.add(v)
 		end
 		alias :<< :add
+
+		def container; @_container; end
 	end
 
 	class PCString
