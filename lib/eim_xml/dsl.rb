@@ -18,6 +18,13 @@ module EimXML
 		end
 		alias << add
 
+		def import_variables(src)
+			src.instance_variables.each do |v|
+				instance_variable_set(v, src.instance_variable_get(v)) unless v=~/\A@_/
+			end
+			self
+		end
+
 		def self.register(*args)
 			args.each do |klass, name|
 				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]

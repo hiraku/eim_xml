@@ -30,6 +30,23 @@ class << Object.new
 			e2.object_id.should == e[0].object_id
 			e3.object_id.should == e[0][0].object_id
 		end
+
+		it "#import_variables" do
+			d = DSL.new
+			o = Object.new
+			o.instance_variable_set("@v1", 1)
+			o.instance_variable_set("@v2", "2")
+			o.instance_variable_set("@_v3", :t)
+			o.instance_variable_set("@_container", :t)
+			orig_c = d.instance_variable_get("@_container")
+
+			d.import_variables(o).object_id.should == d.object_id
+
+			d.instance_variable_get("@_container").should == orig_c
+			d.instance_variables.sort.should == ["@_container", "@v1", "@v2"]
+			d.instance_variable_get("@v1").should == 1
+			d.instance_variable_get("@v2").should == "2"
+		end
 	end
 
 	describe "Subclass of BaseDSL" do
