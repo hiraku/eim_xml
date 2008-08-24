@@ -5,12 +5,6 @@ module EimXML::XHTML
 		XHTML_MATHML = %[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">]
 	end
 
-	class DSL < EimXML::BaseDSL
-	end
-
-	class OpenDSL < EimXML::OpenDSL
-	end
-
 	class Base_ < EimXML::Element
 	end
 
@@ -128,14 +122,6 @@ module EimXML::XHTML
 	class PASSWORD < INPUT
 		def initialize(opt={})
 			super(opt.merge(:type=>:password))
-		end
-	end
-
-	constants.each do |c|
-		v = const_get(c)
-		if v.is_a?(Class) && /_$/ !~ v.name
-			DSL.register v
-			OpenDSL.register v
 		end
 	end
 end

@@ -1,4 +1,4 @@
-require "eim_xml"
+require "eim_xml/dsl"
 
 class << Object.new
 	include EimXML

@@ -1,5 +1,5 @@
 require "stringio"
-require "eim_xml/xhtml"
+require "eim_xml/xhtml/dsl"
 
 class << Object.new
 	include EimXML
