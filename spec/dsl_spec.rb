@@ -20,15 +20,15 @@ class << Object.new
 			block_executed.should == true
 			outer.should be_kind_of(DSL)
 			inner.should be_kind_of(DSL)
-			outer.object_id.should == inner.object_id
+			outer.should be_equal(inner)
 
 			e.name.should == :out
 			e[:k1].should == "v1"
 			e[0].name.should == :in
 			e[0][:k2].should == "v2"
 			e[0][0].name.should == :deep
-			e2.object_id.should == e[0].object_id
-			e3.object_id.should == e[0][0].object_id
+			e2.should be_equal(e[0])
+			e3.should be_equal(e[0][0])
 		end
 
 		it "#import_variables" do
@@ -40,7 +40,7 @@ class << Object.new
 			o.instance_variable_set("@_container", :t)
 			orig_c = d.instance_variable_get("@_container")
 
-			d.import_variables(o).object_id.should == d.object_id
+			d.import_variables(o).should be_equal(d)
 
 			d.instance_variable_get("@_container").should == orig_c
 			d.instance_variables.sort.should == ["@_container", "@v1", "@v2"]
@@ -107,7 +107,7 @@ class << Object.new
 				d.should be_kind_of(OpenDSL)
 				d.container.name.should == :base
 				d.element(:sub) do |d2|
-					d2.object_id.should == d.object_id
+					d2.should be_equal(d)
 				end
 			end
 

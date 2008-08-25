@@ -111,7 +111,7 @@ class << Object.new
 			e = Element.new("el")
 			s = String.new
 
-			e.to_xml(s).object_id.should == s.object_id
+			e.to_xml(s).should be_equal(s)
 			s.should == "<el />"
 
 			e = Element.new("super")
