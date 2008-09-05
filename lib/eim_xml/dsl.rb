@@ -20,7 +20,7 @@ module EimXML
 
 		def import_variables(src)
 			src.instance_variables.each do |v|
-				instance_variable_set(v, src.instance_variable_get(v)) unless v=~/\A@_/
+				instance_variable_set(v, src.instance_variable_get(v)) unless v=~/\A@_[^_]/
 			end
 			self
 		end

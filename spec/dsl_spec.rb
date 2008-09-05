@@ -37,15 +37,17 @@ class << Object.new
 			o.instance_variable_set("@v1", 1)
 			o.instance_variable_set("@v2", "2")
 			o.instance_variable_set("@_v3", :t)
+			o.instance_variable_set("@__v4", 4)
 			o.instance_variable_set("@_container", :t)
 			orig_c = d.instance_variable_get("@_container")
 
 			d.import_variables(o).should be_equal(d)
 
 			d.instance_variable_get("@_container").should == orig_c
-			d.instance_variables.sort.should == ["@_container", "@v1", "@v2"]
+			d.instance_variables.sort.should == ["@_container", "@v1", "@v2", "@__v4"].sort
 			d.instance_variable_get("@v1").should == 1
 			d.instance_variable_get("@v2").should == "2"
+			d.instance_variable_get("@__v4").should == 4
 		end
 	end
 
