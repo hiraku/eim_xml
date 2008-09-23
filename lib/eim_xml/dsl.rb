@@ -25,31 +25,27 @@ module EimXML
 			self
 		end
 
+		def _build(klass, *arg, &proc)
+			e = klass.new(*arg)
+			@_container << e if @_container
+			if proc
+				oc = @_container
+				@_container = e
+				begin
+					instance_eval(&proc)
+				ensure
+					@_container = oc
+				end
+			end
+			e
+		end
+		private :_build
+
 		def self.register(*args)
 			args.each do |klass, name|
 				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
-				l = __LINE__+1
-				src = "def #{name}(*arg, &proc)\n" <<
-					"e = #{klass}.new(*arg)\n" <<
-					"@_container << e if @_container\n" <<
-					"if proc\n" <<
-					"oc = @_container\n" <<
-					"@_container = e\n" <<
-					"begin\n" <<
-					"instance_eval(&proc)\n" <<
-					"ensure\n" <<
-					"@_container = oc\n" <<
-					"end\n" <<
-					"end\n" <<
-					"e\n" <<
-					"end"
-				eval(src, binding, __FILE__, l)
-
-				l = __LINE__+1
-				src = "def self.#{name}(*arg, &proc)\n" <<
-					"new.#{name}(*arg, &proc)\n" <<
-					"end"
-				eval(src, binding, __FILE__, l)
+				eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)
+				eval("def self.#{name}(*a, &p);new.#{name}(*a, &p);end", binding)
 			end
 		end
 	end
@@ -58,27 +54,25 @@ module EimXML
 	end
 
 	class OpenDSL
+		def _build(klass, *arg, &proc)
+			e = klass.new(*arg)
+			oc = @_container
+			oc << e if oc.is_a?(Element)
+			@_container = e
+			begin
+				proc.call(self) if proc
+				e
+			ensure
+				@_container = oc
+			end
+		end
+		private :_build
+
 		def self.register_base(dsl, binding, *args)
 			args.each do |klass, name|
 				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
-				src = "def #{name}(*arg)\n" <<
-					"e=#{klass}.new(*arg)\n" <<
-					"oc=@_container\n" <<
-					"oc << e if oc.is_a?(Element)\n" <<
-					"@_container = e\n" <<
-					"begin\n" <<
-					"yield(self) if block_given?\n" <<
-					"e\n" <<
-					"ensure\n" <<
-					"@_container = oc\n" <<
-					"end\n" <<
-					"end\n"
-				eval(src, binding, __FILE__, __LINE__-12)
-
-				src = "def self.#{name}(*arg, &proc)\n" <<
-					"self.new.#{name}(*arg, &proc)\n" <<
-					"end"
-				eval(src, binding, __FILE__, __LINE__-3)
+				eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)
+				eval("def self.#{name}(*a, &p);self.new.#{name}(*a, &p);end", binding)
 			end
 		end
 
