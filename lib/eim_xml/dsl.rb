@@ -14,7 +14,7 @@ module EimXML
 		end
 
 		def add(v)
-			@_container.add(v)
+			@_container << v
 		end
 		alias << add
 
