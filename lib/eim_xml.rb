@@ -129,7 +129,7 @@ module EimXML
 
 			attributes = ""
 			@attributes.each do |k, v|
-				v = k.to_s unless v
+				next unless v
 				attributes << " #{k}='#{PCString===v ? v : PCString.encode(v.to_s)}'"
 			end
 

@@ -138,9 +138,6 @@ class << Object.new
 			s.should =~ /\A<el ([^>]*) \/>\z/
 			s.should =~ /a1='v1'/
 			s.should =~ /a2='&apos;&quot;&lt;&gt;&amp;'/
-
-			e = Element.new("el", {"a1"=>nil})
-			e.to_xml.should == "<el a1='a1' />"
 		end
 
 		it "#to_xml" do
@@ -175,6 +172,11 @@ class << Object.new
 				add("s")
 			end
 			x.to_xml.should == "<e>s<e>\n  <e />s</e>s</e>"
+		end
+
+		it "#to_xml should return xml-string without attribute whose value is nil or false" do
+			s = EimXML::Element.new("e", :attr1=>"1", :attr2=>true, :attr3=>nil, :attr4=>false).to_xml
+			s.should == "<e attr1='1' attr2='true' />"
 		end
 
 		it "encode special characters" do
