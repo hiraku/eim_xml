@@ -40,7 +40,7 @@ module EimXML::XHTML
 	class PRE < Simple_
 		def initialize(attributes=nil)
 			super
-			hold_space
+			preserve_space
 		end
 	end
 	class FORM < Simple_

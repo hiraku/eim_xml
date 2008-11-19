@@ -57,7 +57,7 @@ class << Object.new
 			e << PCString.new("string with space", true)
 			parse(s).should == e
 
-			e = Element.new("e").hold_space
+			e = Element.new("e").preserve_space
 			e << PCString.new(" string with space\n", true)
 			Parser.new(s).parse.should_not == e
 			Parser.new(s).parse(true).should == e
@@ -71,15 +71,15 @@ class << Object.new
 			e << PCString.new("string with space")
 			Parser.new(s).parse.should == e
 
-			e = Element.new("ns:e").hold_space
+			e = Element.new("ns:e").preserve_space
 			e << PCString.new(" string with space\n")
 			Parser.new(s, /^(.*:)?e$/).parse.should == e
 
 			s = "<a> string without space <b> string with space <a> string with space 2 </a> </b>  </a>"
 			oa = Element.new("a") << PCString.new("string without space")
-			b = Element.new("b").hold_space
+			b = Element.new("b").preserve_space
 			b << PCString.new(" string with space ")
-			ia = Element.new("a").hold_space
+			ia = Element.new("a").preserve_space
 			ia << PCString.new(" string with space 2 ")
 			b << ia
 			b << PCString.new(" ")
@@ -87,8 +87,8 @@ class << Object.new
 			Parser.new(s, "b").parse.should == oa
 
 			s = "<a><b/></a>"
-			a = Element.new("a").hold_space
-			b = Element.new("b").hold_space
+			a = Element.new("a").preserve_space
+			b = Element.new("b").preserve_space
 			a << b
 			Parser.new(s, "a").parse.should == a
 		end

@@ -61,7 +61,7 @@ module EimXML
 			@name = name.to_sym
 			@attributes = Hash.new
 			@contents = Array.new
-			@hold_space = false
+			@preserve_space = false
 
 			@attributes.update(attributes) if attributes
 
@@ -73,18 +73,13 @@ module EimXML
 		end
 		protected :name=
 
-		def hold_space
-			@hold_space = true
+		def preserve_space
+			@preserve_space = true
 			self
 		end
 
-		def unhold_space
-			@hold_space = false
-			self
-		end
-
-		def hold_space?
-			@hold_space
+		def preserve_space?
+			@preserve_space
 		end
 
 		def add(v)
@@ -104,10 +99,10 @@ module EimXML
 		end
 
 		def to_xml(dst=String.new, nest_level=0)
-			nest_level = nil if @hold_space
-			hold_space = @hold_space || (not nest_level)
+			nest_level = nil if @preserve_space
+			preserve_space = @preserve_space || (not nest_level)
 			nest = nest_level ? NEST*(nest_level) : ""
-			lf = hold_space ? "" : "\n"
+			lf = preserve_space ? "" : "\n"
 
 			attributes = ""
 			@attributes.each do |k, v|
@@ -153,7 +148,7 @@ module EimXML
 
 		def ==(xml)
 			return false unless xml.is_a?(Element)
-			(@name==xml.name && @attributes==xml.attributes && @contents==xml.contents && @hold_space==xml.hold_space?)
+			(@name==xml.name && @attributes==xml.attributes && @contents==xml.contents && @preserve_space==xml.preserve_space?)
 		end
 
 		def add_attribute(key, value)

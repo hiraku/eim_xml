@@ -77,7 +77,7 @@ class << Object.new
 			PRE.new.name.should == :pre
 			DSL.pre.should be_kind_of(PRE)
 			OpenDSL.pre.should be_kind_of(PRE)
-			PRE.new.hold_space?.should be_true
+			PRE.new.preserve_space?.should be_true
 		end
 
 		it "Hn" do

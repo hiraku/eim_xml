@@ -214,9 +214,9 @@ class << Object.new
 			f.to_s.should == e.to_s
 
 			e = Element.new("el")
-			e.hold_space
+			e.preserve_space
 			f = e.dup
-			f.should be_hold_space
+			f.should be_preserve_space
 		end
 
 		it "#clone" do
@@ -235,12 +235,12 @@ class << Object.new
 			f.to_s.should == e.to_s
 
 			e = Element.new("el")
-			e.hold_space
+			e.preserve_space
 			f = e.clone
-			f.should be_hold_space
+			f.should be_preserve_space
 		end
 
-		it "#hold_space" do
+		it "#preserve_space" do
 			e = EimXML::DSL.element(:el) do
 				add("Line1")
 				add("Line2")
@@ -254,15 +254,11 @@ class << Object.new
 				end
 			end
 
-			e.hold_space
+			e.preserve_space
 			e.to_s.should == "<el>Line1Line2<sub>Sub1Sub2<subsub>ss1ss2</subsub></sub></el>"
 
-			e.unhold_space
-			e.to_s.should == "<el>Line1Line2<sub>Sub1Sub2<subsub>ss1ss2</subsub>\n </sub>\n</el>"
-
 			e = Element.new("e")
-			e.hold_space.object_id.should == e.object_id
-			e.unhold_space.object_id.should == e.object_id
+			e.preserve_space.object_id.should == e.object_id
 		end
 
 		it "#==" do

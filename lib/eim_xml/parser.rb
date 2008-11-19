@@ -21,27 +21,27 @@ module EimXML
 			STRING = /[^<]+/
 		end
 
-		def initialize(src, *space_holders)
+		def initialize(src, *space_preservers)
 			@scanner = StringScanner.new(src)
-			@space_holders = []
-			@space_holder_res = []
-			space_holders.each do |i|
+			@space_preservers = []
+			@space_preserver_res = []
+			space_preservers.each do |i|
 				if i.is_a?(Regexp)
-					@space_holder_res << i
+					@space_preserver_res << i
 				else
-					@space_holders << i.to_sym
+					@space_preservers << i.to_sym
 				end
 			end
 		end
 
-		def parse(hold_space = false)
-			@scanner.scan(/\s+/) unless hold_space
+		def parse(preserve_space = false)
+			@scanner.scan(/\s+/) unless preserve_space
 			if @scanner.scan(RE::EMPTY_ELEMENT)
-				parse_empty_element(hold_space)
+				parse_empty_element(preserve_space)
 			elsif @scanner.scan(RE::START_TAG)
-				parse_start_tag(hold_space)
+				parse_start_tag(preserve_space)
 			elsif @scanner.scan(RE::STRING)
-				parse_string(hold_space)
+				parse_string(preserve_space)
 			else
 				nil
 			end
@@ -55,43 +55,43 @@ module EimXML
 		end
 		protected :parse_tag
 
-		def space_holder?(ename)
-			return true if @space_holders.include?(ename)
+		def space_preserver?(ename)
+			return true if @space_preservers.include?(ename)
 			s = ename.to_s
-			@space_holder_res.each do |re|
+			@space_preserver_res.each do |re|
 				return true if re=~s
 			end
 			false
 		end
 
-		def parse_empty_element(hold_space)
+		def parse_empty_element(preserve_space)
 			e = parse_tag
-			hold_space = space_holder?(e.name) unless hold_space
-			e.hold_space if hold_space
+			preserve_space = space_preserver?(e.name) unless preserve_space
+			e.preserve_space if preserve_space
 			e
 		end
 		protected :parse_empty_element
 
-		def parse_start_tag(hold_space)
+		def parse_start_tag(preserve_space)
 			e = parse_tag
-			hold_space = space_holder?(e.name) unless hold_space
+			preserve_space = space_preserver?(e.name) unless preserve_space
 
-			e.hold_space if hold_space
-			@scanner.scan(/\s*/) unless hold_space
+			e.preserve_space if preserve_space
+			@scanner.scan(/\s*/) unless preserve_space
 			until @scanner.scan(RE::END_TAG)
-				c = parse(hold_space)
+				c = parse(preserve_space)
 				raise ParseError.new("Syntax error.") unless c
 				e << c
-				@scanner.scan(/\s*/) unless hold_space
+				@scanner.scan(/\s*/) unless preserve_space
 			end
 			raise ParseError.new("End tag mismatched.") unless @scanner[1].to_sym==e.name
 			e
 		end
 		protected :parse_start_tag
 
-		def parse_string(hold_space)
+		def parse_string(preserve_space)
 			s = @scanner[0]
-			s = s.strip unless hold_space
+			s = s.strip unless preserve_space
 			s = s.gsub(/&(amp|quot|apos|lt|gt);/) do
 				case $1
 				when "amp"
