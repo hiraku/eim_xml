@@ -31,6 +31,11 @@ class << Object.new
 			e3.should be_equal(e[0][0])
 		end
 
+		it "#comment" do
+			Comment.should_receive(:new).with("comment").and_return(:success)
+			DSL.comment("comment").should == :success
+		end
+
 		it "#import_variables" do
 			d = DSL.new
 			o = Object.new

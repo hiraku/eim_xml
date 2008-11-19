@@ -28,6 +28,18 @@ class << Object.new
 		end
 	end
 
+	describe Comment do
+		it ".new should raise error if given string include '--'" do
+			lambda{Comment.new("--")}.should raise_error(ArgumentError)
+		end
+
+		it "#to_xml should return comment with markup" do
+			Comment.new("flat comment").to_xml.should == "<!-- flat comment -->"
+			Comment.new("multi-line\ncomment").to_xml.should == "<!-- multi-line\ncomment -->"
+			Comment.new("&").to_xml.should == "<!-- & -->"
+		end
+	end
+
 	describe Element do
 		class Dummy < Element
 			def chgname(name)

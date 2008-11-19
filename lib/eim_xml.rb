@@ -70,6 +70,17 @@ module EimXML
 		alias :[]= :store
 	end
 
+	class Comment
+		def initialize(text)
+			raise ArgumentError, "Can not include '--'" if text =~ /--/
+			@text = text
+		end
+
+		def to_xml(dst=String.new, nest_level=nil)
+			dst << "<!-- #{@text} -->"
+		end
+	end
+
 	class Element
 		attr_reader :name, :attributes, :contents
 

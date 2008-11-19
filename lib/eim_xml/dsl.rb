@@ -93,6 +93,6 @@ module EimXML
 		def container; @_container; end
 	end
 
-	DSL.register Element
-	OpenDSL.register Element
+	DSL.register Element, Comment
+	OpenDSL.register Element, Comment
 end
