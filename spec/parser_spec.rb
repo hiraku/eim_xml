@@ -17,13 +17,13 @@ class << Object.new
 			parse("<e />").should == Element.new("e")
 			parse("<e/>").should == Element.new("e")
 
-			parse(%[<e key="value"/>]).should == Element.new("e", "key"=>"value")
-			parse(%[<e key='value'/>]).should == Element.new("e", "key"=>"value")
-			parse(%[<e key="value" />]).should == Element.new("e", "key"=>"value")
-			parse(%[<e key='value' />]).should == Element.new("e", "key"=>"value")
+			parse(%[<e key="value"/>]).should == Element.new("e", :key=>"value")
+			parse(%[<e key='value'/>]).should == Element.new("e", :key=>"value")
+			parse(%[<e key="value" />]).should == Element.new("e", :key=>"value")
+			parse(%[<e key='value' />]).should == Element.new("e", :key=>"value")
 
-			parse(%[<e key="value" key2="value2"/>]).should == Element.new("e", "key"=>"value", "key2"=>"value2")
-			parse(%[<e key="value" key2="value2" />]).should == Element.new("e", "key"=>"value", "key2"=>"value2")
+			parse(%[<e key="value" key2="value2"/>]).should == Element.new("e", :key=>"value", :key2=>"value2")
+			parse(%[<e key="value" key2="value2" />]).should == Element.new("e", :key=>"value", :key2=>"value2")
 
 			s = " <e1 /> <e2 /> "
 			p = Parser.new(s)

@@ -41,35 +41,6 @@ module EimXML
 		end
 	end
 
-	class SymbolKeyHash < Hash
-		def initialize(src=nil)
-			case src
-			when self.class
-				super(src)
-			when Hash
-				src.each_key do |k|
-					store(k, src[k])
-				end
-			end
-		end
-
-		def update(src)
-			src = self.class.new(src) unless src.is_a?(self.class)
-			super(src)
-		end
-		alias :merge! :update
-
-		def merge(src)
-			super(self.class.new(src))
-		end
-
-		def store(k, v)
-			super(k.to_sym, v)
-		end
-
-		alias :[]= :store
-	end
-
 	class Comment
 		def initialize(text)
 			raise ArgumentError, "Can not include '--'" if text =~ /--/
@@ -88,7 +59,7 @@ module EimXML
 
 		def initialize(name, attributes=nil)
 			@name = name.to_sym
-			@attributes = SymbolKeyHash.new
+			@attributes = Hash.new
 			@contents = Array.new
 			@hold_space = false
 

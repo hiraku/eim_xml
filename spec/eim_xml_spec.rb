@@ -60,10 +60,10 @@ class << Object.new
 			d.name.should == :el3
 		end
 
-		it "#atributes" do
-			e = Element.new("el", {"a1"=>"v1", "a2"=>"v2", "a3"=>nil})
+		it "#atributes should keep type of name of attributes" do
+			e = Element.new("el", "a1"=>"v1", :a2=>"v2", "a3"=>nil)
 			e.name.should == :el
-			e.attributes.should == {:a1=>"v1", :a2=>"v2", :a3=>nil}
+			e.attributes.should == {"a1"=>"v1", :a2=>"v2", "a3"=>nil}
 		end
 
 		it "#[]" do
@@ -321,7 +321,7 @@ class << Object.new
 			end
 			base.object_id.should == e.object_id
 
-			e2 = Element.new("base", "attr"=>"value")
+			e2 = Element.new("base", :attr=>"value")
 			e2 << Element.new("sub")
 			e2.should == e
 
@@ -339,12 +339,16 @@ class << Object.new
 			e.should == base
 		end
 
-		it "#to_s should return same string whenever name of element or attribute given with string or symbol" do
+		it "#to_s should return same string whenever name of element given with string or symbol" do
 			sym = Element.new(:tag, :attr=>"value")
-			str = Element.new("tag", "attr"=>"value")
+			str_name = Element.new("tag", :attr=>"value")
+			str_attr = Element.new(:tag, "attr"=>"value")
 
-			str.to_s.should == sym.to_s
-			str.should == sym
+			str_name.to_s.should == sym.to_s
+			str_attr.to_s.should == sym.to_s
+
+			str_name.should == sym
+			str_attr.should_not == sym
 		end
 
 		it "#match" do
@@ -434,49 +438,6 @@ class << Object.new
 			e.find(//).contents.should == [e, s1, d, s2]
 			e.find(:sub, :attr=>"value").contents.should == [s2]
 			e.find(String).contents.should == ["1st", "2nd", "3rd"]
-		end
-	end
-
-	describe SymbolKeyHash do
-		it "#new" do
-			s = SymbolKeyHash.new({"key1"=>"value1", :key2=>"value2"})
-			s.should == {:key1=>"value1", :key2=>"value2"}
-		end
-
-		it "#update" do
-			h = {"key"=>"value"}
-			s = SymbolKeyHash.new
-			s.update(h)
-			s.should == {:key=>"value"}
-
-			s2 = SymbolKeyHash.new
-			s2.update(s)
-			s2.should == s
-		end
-
-		it "#merge" do
-			s = SymbolKeyHash.new
-			s2 = s.merge({"key"=>"value"})
-			s.should == {}
-			s2.should == {:key=>"value"}
-		end
-
-		it "#merge!" do
-			s = SymbolKeyHash.new
-			s2 = s.merge!({"key"=>"value"})
-			h = {:key=>"value"}
-			s.should == h
-			s2.should == h
-		end
-
-		it "#store" do
-			s = SymbolKeyHash.new
-			s.store(:sym1, "value1")
-			s.store("str1", "value2")
-			s[:sym2] = "value3"
-			s["str2"] = "value4"
-
-			s.should == {:sym1=>"value1", :str1=>"value2", :sym2=>"value3", :str2=>"value4"}
 		end
 	end
 end
