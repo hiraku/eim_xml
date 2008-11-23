@@ -49,7 +49,7 @@ class << Object.new
 			d.import_variables(o).should be_equal(d)
 
 			d.instance_variable_get("@_container").should == orig_c
-			d.instance_variables.sort.should == ["@_container", "@v1", "@v2", "@__v4"].sort
+			d.instance_variables.sort.should == ["@v1", "@v2", "@__v4"].sort
 			d.instance_variable_get("@v1").should == 1
 			d.instance_variable_get("@v2").should == "2"
 			d.instance_variable_get("@__v4").should == 4

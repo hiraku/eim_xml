@@ -8,11 +8,6 @@ require "eim_xml"
 
 module EimXML
 	class BaseDSL
-		def initialize
-			@_container = nil
-			yield(self) if block_given?
-		end
-
 		def add(v)
 			@_container << v
 		end
