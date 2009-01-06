@@ -33,6 +33,9 @@ class << Object.new
 
 		it "#parse with nonempty element" do
 			parse("<super><sub /></super>").should == Element.new("super") << Element.new("sub")
+
+			parse("<out><in></in></out>").should == Element.new("out") << Element.new("in")
+
 			lambda{parse("<el></e>")}.should raise_error(ParseError, "End tag mismatched.")
 			lambda{parse("<el><></el>")}.should raise_error(ParseError, "Syntax error.")
 		end

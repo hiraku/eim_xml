@@ -16,13 +16,14 @@ module EimXML
 		module RE
 			EMPTY_ELEMENT = /<([^>]*?)\/>/
 			START_TAG = /<([^>]*?([^\/>]\s*))>/
-			END_TAG = /<\/(\S+)\s*>/
+			END_TAG = /<\/(\S+?)\s*>/
 			ATTRIBUTE = /\s+([^=\s]+)\s*=\s*('(.*?)'|"(.*?)")/m
 			STRING = /[^<]+/
 		end
 
 		def initialize(src, *space_preservers)
 			@scanner = StringScanner.new(src)
+			@scanner.scan(/\s*<\?.*?\?>\s*/)
 			@space_preservers = []
 			@space_preserver_res = []
 			space_preservers.each do |i|

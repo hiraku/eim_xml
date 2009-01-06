@@ -8,7 +8,7 @@ module EimXML
 	XML_DECLARATION = %[<?xml version="1.0"?>]
 
 	class PCString
-		attr_reader :encoded_string
+		attr_reader :encoded_string, :src
 		alias to_s encoded_string
 
 		def self.encode(s)
@@ -29,6 +29,7 @@ module EimXML
 		end
 
 		def initialize(s, encoded=false)
+			@src = s
 			@encoded_string = encoded ? s : PCString.encode(s)
 		end
 
