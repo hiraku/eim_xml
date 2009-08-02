@@ -67,6 +67,7 @@ module EimXML::XHTML
 	class EM < Simple_; end
 	class STRONG < Simple_; end
 	class DIV < Simple_; end
+	class SPAN < Simple_; end
 	class UL < Simple_; end
 	class OL < Simple_; end
 	class LI < Simple_; end

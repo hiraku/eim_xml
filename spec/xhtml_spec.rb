@@ -139,6 +139,12 @@ class << Object.new
 			OpenDSL.div.should be_kind_of(DIV)
 		end
 
+		it "SPAN" do
+			SPAN.new.name.should == :span
+			DSL.span.should be_kind_of(SPAN)
+			OpenDSL.span.should be_kind_of(SPAN)
+		end
+
 		it "UL" do
 			UL.new.name.should == :ul
 			DSL.ul.should be_kind_of(UL)
