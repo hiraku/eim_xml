@@ -1,14 +1,15 @@
 require "eim_xml/dsl"
 
-class << Object.new
+module Module.new::M
 	include EimXML
+	EDSL = EimXML::DSL
 
-	describe DSL do
+	describe EimXML::DSL do
 		it "scope is in instance of DSL" do
 			outer = inner = nil
 			e3 = e2 = nil
 			block_executed = false
-			e = DSL.element(:out, :k1=>"v1") do
+			e = EDSL.element(:out, :k1=>"v1") do
 				outer = self
 				e2 = element(:in, :k2=>"v2") do
 					block_executed = true
@@ -18,8 +19,8 @@ class << Object.new
 			end
 
 			block_executed.should == true
-			outer.should be_kind_of(DSL)
-			inner.should be_kind_of(DSL)
+			outer.should be_kind_of(EDSL)
+			inner.should be_kind_of(EDSL)
 			outer.should be_equal(inner)
 
 			e.name.should == :out
@@ -33,11 +34,11 @@ class << Object.new
 
 		it "#comment" do
 			Comment.should_receive(:new).with("comment").and_return(:success)
-			DSL.comment("comment").should == :success
+			EDSL.comment("comment").should == :success
 		end
 
 		it "#import_variables" do
-			d = DSL.new
+			d = EDSL.new
 			o = Object.new
 			o.instance_variable_set("@v1", 1)
 			o.instance_variable_set("@v2", "2")
@@ -49,7 +50,7 @@ class << Object.new
 			d.import_variables(o).should be_equal(d)
 
 			d.instance_variable_get("@_container").should == orig_c
-			d.instance_variables.sort.should == ["@v1", "@v2", "@__v4"].sort
+			d.instance_variables.map(&:to_s).sort.should == ["@v1", "@v2", "@__v4"].sort
 			d.instance_variable_get("@v1").should == 1
 			d.instance_variable_get("@v2").should == "2"
 			d.instance_variable_get("@__v4").should == 4
@@ -57,14 +58,14 @@ class << Object.new
 	end
 
 	describe "Subclass of BaseDSL" do
-		class DSL1 < BaseDSL
+		class DSL1 < EimXML::BaseDSL
 			register([EimXML::Element, "call"])
 			register(Hash)
 			register(String, Array, Object)
 		end
 
 		it "register" do
-			lambda{DSL.call(:dummy)}.should raise_error(NoMethodError)
+			lambda{EDSL.call(:dummy)}.should raise_error(NoMethodError)
 			lambda{BaseDSL.call(:dummy)}.should raise_error(NoMethodError)
 			lambda{DSL1.element(:dummy)}.should raise_error(NoMethodError)
 			DSL1.call(:dummy).should be_kind_of(Element)
@@ -75,7 +76,7 @@ class << Object.new
 		end
 	end
 
-	describe OpenDSL do
+	describe EimXML::OpenDSL do
 		it "scope of block is one of outside" do
 			@scope_checker_variable = 1
 			block_executed = false
@@ -104,7 +105,7 @@ class << Object.new
 			r = d.element(:base, :key1=>"v1") do
 				d.element(:sub, :key2=>"v2")
 			end
-			r.should == DSL.element(:base, :key1=>"v1") do
+			r.should == EDSL.element(:base, :key1=>"v1") do
 				element(:sub, :key2=>"v2")
 			end
 		end
@@ -118,7 +119,7 @@ class << Object.new
 				end
 			end
 
-			e.should == DSL.element(:base) do
+			e.should == EDSL.element(:base) do
 				element(:sub)
 			end
 		end
@@ -154,7 +155,7 @@ class << Object.new
 				end
 			end
 
-			r.should == DSL.element(:base) do
+			r.should == EDSL.element(:base) do
 				add "text"
 				element(:sub) do
 					add "sub text"
@@ -168,7 +169,7 @@ class << Object.new
 				b << "text" << "next"
 				(d << "text" << "next").should == b
 			end
-			r.should == DSL.element(:base) do
+			r.should == EDSL.element(:base) do
 				add "text"
 				add "next"
 			end
@@ -179,7 +180,7 @@ class << Object.new
 				d.element(:sub)
 				d.element(:sub2)
 			end
-			r.should == DSL.element(:base) do
+			r.should == EDSL.element(:base) do
 				element(:sub)
 				element(:sub2)
 			end

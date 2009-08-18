@@ -1,7 +1,8 @@
 require "eim_xml/dsl"
 
-class << Object.new
+module Module.new::M
 	include EimXML
+	EDSL = EimXML::DSL
 
 	describe PCString do
 		it ".encode" do
@@ -387,13 +388,13 @@ class << Object.new
 			e = Element.new(:element)
 			e << Element.new(:sub)
 			e << "text"
-			e.match(DSL.element(:element){element(:sub)}).should be_true
-			e.match(DSL.element(:element){element(:other)}).should be_false
-			e.match(DSL.element(:element){add("text")}).should be_true
-			e.match(DSL.element(:element){add("other")}).should be_false
-			e.match(DSL.element(:element){add(/ex/)}).should be_true
-			e.match(DSL.element(:element){add(/th/)}).should be_false
-			e.match(DSL.element(:element){add(/sub/)}).should be_false
+			e.match(EDSL.element(:element){element(:sub)}).should be_true
+			e.match(EDSL.element(:element){element(:other)}).should be_false
+			e.match(EDSL.element(:element){add("text")}).should be_true
+			e.match(EDSL.element(:element){add("other")}).should be_false
+			e.match(EDSL.element(:element){add(/ex/)}).should be_true
+			e.match(EDSL.element(:element){add(/th/)}).should be_false
+			e.match(EDSL.element(:element){add(/sub/)}).should be_false
 		end
 
 		it "#=~" do

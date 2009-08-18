@@ -1,6 +1,6 @@
 require "eim_xml/parser"
 
-class << Object.new
+module Module.new::M
 	include EimXML
 
 	describe Parser do
