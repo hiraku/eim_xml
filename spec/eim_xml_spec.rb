@@ -188,7 +188,17 @@ class << Object.new
 
 		it "#to_xml should return xml-string without attribute whose value is nil or false" do
 			s = EimXML::Element.new("e", :attr1=>"1", :attr2=>true, :attr3=>nil, :attr4=>false).to_xml
-			s.should == "<e attr1='1' attr2='true' />"
+			re = /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
+			s.should match(re)
+			s =~ /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
+			{$1=>$2, $3=>$4}.each do |k, v|
+				case k
+				when "1"
+					v.should == "1"
+				when "2"
+					v.should == "true"
+				end
+			end
 		end
 
 		it "encode special characters" do
