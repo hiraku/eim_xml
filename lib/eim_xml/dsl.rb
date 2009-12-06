@@ -36,6 +36,18 @@ module EimXML
 		end
 		private :_build
 
+		def _push(container)
+			oc = @_container
+			@_container = container
+			begin
+				yield if block_given?
+				container
+			ensure
+				@_container = oc
+			end
+		end
+		private :_push
+
 		def self.register(*args)
 			args.each do |klass, name|
 				name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]

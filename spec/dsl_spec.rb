@@ -55,6 +55,34 @@ module Module.new::M
 			d.instance_variable_get("@v2").should == "2"
 			d.instance_variable_get("@__v4").should == 4
 		end
+
+		describe "#_push" do
+			before do
+				m = Module.new
+				class m::D < EimXML::DSL
+					def call_push(c)
+						_push(c) do
+							element(:e)
+						end
+					end
+
+					def exec
+						element(:e) do
+							element(:f)
+						end
+					end
+				end
+				@D = m::D
+			end
+
+			it "should return given container" do
+				a = []
+				@D.new.call_push(a).should be_equal(a)
+				a.should == [EimXML::Element.new(:e)]
+
+				@D.new.exec.should == EimXML::Element.new(:e).add(EimXML::Element.new(:f))
+			end
+		end
 	end
 
 	describe "Subclass of BaseDSL" do
