@@ -6,22 +6,16 @@ UtiRake.setup do
 		t.rdoc_files.include(FileList["lib/**/*.rb", "README"])
 	end
 
-	spec
-	rcov
-
-	packages do |s|
+	gemspec do |s|
 		s.name = "eim_xml"
 		s.summary = "Easy IMplemented XML"
-		s.version = "0.0.2"
 		s.author = "KURODA Hiraku"
 		s.email = "hiraku@hinet.mydns.jp"
 		s.homepage = "http://eimxml.rubyforge.org/"
 		s.rubyforge_project = "eimxml"
 	end
 
-	publish("eimxml", "hiraku") do
-#		cp "index.html", "html/index.html"
-	end
+	publish("eimxml", "hiraku")
 
 	alias_task
 end
