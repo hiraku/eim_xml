@@ -54,6 +54,12 @@ module Module.new::M
 			parse("<e>string</e>").should == e
 		end
 
+		it "#parse escaped characters" do
+			e = parse("&amp;&quot;&apos;&lt;&gt;")
+			e.to_s.should == "&amp;&quot;&apos;&lt;&gt;"
+			e.src.should == "&\"'<>"
+		end
+
 		it "#parse with holding space" do
 			s = "<e> string with space\n</e>"
 			e = Element.new("e")
