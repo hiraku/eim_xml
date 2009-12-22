@@ -105,8 +105,6 @@ module EimXML
 					"<"
 				when "gt"
 					">"
-				else
-					raise "must not happen"
 				end
 			end
 			PCString.new(s)
