@@ -24,8 +24,19 @@ module Module.new::M
 			"str".should_not == p1
 		end
 
-		it "#to_xml" do
-			PCString.new("&amp;").to_xml.should == "&amp;amp;"
+		describe "#write_to" do
+			before do
+				@pc = PCString.new("&amp;")
+			end
+
+			it "should return encoded string" do
+				@pc.write_to.should == "&amp;amp;"
+			end
+
+			it "should return given destination" do
+				s = ""
+				@pc.write_to(s).should be_equal(s)
+			end
 		end
 	end
 
@@ -34,10 +45,17 @@ module Module.new::M
 			lambda{Comment.new("--")}.should raise_error(ArgumentError)
 		end
 
-		it "#to_xml should return comment with markup" do
-			Comment.new("flat comment").to_xml.should == "<!-- flat comment -->"
-			Comment.new("multi-line\ncomment").to_xml.should == "<!-- multi-line\ncomment -->"
-			Comment.new("&").to_xml.should == "<!-- & -->"
+		describe "#write_to" do
+			it "should return comment with markup" do
+				Comment.new("flat comment").write_to.should == "<!-- flat comment -->"
+				Comment.new("multi-line\ncomment").write_to.should == "<!-- multi-line\ncomment -->"
+				Comment.new("&").write_to.should == "<!-- & -->"
+			end
+
+			it "should return given destination" do
+				s = ""
+				Comment.new("dummy").write_to(s).should be_equal(s)
+			end
 		end
 	end
 
@@ -113,92 +131,56 @@ module Module.new::M
 
 			e = Element.new("el").add(:symbol)
 			e.contents.should == [:symbol]
-			e.to_xml.should == "<el>symbol</el>"
+			e.to_s.should == "<el>symbol</el>"
 
 			e = Element.new("super") << Element.new("sub")
 			e.name.should == :super
 			e.contents.should == [Element.new("sub")]
 		end
 
-		it "#to_xml with indent" do
-			e = Element.new("el")
-			s = String.new
+		describe "#write_to" do
+			it "should return flatten string" do
+				Element.new("e").write_to.should == "<e />"
 
-			e.to_xml(s).should be_equal(s)
-			s.should == "<el />"
+				e = Element.new("super")
+				e << Element.new("sub")
+				e.write_to.should == "<super><sub /></super>"
+				e << Element.new("sub2")
+				e.write_to.should == "<super><sub /><sub2 /></super>"
 
-			e = Element.new("super")
-			e << Element.new("sub")
-			e.to_xml.should == "<super><sub /></super>"
-			e << Element.new("sub2")
-			e.to_xml.should == "<super>\n <sub />\n <sub2 />\n</super>"
-			e.to_xml("", 1).should == "<super>\n  <sub />\n  <sub2 />\n </super>"
+				e = Element.new("super") << "content1"
+				s = Element.new("sub")
+				s << "content2"
+				e << s
+				e.write_to.should == "<super>content1<sub>content2</sub></super>"
 
-			s = Element.new("supersuper")
-			s << e
-			s.to_xml.should == "<supersuper><super>\n <sub />\n <sub2 />\n</super></supersuper>"
-
-			e = Element.new("el") << "str"
-			s = Element.new("sub")
-			s << "inside"
-			e << s
-			e.to_xml.should == "<el>str<sub>inside</sub>\n</el>"
-
-			e = Element.new("el")
-			e.attributes["a1"] = "v1"
-			e.attributes["a2"] = "'\"<>&"
-			s = e.to_xml
-			s.should =~ /\A<el ([^>]*) \/>\z/
-			s.should =~ /a1='v1'/
-			s.should =~ /a2='&apos;&quot;&lt;&gt;&amp;'/
-		end
-
-		it "#to_xml" do
-			el = Element.new("el")
-			ex = "<el />"
-			el.to_xml.should == ex
-
-			s = ""
-			r = el.to_xml(s)
-			r.should == ex
-			r.object_id.should == s.object_id
-		end
-
-		it "#to_xml should return xml-string not formatted previous and after string" do
-			EimXML::DSL.element(:e){
-				add("s1")
-				add("s2")
-			}.to_xml.should == "<e>s1s2</e>"
-
-			EimXML::DSL.element(:e){
-				element(:e)
-				element(:e)
-				add("s")
-			}.to_xml.should == "<e>\n <e />\n <e />s</e>"
-
-			x = EimXML::DSL.element(:e) do
-				add("s")
-				element(:e) do
-					element(:e)
-					add("s")
-				end
-				add("s")
+				e = Element.new("el")
+				e.attributes["a1"] = "v1"
+				e.attributes["a2"] = "'\"<>&"
+				s = e.write_to
+				s.should =~ /\A<el ([^>]*) \/>\z/
+				s.should =~ /a1='v1'/
+				s.should =~ /a2='&apos;&quot;&lt;&gt;&amp;'/
 			end
-			x.to_xml.should == "<e>s<e>\n  <e />s</e>s</e>"
-		end
 
-		it "#to_xml should return xml-string without attribute whose value is nil or false" do
-			s = EimXML::Element.new("e", :attr1=>"1", :attr2=>true, :attr3=>nil, :attr4=>false).to_xml
-			re = /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
-			s.should match(re)
-			s =~ /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
-			{$1=>$2, $3=>$4}.each do |k, v|
-				case k
-				when "1"
-					v.should == "1"
-				when "2"
-					v.should == "true"
-				end
+			it "should return string without attribute whose value is nil or false" do
+				s = EimXML::Element.new("e", :attr1=>"1", :attr2=>true, :attr3=>nil, :attr4=>false).write_to
+				re = /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
+				s.should match(re)
+				s =~ /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
+				[[$1, $2], [$3, $4]].sort.should == [["1", "1"], ["2", "true"]]
+			end
+
+			it "should return same string whenever name of element given with string or symbol" do
+				sym = Element.new(:tag, :attr=>"value")
+				str_name = Element.new("tag", :attr=>"value")
+				str_attr = Element.new(:tag, "attr"=>"value")
+
+				str_name.write_to.should == sym.write_to
+				str_attr.write_to.should == sym.write_to
+
+				str_name.should == sym
+				str_attr.should_not == sym
 			end
 		end
 
@@ -344,18 +326,6 @@ module Module.new::M
 			sub2 = Element.new("sub2")
 			base << sub1  << sub2
 			e.should == base
-		end
-
-		it "#to_s should return same string whenever name of element given with string or symbol" do
-			sym = Element.new(:tag, :attr=>"value")
-			str_name = Element.new("tag", :attr=>"value")
-			str_attr = Element.new(:tag, "attr"=>"value")
-
-			str_name.to_s.should == sym.to_s
-			str_attr.to_s.should == sym.to_s
-
-			str_name.should == sym
-			str_attr.should_not == sym
 		end
 
 		it "#match" do

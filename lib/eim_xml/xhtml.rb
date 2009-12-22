@@ -18,9 +18,9 @@ module EimXML::XHTML
 			super(:html, attributes)
 		end
 
-		def to_xml(s="")
-			s << @prefix << "\n" if @prefix
-			super(s)
+		def write_to(out="")
+			out << @prefix << "\n" if @prefix
+			super
 		end
 	end
 

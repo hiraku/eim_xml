@@ -37,8 +37,8 @@ module EimXML
 			other.is_a?(PCString) ? @encoded_string==other.encoded_string : false
 		end
 
-		def to_xml(dst=String.new, *)
-			dst << encoded_string
+		def write_to(out="")
+			out << encoded_string
 		end
 	end
 
@@ -48,8 +48,8 @@ module EimXML
 			@text = text
 		end
 
-		def to_xml(dst=String.new, nest_level=nil)
-			dst << "<!-- #{@text} -->"
+		def write_to(out="")
+			out << "<!-- #{@text} -->"
 		end
 	end
 
@@ -95,57 +95,33 @@ module EimXML
 		end
 		alias << add
 
-		def need_format?(o)
-			o==nil || o.respond_to?(:to_xml) && !(o.is_a?(PCString))
-		end
-
-		def to_xml(dst=String.new, nest_level=0)
-			nest_level = nil if @preserve_space
-			preserve_space = @preserve_space || (not nest_level)
-			nest = nest_level ? NEST*(nest_level) : ""
-			lf = preserve_space ? "" : "\n"
-
-			attributes = ""
+		def write_to(out = "")
+			out << "<#{@name}"
 			@attributes.each do |k, v|
 				next unless v
-				attributes << " #{k}='#{PCString===v ? v : PCString.encode(v.to_s)}'"
+				out << " #{k}='#{PCString===v ? v : PCString.encode(v.to_s)}'"
 			end
 
-			case @contents.size
-			when 0
-				dst << "<#{@name}#{attributes} />"
-			when 1
-				dst << "<#{@name}#{attributes}>"
-				content_to_xml(dst, @contents[0], nest_level, false)
-				dst << "</#{@name}>"
+			if @contents.empty?
+				out << " />"
 			else
-				dst << "<#{@name}#{attributes}>"
-				nest4contents = nest_level ? NEST*(nest_level+1) : ""
-				prev = nil
+				out << ">"
 				@contents.each do |c|
-					dst << lf << nest4contents if need_format?(prev) && need_format?(c)
-					content_to_xml(dst, c, nest_level, true)
-					prev = c
+					case c
+					when Element
+						c.write_to(out)
+					when PCString
+						out << c.to_s
+					else
+						out << PCString.encode(c.to_s)
+					end
 				end
-				dst << lf << nest if need_format?(prev)
-				dst << "</#{@name}>"
+				out << "</#{@name}>"
 			end
+			out
 		end
-
-		def to_s
-			to_xml
-		end
+		alias :to_s :write_to
 		alias :inspect :to_s
-
-		def content_to_xml(dst, c, nest_level, increment_nest_level)
-			if c.respond_to?(:to_xml)
-				nest_level+=1 if nest_level and increment_nest_level
-				c.to_xml(dst, nest_level)
-			else
-				dst << PCString.encode(c.to_s)
-			end
-		end
-		private :content_to_xml
 
 		def ==(xml)
 			return false unless xml.is_a?(Element)

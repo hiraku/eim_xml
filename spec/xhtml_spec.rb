@@ -27,9 +27,9 @@ module Module.new::M
 			OpenDSL.html(:key=>"v").should == HTML.new(:key=>"v")
 
 			h = HTML.new
-			h.to_xml.should == "<html />"
+			h.write_to.should == "<html />"
 			h.prefix='<?xml version="1.0"?>'
-			h.to_xml.should == %[<?xml version="1.0"?>\n<html />]
+			h.write_to.should == %[<?xml version="1.0"?>\n<html />]
 		end
 
 		it "HEAD" do
