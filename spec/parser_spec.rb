@@ -27,7 +27,9 @@ module Module.new::M
 
 			s = " <e1 /> <e2 /> "
 			p = Parser.new(s)
+			p.parse.should == PCString.new(" ")
 			p.parse.should == Element.new("e1")
+			p.parse.should == PCString.new(" ")
 			p.parse.should == Element.new("e2")
 		end
 
@@ -46,11 +48,14 @@ module Module.new::M
 			e.to_s.should == "string&amp;"
 			e = parse(" string &amp; ")
 			e.should be_kind_of(PCString)
-			e.to_s.should == "string &amp;"
+			e.to_s.should == " string &amp; "
+
+			e = Element.new("e")
+			e << PCString.new(" string ")
+			parse("<e> string </e>").should == e
 
 			e = Element.new("e")
 			e << PCString.new("string")
-			parse("<e> string </e>").should == e
 			parse("<e>string</e>").should == e
 		end
 
@@ -63,43 +68,35 @@ module Module.new::M
 		it "#parse with holding space" do
 			s = "<e> string with space\n</e>"
 			e = Element.new("e")
-			e << PCString.new("string with space", true)
+			e << PCString.new(" string with space\n")
 			parse(s).should == e
-
-			e = Element.new("e").preserve_space
-			e << PCString.new(" string with space\n", true)
-			Parser.new(s).parse.should_not == e
-			Parser.new(s).parse(true).should == e
-			Parser.new(s, "dummy", "e").parse.should == e
-			Parser.new(s, /dummy/, /e/).parse.should == e
-			Parser.new(s, :dummy, :e).parse.should == e
-			Parser.new(s, :dummy, /^(.*:)?e$/).parse.should == e
+			parse(s).to_s.should == s
 
 			s = "<ns:e> string with space\n</ns:e>"
 			e = Element.new("ns:e")
-			e << PCString.new("string with space")
-			Parser.new(s).parse.should == e
-
-			e = Element.new("ns:e").preserve_space
 			e << PCString.new(" string with space\n")
-			Parser.new(s, /^(.*:)?e$/).parse.should == e
+			parse(s).should == e
+			parse(s).to_s.should == s
 
 			s = "<a> string without space <b> string with space <a> string with space 2 </a> </b>  </a>"
-			oa = Element.new("a") << PCString.new("string without space")
-			b = Element.new("b").preserve_space
+			oa = Element.new("a") << PCString.new(" string without space ")
+			b = Element.new("b")
 			b << PCString.new(" string with space ")
-			ia = Element.new("a").preserve_space
+			ia = Element.new("a")
 			ia << PCString.new(" string with space 2 ")
 			b << ia
 			b << PCString.new(" ")
 			oa << b
-			Parser.new(s, "b").parse.should == oa
+			oa << PCString.new("  ")
+			parse(s).should == oa
+			parse(s).to_s.should == s
 
 			s = "<a><b/></a>"
-			a = Element.new("a").preserve_space
-			b = Element.new("b").preserve_space
+			a = Element.new("a")
+			b = Element.new("b")
 			a << b
-			Parser.new(s, "a").parse.should == a
+			parse(s).should == a
+			parse(s).to_s.should == "<a><b /></a>"
 		end
 	end
 end

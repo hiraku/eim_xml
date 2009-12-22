@@ -62,7 +62,6 @@ module EimXML
 			@name = name.to_sym
 			@attributes = Hash.new
 			@contents = Array.new
-			@preserve_space = false
 
 			@attributes.update(attributes) if attributes
 
@@ -73,15 +72,6 @@ module EimXML
 			@name = new_name.to_sym
 		end
 		protected :name=
-
-		def preserve_space
-			@preserve_space = true
-			self
-		end
-
-		def preserve_space?
-			@preserve_space
-		end
 
 		def add(v)
 			case v
@@ -125,7 +115,7 @@ module EimXML
 
 		def ==(xml)
 			return false unless xml.is_a?(Element)
-			(@name==xml.name && @attributes==xml.attributes && @contents==xml.contents && @preserve_space==xml.preserve_space?)
+			@name==xml.name && @attributes==xml.attributes && @contents==xml.contents
 		end
 
 		def add_attribute(key, value)

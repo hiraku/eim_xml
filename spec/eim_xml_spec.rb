@@ -205,11 +205,6 @@ module Module.new::M
 			f.contents.object_id.should == e.contents.object_id
 
 			f.to_s.should == e.to_s
-
-			e = Element.new("el")
-			e.preserve_space
-			f = e.dup
-			f.should be_preserve_space
 		end
 
 		it "#clone" do
@@ -226,32 +221,6 @@ module Module.new::M
 			f.contents.object_id.should == e.contents.object_id
 
 			f.to_s.should == e.to_s
-
-			e = Element.new("el")
-			e.preserve_space
-			f = e.clone
-			f.should be_preserve_space
-		end
-
-		it "#preserve_space" do
-			e = EimXML::DSL.element(:el) do
-				add("Line1")
-				add("Line2")
-				element(:sub) do
-					add("Sub1")
-					add("Sub2")
-					element(:subsub) do
-						add("ss1")
-						add("ss2")
-					end
-				end
-			end
-
-			e.preserve_space
-			e.to_s.should == "<el>Line1Line2<sub>Sub1Sub2<subsub>ss1ss2</subsub></sub></el>"
-
-			e = Element.new("e")
-			e.preserve_space.object_id.should == e.object_id
 		end
 
 		it "#==" do

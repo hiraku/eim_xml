@@ -78,7 +78,6 @@ module Module.new::M
 			PRE.new.name.should == :pre
 			XDSL.pre.should be_kind_of(PRE)
 			OpenDSL.pre.should be_kind_of(PRE)
-			PRE.new.preserve_space?.should be_true
 		end
 
 		it "Hn" do
