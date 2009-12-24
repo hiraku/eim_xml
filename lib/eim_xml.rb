@@ -85,12 +85,17 @@ module EimXML
 		end
 		alias << add
 
-		def write_to(out = "")
-			out << "<#{@name}"
+		def name_and_attributes(out="")
+			out << "#{@name}"
 			@attributes.each do |k, v|
 				next unless v
 				out << " #{k}='#{PCString===v ? v : PCString.encode(v.to_s)}'"
 			end
+		end
+
+		def write_to(out = "")
+			out << "<"
+			name_and_attributes(out)
 
 			if @contents.empty?
 				out << " />"

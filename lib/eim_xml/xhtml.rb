@@ -1,4 +1,5 @@
 require "eim_xml"
+require "eim_xml/formatter"
 
 module EimXML::XHTML
 	module DocType
@@ -30,14 +31,16 @@ module EimXML::XHTML
 		end
 	end
 
+	class PreserveSpace_ < Simple_; end
+
 	class HEAD < Simple_; end
 	class META < Simple_; end
 	class LINK < Simple_; end
-	class STYLE < Simple_; end
-	class SCRIPT < Simple_; end
+	class STYLE < PreserveSpace_; end
+	class SCRIPT < PreserveSpace_; end
 	class TITLE < Simple_; end
 	class BODY < Simple_; end
-	class PRE < Simple_; end
+	class PRE < PreserveSpace_; end
 	class FORM < Simple_
 		def initialize(attributes=nil)
 			if attributes
@@ -51,29 +54,29 @@ module EimXML::XHTML
 			add(HIDDEN.new(:name=>name, :value=>token)) if token
 		end
 	end
-	class H1 < Simple_; end
-	class H2 < Simple_; end
-	class H3 < Simple_; end
-	class H4 < Simple_; end
-	class H5 < Simple_; end
-	class H6 < Simple_; end
-	class P < Simple_; end
-	class A < Simple_; end
-	class EM < Simple_; end
-	class STRONG < Simple_; end
+	class H1 < PreserveSpace_; end
+	class H2 < PreserveSpace_; end
+	class H3 < PreserveSpace_; end
+	class H4 < PreserveSpace_; end
+	class H5 < PreserveSpace_; end
+	class H6 < PreserveSpace_; end
+	class P < PreserveSpace_; end
+	class A < PreserveSpace_; end
+	class EM < PreserveSpace_; end
+	class STRONG < PreserveSpace_; end
 	class DIV < Simple_; end
-	class SPAN < Simple_; end
+	class SPAN < PreserveSpace_; end
 	class UL < Simple_; end
 	class OL < Simple_; end
-	class LI < Simple_; end
+	class LI < PreserveSpace_; end
 	class DL < Simple_; end
-	class DT < Simple_; end
-	class DD < Simple_; end
+	class DT < PreserveSpace_; end
+	class DD < PreserveSpace_; end
 	class TABLE < Simple_; end
-	class CAPTION < Simple_; end
+	class CAPTION < PreserveSpace_; end
 	class TR < Simple_; end
-	class TH < Simple_; end
-	class TD < Simple_; end
+	class TH < PreserveSpace_; end
+	class TD < PreserveSpace_; end
 	class BR < Simple_; end
 	class HR < Simple_; end
 
@@ -118,6 +121,13 @@ module EimXML::XHTML
 	class PASSWORD < INPUT
 		def initialize(opt={})
 			super(opt.merge(:type=>:password))
+		end
+	end
+
+	PRESERVE_SPACES = [PreserveSpace_]
+	class Formatter < EimXML::Formatter
+		def self.write(element, opt={})
+			EimXML::Formatter.write(element, opt.merge(:preservers=>PRESERVE_SPACES))
 		end
 	end
 end

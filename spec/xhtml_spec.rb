@@ -392,4 +392,99 @@ module Module.new::M
 			end
 		end
 	end
+
+	describe EimXML::XHTML::Formatter do
+		describe "#write" do
+			it "should set :preservers=>PRESERVE_SPACES to default option" do
+				e = EimXML::XHTML::HTML.new
+				EimXML::Formatter.should_receive(:write).with(e, :preservers=>EimXML::XHTML::PRESERVE_SPACES, :opt=>:dummy)
+				EimXML::XHTML::Formatter.write(e, :opt=>:dummy)
+			end
+
+			it "should return string" do
+				h = EimXML::XHTML::DSL.html do
+					head do
+						style.add("style\ntext")
+						script.add("script\ntext")
+					end
+					body do
+						div.add("text\nin\ndiv")
+						pre.add("pre\nt")
+						h1.add("1\nt")
+						h2.add("2\nt")
+						h3.add("3\nt")
+						h4.add("4\nt")
+						h5.add("5\nt")
+						h6.add("6\nt")
+						p.add("p\nt")
+						a.add("a\nt")
+						em.add("e\nt")
+						strong.add("s\nt")
+						span.add("sp\nt")
+						li.add("li\nt")
+						dt.add("dt\nt")
+						dd.add("dd\nt")
+						caption.add("c\nt")
+						th.add("th\nt")
+						td.add("td\nt")
+					end
+				end
+
+				s = <<EOT
+<html>
+  <head>
+    <style>style
+text</style>
+    <script>script
+text</script>
+  </head>
+  <body>
+    <div>
+      text
+      in
+      div
+    </div>
+    <pre>pre
+t</pre>
+    <h1>1
+t</h1>
+    <h2>2
+t</h2>
+    <h3>3
+t</h3>
+    <h4>4
+t</h4>
+    <h5>5
+t</h5>
+    <h6>6
+t</h6>
+    <p>p
+t</p>
+    <a>a
+t</a>
+    <em>e
+t</em>
+    <strong>s
+t</strong>
+    <span>sp
+t</span>
+    <li>li
+t</li>
+    <dt>dt
+t</dt>
+    <dd>dd
+t</dd>
+    <caption>c
+t</caption>
+    <th>th
+t</th>
+    <td>td
+t</td>
+  </body>
+</html>
+EOT
+				EimXML::XHTML::Formatter.write(h).should == s
+			end
+		end
+	end
 end
