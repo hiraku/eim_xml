@@ -140,6 +140,10 @@ module EimXML
 			@attributes.delete(key.to_sym)
 		end
 
+		def pcstring_contents
+			@contents.select{|c| c.is_a?(String)||c.is_a?(PCString)}.map{|c| c.is_a?(String) ? PCString.new(c) : c}
+		end
+
 		def match(obj, attr=nil)
 			return match(Element.new(obj, attr)) if attr
 			return obj=~@name.to_s if obj.is_a?(Regexp)
@@ -157,7 +161,9 @@ module EimXML
 				when Element
 					has_element?(i)
 				when String
-					@contents.include?(i)
+					pcstring_contents.include?(PCString.new(i))
+				when PCString
+					pcstring_contents.include?(i)
 				when Regexp
 					@contents.any?{|c| c.is_a?(String) and i=~c}
 				end					

@@ -354,6 +354,8 @@ module Module.new::M
 					b <<= Element.new(:sub) do |s|
 						s <<= Element.new(:deep) do |d|
 							d << "text"
+							d << PCString.new("&amp;", true)
+							d << "<"
 						end
 					end
 					b <<= Element.new(:sub, :attr=>"value")
@@ -365,6 +367,19 @@ module Module.new::M
 				e.send(method, :deep).should be_true
 
 				e.send(method, String).should be_true
+				e.send(method, PCString).should be_true
+
+				d = Element.new(:deep)
+				d << "text"
+				d << PCString.new("&amp;", true)
+				d << "<"
+				e.send(method, d).should be_true
+
+				d = Element.new(:deep)
+				d << PCString.new("text", true)
+				d << "&"
+				d << PCString.new("&lt;", true)
+				e.send(method, d).should be_true
 			end
 		end
 
