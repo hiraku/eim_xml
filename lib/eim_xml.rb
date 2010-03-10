@@ -28,6 +28,10 @@ module EimXML
 			end
 		end
 
+		def self.[](obj)
+			obj.is_a?(PCString) ? obj : PCString.new(obj)
+		end
+
 		def initialize(s, encoded=false)
 			@src = s
 			@encoded_string = encoded ? s : PCString.encode(s)

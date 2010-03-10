@@ -16,6 +16,20 @@ module Module.new::M
 			PCString.new("&", true).encoded_string.should == "&"
 		end
 
+		describe ".[]" do
+			it "should return itself when given object is a PCString" do
+				pcs = PCString.new("s")
+				PCString[pcs].should equal(pcs)
+			end
+
+			it "should return PCString.new(obj) if given obj is not a PCString" do
+				o = "str"
+				r = PCString[o]
+				r.is_a?(EimXML::PCString)
+				r.src.should == o
+			end
+		end
+
 		it "#==" do
 			PCString.new("str").should == PCString.new("str")
 			PCString.new("&").should == "&"
