@@ -34,7 +34,7 @@ module EimXML
 		end
 
 		def ==(other)
-			other.is_a?(PCString) ? @encoded_string==other.encoded_string : false
+			other.is_a?(PCString) ? @encoded_string==other.encoded_string : self==PCString.new(other)
 		end
 
 		def write_to(out="")

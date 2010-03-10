@@ -17,11 +17,11 @@ module Module.new::M
 		end
 
 		it "#==" do
-			p1 = PCString.new("str")
-			p2 = PCString.new("str")
-			p2.should == p1
-
-			"str".should_not == p1
+			PCString.new("str").should == PCString.new("str")
+			PCString.new("&").should == "&"
+			PCString.new("&", true).should_not == "&"
+			PCString.new("&", true).should == PCString.new("&", true)
+			PCString.new("&").should == PCString.new("&amp;", true)
 		end
 
 		describe "#write_to" do
@@ -313,6 +313,7 @@ module Module.new::M
 			e.match(Element.new(:tag, :attr2=>"value")).should be_false
 			e.match(Element.new(:tag, :attr=>"value2")).should be_false
 			e.match(Element.new(:tag, :attr=>/aul/)).should be_false
+			e.match(Element.new(:tag, :attr=>PCString.new("value"))).should be_true
 
 			e.match(Element.new(:tag, :attr=>nil)).should be_false
 			e.match(Element.new(:tag, :nonattr=>nil)).should be_true
@@ -334,6 +335,11 @@ module Module.new::M
 			e.match(EDSL.element(:element){add(/ex/)}).should be_true
 			e.match(EDSL.element(:element){add(/th/)}).should be_false
 			e.match(EDSL.element(:element){add(/sub/)}).should be_false
+
+			e = Element.new(:t, :a=>"&")
+			e.should match(Element.new(:t, :a=>"&"))
+			e.should match(Element.new(:t, :a=>PCString.new("&amp;", true)))
+			e.should match(Element.new(:t, :a=>PCString.new("&")))
 		end
 
 		it "#=~" do
@@ -342,10 +348,15 @@ module Module.new::M
 			e.should =~ Element.new(:tag)
 			e.should =~ Element.new(:tag, :a2=>"v2")
 			e.should =~ Element.new(:tag, :attr=>/alu/)
-
+			e.should =~ Element.new(:tag, :attr=>PCString.new("value"))
 			e.should_not =~ :t
 			e.should_not =~ Element.new(:t)
 			e.should_not =~ Element.new(:tag, :attr=>/aul/)
+
+			e = Element.new(:t, :a=>"&")
+			e.should =~ Element.new(:t, :a=>"&")
+			e.should =~ Element.new(:t, :a=>PCString.new("&amp;", true))
+			e.should =~ Element.new(:t, :a=>PCString.new("&"))
 		end
 
 		%w[has? has_element? include?].each do |method|
