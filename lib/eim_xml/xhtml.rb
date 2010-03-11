@@ -15,7 +15,7 @@ module EimXML::XHTML
 			XHTML = "http://www.w3.org/1999/xhtml"
 		end
 
-		def initialize(attributes=nil)
+		def initialize(attributes={})
 			super(:html, attributes)
 		end
 
@@ -26,7 +26,7 @@ module EimXML::XHTML
 	end
 
 	class Simple_ < Base_
-		def initialize(attributes=nil)
+		def initialize(attributes={})
 			super(self.class.name[/.*::(.*)/, 1].downcase.to_sym, attributes)
 		end
 	end
@@ -42,7 +42,7 @@ module EimXML::XHTML
 	class BODY < Simple_; end
 	class PRE < PreserveSpace_; end
 	class FORM < Simple_
-		def initialize(attributes=nil)
+		def initialize(attributes={})
 			if attributes
 				if s = attributes.delete(:session)
 					name = attributes.delete(:session_name) || "token"
@@ -81,7 +81,7 @@ module EimXML::XHTML
 	class HR < Simple_; end
 
 	module Hn
-		def self.new(level, attr=nil, &proc)
+		def self.new(level, attr={}, &proc)
 			raise ArgumentError unless 1<=level && level<=6
 			klass = EimXML::XHTML.const_get("H#{level}")
 			klass.new(attr, &proc)

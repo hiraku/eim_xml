@@ -97,10 +97,10 @@ module Module.new::M
 			d.name.should == :el3
 		end
 
-		it "#atributes should keep type of name of attributes" do
+		it "#attributes should return hash whose keys are Symbol" do
 			e = Element.new("el", "a1"=>"v1", :a2=>"v2", "a3"=>nil)
 			e.name.should == :el
-			e.attributes.should == {"a1"=>"v1", :a2=>"v2", "a3"=>nil}
+			e.attributes.should == {:a1=>"v1", :a2=>"v2", :a3=>nil}
 		end
 
 		it "#[]" do
@@ -196,9 +196,6 @@ module Module.new::M
 
 				str_name.write_to.should == sym.write_to
 				str_attr.write_to.should == sym.write_to
-
-				str_name.should == sym
-				str_attr.should_not == sym
 			end
 		end
 
@@ -288,31 +285,39 @@ module Module.new::M
 			"string".should_not == e1
 		end
 
-		it ".new with block" do
-			base = nil
-			e = Element.new("base") do |b|
-				b["attr"]="value"
-				b << Element.new("sub")
-				base = b
+		describe ".new" do
+			it "should convert name of attributes to Symbol" do
+				e = Element.new(:e, "a"=>"v")
+				e.attributes.keys.should == [:a]
+				e[:a].should == "v"
 			end
-			base.object_id.should == e.object_id
 
-			e2 = Element.new("base", :attr=>"value")
-			e2 << Element.new("sub")
-			e2.should == e
-
-			e = Element.new("base") do |e|
-				e <<= Element.new("sub1") do |e|
-					e <<= Element.new("sub12")
+			it "with block" do
+				base = nil
+				e = Element.new("base") do |b|
+					b["attr"]="value"
+					b << Element.new("sub")
+					base = b
 				end
-				e <<= Element.new("sub2")
+				base.object_id.should == e.object_id
+
+				e2 = Element.new("base", :attr=>"value")
+				e2 << Element.new("sub")
+				e2.should == e
+
+				e = Element.new("base") do |e|
+					e <<= Element.new("sub1") do |e|
+						e <<= Element.new("sub12")
+					end
+					e <<= Element.new("sub2")
+				end
+				base = Element.new("base")
+				sub1 = Element.new("sub1")
+				sub1 << Element.new("sub12")
+				sub2 = Element.new("sub2")
+				base << sub1  << sub2
+				e.should == base
 			end
-			base = Element.new("base")
-			sub1 = Element.new("sub1")
-			sub1 << Element.new("sub12")
-			sub2 = Element.new("sub2")
-			base << sub1  << sub2
-			e.should == base
 		end
 
 		it "#match" do
@@ -359,6 +364,8 @@ module Module.new::M
 			e.should match(Element.new(:t, :a=>"&"))
 			e.should match(Element.new(:t, :a=>PCString.new("&amp;", true)))
 			e.should match(Element.new(:t, :a=>PCString.new("&")))
+
+			Element.new(:t, "a"=>"v").should match(Element.new(:t, :a=>"v"))
 		end
 
 		it "#=~" do

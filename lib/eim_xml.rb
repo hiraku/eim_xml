@@ -62,12 +62,14 @@ module EimXML
 
 		NEST = " "
 
-		def initialize(name, attributes=nil)
+		def initialize(name, attributes={})
 			@name = name.to_sym
 			@attributes = Hash.new
 			@contents = Array.new
 
-			@attributes.update(attributes) if attributes
+			attributes.each do |k, v|
+				@attributes[k.to_sym] = v
+			end
 
 			yield(self) if block_given?
 		end
