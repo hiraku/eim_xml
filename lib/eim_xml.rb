@@ -12,7 +12,7 @@ module EimXML
 		alias to_s encoded_string
 
 		def self.encode(s)
-			s.gsub(/[&\"\'<>]/) do |m|
+			s.to_s.gsub(/[&\"\'<>]/) do |m|
 				case m
 				when "&"
 					"&amp;"

@@ -9,11 +9,15 @@ module Module.new::M
 			PCString.encode("<>\"'&").should == "&lt;&gt;&quot;&apos;&amp;"
 			PCString.encode("&test;").should == "&amp;test;"
 			PCString.encode("&amp;").should == "&amp;amp;"
+			PCString.encode(:'sym&').should == "sym&amp;"
 		end
 
 		it ".new" do
 			PCString.new("&").encoded_string.should == "&amp;"
 			PCString.new("&", true).encoded_string.should == "&"
+			pcs = PCString.new(:'sym&')
+			pcs.encoded_string.should == "sym&amp;"
+			pcs.src.should == :'sym&'
 		end
 
 		describe ".[]" do
