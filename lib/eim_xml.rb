@@ -159,7 +159,8 @@ module EimXML
 			return false unless @name==obj.name
 
 			obj.attributes.all? do |k, v|
-				v===@attributes[k]
+				(v.nil? && !@attributes.include?(k)) ||
+					(@attributes.include?(k) && (v.is_a?(Regexp) ? v =~ @attributes[k] : PCString[v] == PCString[@attributes[k]]))
 			end and obj.contents.all? do |i|
 				case i
 				when Element
