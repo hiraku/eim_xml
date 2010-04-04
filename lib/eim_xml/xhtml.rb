@@ -96,15 +96,21 @@ module EimXML::XHTML
 		end
 	end
 
-	class HIDDEN < INPUT
+	class BUTTON < Base_
 		def initialize(opt={})
-			super(opt.merge(:type=>:hidden))
+			super(:button, opt)
 		end
 	end
 
-	class SUBMIT < INPUT
+	class SUBMIT < BUTTON
 		def initialize(opt={})
 			super(opt.merge(:type=>:submit))
+		end
+	end
+
+	class HIDDEN < INPUT
+		def initialize(opt={})
+			super(opt.merge(:type=>:hidden))
 		end
 	end
 
