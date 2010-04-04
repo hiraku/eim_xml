@@ -88,11 +88,7 @@ module EimXML::XHTML
 		end
 	end
 
-	class TEXTAREA < Base_
-		def initialize(opt={})
-			super(:textarea, opt)
-		end
-	end
+	class TEXTAREA < PreserveSpace_; end
 
 	class INPUT < Base_
 		def initialize(opt={})
