@@ -31,7 +31,15 @@ module EimXML::XHTML
 		end
 	end
 
-	class PreserveSpace_ < Simple_; end
+	class PreserveSpace_ < Base_
+		def initialize(name={}, attributes={})
+			if name.is_a?(Hash)
+				super(self.class.name[/.*::(.*)/, 1].downcase.to_sym, name)
+			else
+				super(name, attributes)
+			end
+		end
+	end
 
 	class HEAD < Simple_; end
 	class META < Simple_; end
@@ -96,7 +104,7 @@ module EimXML::XHTML
 		end
 	end
 
-	class BUTTON < Base_
+	class BUTTON < PreserveSpace_
 		def initialize(opt={})
 			super(:button, opt)
 		end

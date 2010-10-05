@@ -263,6 +263,10 @@ module Module.new::M
 			t[:name].should == "t"
 		end
 
+		it "BUTTON" do
+			BUTTON.new.should == Element.new(:button)
+		end
+
 		it "INPUT" do
 			INPUT.new(:type=>:test, :name=>:item, :value=>"v").should == Element.new(:input, :type=>:test, :name=>:item, :value=>"v")
 			INPUT.new(:type=>"test", :name=>"item", :value=>"v").should == Element.new(:input, :type=>"test", :name=>"item", :value=>"v")
@@ -427,6 +431,7 @@ module Module.new::M
 						caption.add("c\nt")
 						th.add("th\nt")
 						td.add("td\nt")
+						button.add("button\nt")
 					end
 				end
 
@@ -480,6 +485,8 @@ t</caption>
 t</th>
     <td>td
 t</td>
+    <button>button
+t</button>
   </body>
 </html>
 EOT
