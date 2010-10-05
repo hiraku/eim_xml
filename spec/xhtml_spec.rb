@@ -295,9 +295,9 @@ module Module.new::M
 		end
 
 		it "SUBMIT" do
-			SUBMIT.new.should == Element.new(:input, :type=>:submit)
-			SUBMIT.new(:value=>"OK").should == Element.new(:input, :type=>:submit, :value=>"OK")
-			SUBMIT.new(:value=>"OK", :class=>"c").should == Element.new(:input, :type=>:submit, :value=>"OK", :class=>"c")
+			SUBMIT.new.should == Element.new(:button, :type=>:submit)
+			SUBMIT.new(:value=>"OK").should == Element.new(:button, :type=>:submit, :value=>"OK")
+			SUBMIT.new(:value=>"OK", :class=>"c").should == Element.new(:button, :type=>:submit, :value=>"OK", :class=>"c")
 			opt = {:value=>"v", :name=>"n"}
 			opt2 = opt.dup
 			SUBMIT.new(opt2)
