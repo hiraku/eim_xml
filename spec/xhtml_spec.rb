@@ -355,6 +355,13 @@ module Module.new::M
 			t.should == PASSWORD.new(:name=>:n, :value=>:v)
 		end
 
+		it "FILE" do
+			FILE.new(:name=>:foo).should == Element.new(:input, :type=>:file, :name=>:foo)
+			XDSL.file(:name=>:foo).should =~ FILE.new(:name=>:foo)
+
+			OpenDSL.file(:name=>:foo).should == FILE.new(:name=>:foo)
+		end
+
 		it "BR" do
 			BR.new.name.should == :br
 			XDSL.br.should be_kind_of(BR)

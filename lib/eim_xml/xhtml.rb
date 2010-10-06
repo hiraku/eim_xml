@@ -134,6 +134,12 @@ module EimXML::XHTML
 		end
 	end
 
+	class FILE < INPUT
+		def initialize(opt={})
+			super(opt.merge(:type=>:file))
+		end
+	end
+
 	PRESERVE_SPACES = [PreserveSpace_]
 	class Formatter < EimXML::Formatter
 		def self.write(element, opt={})
