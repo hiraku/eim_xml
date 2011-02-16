@@ -4,7 +4,7 @@ require "eim_xml/dsl"
 describe EimXML::Formatter do
 	describe ".write" do
 		it "should return output object" do
-			s = stub(:null_object=>true)
+			s = ""
 			EimXML::Formatter.write(EimXML::Element.new(:e), :out=>s).should be_equal(s)
 		end
 
