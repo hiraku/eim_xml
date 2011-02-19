@@ -213,3 +213,48 @@ EOT
 		end
 	end
 end
+
+describe EimXML::Formatter::ElementWrapper do
+	before do
+		@out = ""
+		@opt = {:out=>@out, :preservers=>[], :a=>10, :b=>20}
+		@formatter = EimXML::Formatter.new(@opt)
+		@m = Module.new
+		class @m::Wrapper < EimXML::Formatter::ElementWrapper
+			def initialize(mocks)
+				@mocks = mocks
+			end
+
+			def contents(option)
+				@mocks
+			end
+		end
+		@mocks = [mock(:m1).as_null_object, mock(:m2).as_null_object]
+		@wrapper = @m::Wrapper.new(@mocks)
+		@xml = EimXML::Element.new(:e) do |e|
+			e << @wrapper
+		end
+	end
+
+	describe "#each" do
+		it "will give options from formatter"  do
+			@wrapper.should_receive(:contents).with(:a=>10, :b=>20).and_return([])
+			@formatter.write(@xml)
+		end
+
+		it "yield result of contents" do
+			@mocks.each_with_index do |mock, index|
+				mock.should_receive(:to_s).and_return("m#{index}")
+			end
+			@formatter.write(@xml)
+			@out.should == "<e>\n  m0\n  m1\n</e>\n"
+		end
+
+		it "raise error when subclass of ElementWrapper is not implement #contents" do
+			class @m::Wrapper2 < EimXML::Formatter::ElementWrapper; end
+			@xml << @m::Wrapper2.new
+
+			expect{@formatter.write(@xml)}.to raise_error(NoMethodError)
+		end
+	end
+end

@@ -16,10 +16,13 @@ module EimXML
 			@preserve_space = false
 			@indent_string = "  "
 			@indent_depth = 0
+			@option = opt.dup.tap{|h| [:out, :preservers].each{|k| h.delete(k)}}
 		end
 
 		def write(src)
 			case src
+			when ElementWrapper
+				write_wrapper(src)
 			when Comment
 				write_comment(src)
 			when Element
@@ -27,7 +30,7 @@ module EimXML
 			when PCString
 				write_pcstring(src)
 			else
-				write_string(src)
+				write_string(src.to_s)
 			end
 		end
 
@@ -108,5 +111,13 @@ module EimXML
 			end
 			write_newline
 		end
+
+		def write_wrapper(wrapper)
+			wrapper.each(@option) do |i|
+				write(i)
+			end
+		end
 	end
 end
+
+require "eim_xml/formatter/element_wrapper"
