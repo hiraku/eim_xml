@@ -44,6 +44,7 @@ module EimXML::XHTML
 	class HEAD < Simple_; end
 	class META < Simple_; end
 	class LINK < Simple_; end
+	class IMG < Simple_; end
 	class STYLE < PreserveSpace_; end
 	class SCRIPT < PreserveSpace_; end
 	class TITLE < Simple_; end

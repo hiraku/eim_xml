@@ -56,6 +56,12 @@ module Module.new::M
 			OpenDSL.style.should be_kind_of(STYLE)
 		end
 
+		it "IMG" do
+			IMG.new.name.should == :img
+			XDSL.img.should be_kind_of(IMG)
+			OpenDSL.img.should be_kind_of(IMG)
+		end
+
 		it "SCRIPT" do
 			SCRIPT.new.name.should == :script
 			XDSL.script.should be_kind_of(SCRIPT)
