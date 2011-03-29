@@ -88,6 +88,9 @@ module EimXML::XHTML
 	class TD < PreserveSpace_; end
 	class BR < Simple_; end
 	class HR < Simple_; end
+	class SELECT < Simple_; end
+	class OPTION < Simple_; end
+
 
 	module Hn
 		def self.new(level, attr={}, &proc)

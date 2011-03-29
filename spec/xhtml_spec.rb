@@ -368,6 +368,20 @@ module Module.new::M
 			OpenDSL.file(:name=>:foo).should == FILE.new(:name=>:foo)
 		end
 
+		it "SELECT" do
+			SELECT.new(:name=>:foo).should == Element.new(:select, :name=>:foo)
+			XDSL.select(:name=>:foo).should == SELECT.new(:name=>:foo)
+
+			OpenDSL.select(:name=>:foo).should == SELECT.new(:name=>:foo)
+		end
+
+		it "OPTION" do
+			OPTION.new(:value=>:bar, :selected=>true){|e| e << "TEXT"}.should == Element.new(:option, :value=>:bar, :selected=>true){|e| e.add("TEXT")}
+			XDSL.option(:value=>:bar).should == OPTION.new(:value=>:bar)
+
+			OpenDSL.option(:value=>:bar).should == OPTION.new(:value=>:bar)
+		end
+
 		it "BR" do
 			BR.new.name.should == :br
 			XDSL.br.should be_kind_of(BR)
