@@ -4,6 +4,12 @@
 # You can redistribute it and/or modify it under GPL2.
 #
 
+warn "*"*60 << "\n" << <<EOT << "*"*60
+[DEPRECATION]
+"eimxml" gem is deprecated.
+Please use "eim_xml" gem instead.
+EOT
+
 module EimXML
 	XML_DECLARATION = %[<?xml version="1.0"?>]
 
