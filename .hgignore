@@ -1,4 +1,9 @@
 syntax: glob
+.bundle
+.ruby-version
+Gemfile.lock
+
 html
 pkg
 external
+coverage
