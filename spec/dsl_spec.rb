@@ -124,7 +124,7 @@ module Module.new::M
 					d.element(:sub2).should == Element.new(:sub2)
 				end
 			end
-			block_executed.should be_true
+			block_executed.should be true
 		end
 
 		it "DSL methods return element" do

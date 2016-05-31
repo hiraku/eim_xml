@@ -322,43 +322,43 @@ module Module.new::M
 
 		it "#match" do
 			e = Element.new(:tag, :attr=>"value")
-			e.match(:tag).should be_true
-			e.match(:tag, :attr=>"value").should be_true
-			e.match(:t).should be_false
-			e.match(:tag, :attr2=>"value").should be_false
-			e.match(:tag, :attr=>"value2").should be_false
-			e.match(:tag, :attr=>/val/).should be_true
+			e.match(:tag).should be true
+			e.match(:tag, :attr=>"value").should be true
+			e.match(:t).should be false
+			e.match(:tag, :attr2=>"value").should be false
+			e.match(:tag, :attr=>"value2").should be false
+			e.match(:tag, :attr=>/val/).should be true
 
-			e.match(Element.new(:tag)).should be_true
-			e.match(Element.new(:tag, :attr=>"value")).should be_true
-			e.match(Element.new(:tag, :attr=>/alu/)).should be_true
-			e.match(Element.new(:t)).should be_false
-			e.match(Element.new(:tag, :attr2=>"value")).should be_false
-			e.match(Element.new(:tag, :attr=>"value2")).should be_false
-			e.match(Element.new(:tag, :attr=>/aul/)).should be_false
-			e.match(Element.new(:tag, :attr=>PCString.new("value"))).should be_true
+			e.match(Element.new(:tag)).should be true
+			e.match(Element.new(:tag, :attr=>"value")).should be true
+			e.match(Element.new(:tag, :attr=>/alu/)).should be true
+			e.match(Element.new(:t)).should be false
+			e.match(Element.new(:tag, :attr2=>"value")).should be false
+			e.match(Element.new(:tag, :attr=>"value2")).should be false
+			e.match(Element.new(:tag, :attr=>/aul/)).should be false
+			e.match(Element.new(:tag, :attr=>PCString.new("value"))).should be true
 			Element.new(:tag, :attr=>PCString.new("value")).should match(e)
 
-			e.match(Element.new(:tag, :attr=>nil)).should be_false
-			e.match(Element.new(:tag, :nonattr=>nil)).should be_true
+			e.match(Element.new(:tag, :attr=>nil)).should be false
+			e.match(Element.new(:tag, :nonattr=>nil)).should be true
 
-			(!!e.match(/ag/)).should be_true
-			(!!e.match(/elem/)).should be_false
+			(!!e.match(/ag/)).should be true
+			(!!e.match(/elem/)).should be false
 
-			e.match(Element).should be_true
-			e.match(Dummy).should be_false
-			e.match(String).should be_false
+			e.match(Element).should be true
+			e.match(Dummy).should be false
+			e.match(String).should be false
 
 			e = Element.new(:element)
 			e << Element.new(:sub)
 			e << "text"
-			e.match(EDSL.element(:element){element(:sub)}).should be_true
-			e.match(EDSL.element(:element){element(:other)}).should be_false
-			e.match(EDSL.element(:element){add("text")}).should be_true
-			e.match(EDSL.element(:element){add("other")}).should be_false
-			e.match(EDSL.element(:element){add(/ex/)}).should be_true
-			e.match(EDSL.element(:element){add(/th/)}).should be_false
-			e.match(EDSL.element(:element){add(/sub/)}).should be_false
+			e.match(EDSL.element(:element){element(:sub)}).should be true
+			e.match(EDSL.element(:element){element(:other)}).should be false
+			e.match(EDSL.element(:element){add("text")}).should be true
+			e.match(EDSL.element(:element){add("other")}).should be false
+			e.match(EDSL.element(:element){add(/ex/)}).should be true
+			e.match(EDSL.element(:element){add(/th/)}).should be false
+			e.match(EDSL.element(:element){add(/sub/)}).should be false
 
 			e = Element.new(:t, :a=>"&")
 			e.should match(Element.new(:t, :a=>"&"))
@@ -398,25 +398,25 @@ module Module.new::M
 					b <<= Element.new(:sub, :attr=>"value")
 				end
 
-				e.send(method, :sub).should be_true
-				e.send(method, :sub, :attr=>"value").should be_true
-				e.send(method, :sub, :attr=>"value", :attr2=>"").should be_false
-				e.send(method, :deep).should be_true
+				e.send(method, :sub).should be true
+				e.send(method, :sub, :attr=>"value").should be true
+				e.send(method, :sub, :attr=>"value", :attr2=>"").should be false
+				e.send(method, :deep).should be true
 
-				e.send(method, String).should be_true
-				e.send(method, PCString).should be_true
+				e.send(method, String).should be true
+				e.send(method, PCString).should be true
 
 				d = Element.new(:deep)
 				d << "text"
 				d << PCString.new("&amp;", true)
 				d << "<"
-				e.send(method, d).should be_true
+				e.send(method, d).should be true
 
 				d = Element.new(:deep)
 				d << PCString.new("text", true)
 				d << "&"
 				d << PCString.new("&lt;", true)
-				e.send(method, d).should be_true
+				e.send(method, d).should be true
 			end
 		end
 

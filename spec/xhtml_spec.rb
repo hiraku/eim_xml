@@ -226,29 +226,29 @@ module Module.new::M
 		end
 
 		it "FORM.new should be able to receive CGI::Session object and set random token" do
-			s = mock("session")
+			s = double("session")
 			h = {}
-			s.should_receive(:[]).any_number_of_times{|k| h[k]}
-			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
+			s.should_receive(:[]).at_least(1).times{|k| h[k]}
+			s.should_receive(:[]=).at_least(1).times{|k, v| h[k]=v}
 			f = FORM.new(:session=>s)
 			h["token"].size.should == 40
 			h["token"].should =~ /\A[0-9a-f]{40}\z/
 			f.should include(HIDDEN.new(:name=>"token", :value=>h["token"]))
 
-			s = mock("session")
+			s = double("session")
 			h = {}
-			s.should_receive(:[]).any_number_of_times{|k| h[k]}
-			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
+			s.should_receive(:[]).at_least(1).times{|k| h[k]}
+			s.should_receive(:[]=).at_least(1).times{|k, v| h[k]=v}
 			f = FORM.new(:session=>s, :session_name=>"random_key")
 			h["token"].should be_nil
 			h["random_key"].size.should == 40
 			h["random_key"].should =~ /\A[0-9a-f]{40}\z/
 			f.should include(HIDDEN.new(:name=>"random_key", :value=>h["random_key"]))
 
-			s = mock("session")
+			s = double("session")
 			h = {}
-			s.should_receive(:[]).any_number_of_times{|k| h[k]}
-			s.should_receive(:[]=).any_number_of_times{|k, v| h[k]=v}
+			s.should_receive(:[]).at_least(1).times{|k| h[k]}
+			s.should_receive(:[]=).at_least(1).times{|k, v| h[k]=v}
 			FORM.new(:session=>s)
 			token = s["token"]
 			FORM.new(:session=>s).should include(HIDDEN.new(:name=>"token", :value=>token))
@@ -316,8 +316,8 @@ module Module.new::M
 			s = XDSL.submit
 			s.should be_kind_of(SUBMIT)
 			s.should =~ SUBMIT.new
-			(!s[:name]).should be_true
-			(!s[:value]).should be_true
+			(!s[:name]).should be true
+			(!s[:value]).should be true
 			s = XDSL.submit(:name=>:s, :value=>:v)
 			s[:name].should == :s
 			s[:value].should == :v

@@ -229,7 +229,7 @@ describe EimXML::Formatter::ElementWrapper do
 				@mocks
 			end
 		end
-		@mocks = [mock(:m1).as_null_object, mock(:m2).as_null_object]
+		@mocks = [double(:m1).as_null_object, double(:m2).as_null_object]
 		@wrapper = @m::Wrapper.new(@mocks)
 		@xml = EimXML::Element.new(:e) do |e|
 			e << @wrapper
