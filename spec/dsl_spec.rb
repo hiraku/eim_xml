@@ -18,23 +18,23 @@ module Module.new::M
 				end
 			end
 
-			block_executed.should == true
-			outer.should be_kind_of(EDSL)
-			inner.should be_kind_of(EDSL)
-			outer.should be_equal(inner)
+			expect(block_executed).to eq(true)
+			expect(outer).to be_kind_of(EDSL)
+			expect(inner).to be_kind_of(EDSL)
+			expect(outer).to be_equal(inner)
 
-			e.name.should == :out
-			e[:k1].should == "v1"
-			e[0].name.should == :in
-			e[0][:k2].should == "v2"
-			e[0][0].name.should == :deep
-			e2.should be_equal(e[0])
-			e3.should be_equal(e[0][0])
+			expect(e.name).to eq(:out)
+			expect(e[:k1]).to eq("v1")
+			expect(e[0].name).to eq(:in)
+			expect(e[0][:k2]).to eq("v2")
+			expect(e[0][0].name).to eq(:deep)
+			expect(e2).to be_equal(e[0])
+			expect(e3).to be_equal(e[0][0])
 		end
 
 		it "#comment" do
-			Comment.should_receive(:new).with("comment").and_return(:success)
-			EDSL.comment("comment").should == :success
+			expect(Comment).to receive(:new).with("comment").and_return(:success)
+			expect(EDSL.comment("comment")).to eq(:success)
 		end
 
 		it "#import_variables" do
@@ -47,13 +47,13 @@ module Module.new::M
 			o.instance_variable_set("@_container", :t)
 			orig_c = d.instance_variable_get("@_container")
 
-			d.import_variables(o).should be_equal(d)
+			expect(d.import_variables(o)).to be_equal(d)
 
-			d.instance_variable_get("@_container").should == orig_c
-			d.instance_variables.map(&:to_s).sort.should == ["@v1", "@v2", "@__v4"].sort
-			d.instance_variable_get("@v1").should == 1
-			d.instance_variable_get("@v2").should == "2"
-			d.instance_variable_get("@__v4").should == 4
+			expect(d.instance_variable_get("@_container")).to eq(orig_c)
+			expect(d.instance_variables.map(&:to_s).sort).to eq(["@v1", "@v2", "@__v4"].sort)
+			expect(d.instance_variable_get("@v1")).to eq(1)
+			expect(d.instance_variable_get("@v2")).to eq("2")
+			expect(d.instance_variable_get("@__v4")).to eq(4)
 		end
 
 		describe "#_push" do
@@ -77,10 +77,10 @@ module Module.new::M
 
 			it "should return given container" do
 				a = []
-				@D.new.call_push(a).should be_equal(a)
-				a.should == [EimXML::Element.new(:e)]
+				expect(@D.new.call_push(a)).to be_equal(a)
+				expect(a).to eq([EimXML::Element.new(:e)])
 
-				@D.new.exec.should == EimXML::Element.new(:e).add(EimXML::Element.new(:f))
+				expect(@D.new.exec).to eq(EimXML::Element.new(:e).add(EimXML::Element.new(:f)))
 			end
 		end
 	end
@@ -93,14 +93,14 @@ module Module.new::M
 		end
 
 		it "register" do
-			lambda{EDSL.call(:dummy)}.should raise_error(NoMethodError)
-			lambda{BaseDSL.call(:dummy)}.should raise_error(NoMethodError)
-			lambda{DSL1.element(:dummy)}.should raise_error(NoMethodError)
-			DSL1.call(:dummy).should be_kind_of(Element)
-			DSL1.hash.should be_kind_of(Hash)
-			DSL1.string.should be_kind_of(String)
-			DSL1.array.should be_kind_of(Array)
-			DSL1.object.should be_kind_of(Object)
+			expect{EDSL.call(:dummy)}.to raise_error(NoMethodError)
+			expect{BaseDSL.call(:dummy)}.to raise_error(NoMethodError)
+			expect{DSL1.element(:dummy)}.to raise_error(NoMethodError)
+			expect(DSL1.call(:dummy)).to be_kind_of(Element)
+			expect(DSL1.hash).to be_kind_of(Hash)
+			expect(DSL1.string).to be_kind_of(String)
+			expect(DSL1.array).to be_kind_of(Array)
+			expect(DSL1.object).to be_kind_of(Object)
 		end
 	end
 
@@ -110,46 +110,46 @@ module Module.new::M
 			block_executed = false
 			d = OpenDSL.new do |d|
 				block_executed = true
-				d.should be_kind_of(OpenDSL)
-				d.container.should be_nil
+				expect(d).to be_kind_of(OpenDSL)
+				expect(d.container).to be_nil
 				d.element(:base, :key1=>"v1") do
-					@scope_checker_variable.should == 1
-					self.should_not be_kind_of(Element)
-					d.container.should be_kind_of(Element)
-					d.container.should == Element.new(:base, :key1=>"v1")
+					expect(@scope_checker_variable).to eq(1)
+					expect(self).not_to be_kind_of(Element)
+					expect(d.container).to be_kind_of(Element)
+					expect(d.container).to eq(Element.new(:base, :key1=>"v1"))
 					d.element(:sub, :key2=>"v2") do
-						d.container.should be_kind_of(Element)
-						d.container.should == Element.new(:sub, :key2=>"v2")
+						expect(d.container).to be_kind_of(Element)
+						expect(d.container).to eq(Element.new(:sub, :key2=>"v2"))
 					end
-					d.element(:sub2).should == Element.new(:sub2)
+					expect(d.element(:sub2)).to eq(Element.new(:sub2))
 				end
 			end
-			block_executed.should be true
+			expect(block_executed).to be true
 		end
 
 		it "DSL methods return element" do
 			d = OpenDSL.new
-			d.container.should be_nil
+			expect(d.container).to be_nil
 			r = d.element(:base, :key1=>"v1") do
 				d.element(:sub, :key2=>"v2")
 			end
-			r.should == EDSL.element(:base, :key1=>"v1") do
+			expect(r).to eq(EDSL.element(:base, :key1=>"v1") do
 				element(:sub, :key2=>"v2")
-			end
+			end)
 		end
 
 		it "DSL method's block given instance of OpenDSL" do
 			e = OpenDSL.new.element(:base) do |d|
-				d.should be_kind_of(OpenDSL)
-				d.container.name.should == :base
+				expect(d).to be_kind_of(OpenDSL)
+				expect(d.container.name).to eq(:base)
 				d.element(:sub) do |d2|
-					d2.should be_equal(d)
+					expect(d2).to be_equal(d)
 				end
 			end
 
-			e.should == EDSL.element(:base) do
+			expect(e).to eq(EDSL.element(:base) do
 				element(:sub)
-			end
+			end)
 		end
 
 		it "ensure reset container when error raised" do
@@ -162,13 +162,13 @@ module Module.new::M
 							end
 						rescue RuntimeError => e
 							raise unless e.message=="OK"
-							d.container.name.should == :base
+							expect(d.container.name).to eq(:base)
 							raise
 						end
 					end
 				rescue RuntimeError => e
 					raise unless e.message=="OK"
-					d.container.should == nil
+					expect(d.container).to eq(nil)
 				end
 			end
 		end
@@ -179,28 +179,28 @@ module Module.new::M
 				d.element(:sub) do
 					s = Element.new(:sub)
 					s.add("sub text")
-					d.add("sub text").should == s
+					expect(d.add("sub text")).to eq(s)
 				end
 			end
 
-			r.should == EDSL.element(:base) do
+			expect(r).to eq(EDSL.element(:base) do
 				add "text"
 				element(:sub) do
 					add "sub text"
 				end
-			end
+			end)
 		end
 
 		it "respond to <<" do
 			r = OpenDSL.new.element(:base) do |d|
 				b = Element.new(:base)
 				b << "text" << "next"
-				(d << "text" << "next").should == b
+				expect(d << "text" << "next").to eq(b)
 			end
-			r.should == EDSL.element(:base) do
+			expect(r).to eq(EDSL.element(:base) do
 				add "text"
 				add "next"
-			end
+			end)
 		end
 
 		it "can call directly element method" do
@@ -208,10 +208,10 @@ module Module.new::M
 				d.element(:sub)
 				d.element(:sub2)
 			end
-			r.should == EDSL.element(:base) do
+			expect(r).to eq(EDSL.element(:base) do
 				element(:sub)
 				element(:sub2)
-			end
+			end)
 		end
 	end
 end

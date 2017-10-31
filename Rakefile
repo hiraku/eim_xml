@@ -2,7 +2,7 @@ require "rdoc/task"
 require "rspec/core/rake_task"
 require "rubygems/package_task"
 
-VER = "0.0.4"
+VER = "0.0.5"
 
 Rake::RDocTask.new(:rdoc) do |rdoc|
 	rdoc.options << "-S"

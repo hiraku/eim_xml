@@ -5,12 +5,12 @@ describe EimXML::Formatter do
 	describe ".write" do
 		it "should return output object" do
 			s = ""
-			EimXML::Formatter.write(EimXML::Element.new(:e), :out=>s).should be_equal(s)
+			expect(EimXML::Formatter.write(EimXML::Element.new(:e), :out=>s)).to be_equal(s)
 		end
 
 		it "should return string when destination not given" do
 			r = EimXML::Formatter.write(EimXML::Element.new(:e))
-			r.should be_kind_of(String)
+			expect(r).to be_kind_of(String)
 		end
 
 		describe "should return formatted elements string" do
@@ -19,20 +19,20 @@ describe EimXML::Formatter do
 			end
 
 			it "(element not have content)"do
-				write(EimXML::DSL.element(:e)).should == "<e />\n"
+				expect(write(EimXML::DSL.element(:e))).to eq("<e />\n")
 			end
 
 			it "(empty element which has attributes)" do
 				r = (write(EimXML::DSL.element(:e, :a1=>"v1", :a2=>"v2")) =~ %r[<e (a.='v.') (a.='v.') />])
-				r.should_not be_nil
-				[$1, $2].sort.should == ["a1='v1'", "a2='v2'"]
+				expect(r).not_to be_nil
+				expect([$1, $2].sort).to eq(["a1='v1'", "a2='v2'"])
 			end
 
 			it "(element in element)" do
 				e = EimXML::DSL.element(:e) do
 					element(:s)
 				end
-				write(e).should == <<EOT
+				expect(write(e)).to eq <<EOT
 <e>
   <s />
 </e>
@@ -44,7 +44,7 @@ EOT
 					element(:s1)
 					element(:s2)
 				end
-				write(e).should == <<EOT
+				expect(write(e)).to eq <<EOT
 <e>
   <s1 />
   <s2 />
@@ -56,7 +56,7 @@ EOT
 				e = EimXML::DSL.element(:e) do
 					comment("multi\nline\n pre-indented\n  comment")
 				end
-				write(e).should == <<EOT
+				expect(write(e)).to eq <<EOT
 <e>
   <!-- multi
 line
@@ -69,18 +69,18 @@ EOT
 			it "(string in element)" do
 				e = EimXML::Element.new(:e)
 				e.add("string")
-				write(e).should == "<e>\n  string\n</e>\n"
+				expect(write(e)).to eq("<e>\n  string\n</e>\n")
 
 				esc = "&<>'\""
 				esc = "&amp;&lt;&gt;\n&apos;&quot;"
-				write(EimXML::Element.new(:e, :a=>"&<>\n'\"").add("&<>\n'\"")).should == "<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &amp;&lt;&gt;\n  &apos;&quot;\n</e>\n"
-				write(EimXML::Element.new(:e, :a=>"&<>\n'\"").add(EimXML::PCString.new("&<>\n'\"", true))).should == "<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &<>\n  '\"\n</e>\n"
+				expect(write(EimXML::Element.new(:e, :a=>"&<>\n'\"").add("&<>\n'\""))).to eq("<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &amp;&lt;&gt;\n  &apos;&quot;\n</e>\n")
+				expect(write(EimXML::Element.new(:e, :a=>"&<>\n'\"").add(EimXML::PCString.new("&<>\n'\"", true)))).to eq("<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &<>\n  '\"\n</e>\n")
 			end
 
 			it "(multi-line string in element)" do
 				e = EimXML::Element.new(:e)
 				e.add("multi\nline")
-				write(e).should == <<EOT
+				expect(write(e)).to eq <<EOT
 <e>
   multi
   line
@@ -110,7 +110,7 @@ text</pre2>
 </e>
 EOT
 
-					write(e, :preservers=>[:pre1, :pre2]).should == s
+					expect(write(e, :preservers=>[:pre1, :pre2])).to eq(s)
 				end
 
 				it "class of element" do
@@ -163,7 +163,7 @@ s2</s></p2>
   </s>
 </e>
 EOT
-					write(e, :preservers=>[m::Pre]).should == s
+					expect(write(e, :preservers=>[m::Pre])).to eq(s)
 				end
 			end
 
@@ -208,7 +208,7 @@ EOT
 						add("sub54-1\nsub54-2")
 					end
 				end
-				write(e).should == s
+				expect(write(e)).to eq(s)
 			end
 		end
 	end
@@ -238,16 +238,16 @@ describe EimXML::Formatter::ElementWrapper do
 
 	describe "#each" do
 		it "will give options from formatter"  do
-			@wrapper.should_receive(:contents).with(:a=>10, :b=>20).and_return([])
+			expect(@wrapper).to receive(:contents).with(:a=>10, :b=>20).and_return([])
 			@formatter.write(@xml)
 		end
 
 		it "yield result of contents" do
 			@mocks.each_with_index do |mock, index|
-				mock.should_receive(:to_s).and_return("m#{index}")
+				expect(mock).to receive(:to_s).and_return("m#{index}")
 			end
 			@formatter.write(@xml)
-			@out.should == "<e>\n  m0\n  m1\n</e>\n"
+			expect(@out).to eq("<e>\n  m0\n  m1\n</e>\n")
 		end
 
 		it "raise error when subclass of ElementWrapper is not implement #contents" do
