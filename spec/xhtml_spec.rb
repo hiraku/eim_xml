@@ -228,8 +228,8 @@ module Module.new::M
     it 'FORM.new should be able to receive CGI::Session object and set random token' do
       s = double('session')
       h = {}
-      expect(s).to receive(:[]).at_least(1).times
-      expect(s).to(receive(:[]=).at_least(1).times) { |k, v| h[k] = v }
+      expect(s).to receive(:[]).at_least(:once)
+      expect(s).to(receive(:[]=).at_least(:once)) { |k, v| h[k] = v }
       f = FORM.new(session: s)
       expect(h['token'].size).to eq(40)
       expect(h['token']).to match(/\A[0-9a-f]{40}\z/)
@@ -237,8 +237,8 @@ module Module.new::M
 
       s = double('session')
       h = {}
-      expect(s).to(receive(:[]).at_least(1).times)
-      expect(s).to(receive(:[]=).at_least(1).times) { |k, v| h[k] = v }
+      expect(s).to(receive(:[]).at_least(:once))
+      expect(s).to(receive(:[]=).at_least(:once)) { |k, v| h[k] = v }
       f = FORM.new(session: s, session_name: 'random_key')
       expect(h['token']).to be_nil
       expect(h['random_key'].size).to eq(40)
@@ -247,8 +247,8 @@ module Module.new::M
 
       s = double('session')
       h = {}
-      expect(s).to(receive(:[]).at_least(1).times) { |k| h[k] }
-      expect(s).to(receive(:[]=).at_least(1).times) { |k, v| h[k] = v }
+      expect(s).to(receive(:[]).at_least(:once)) { |k| h[k] }
+      expect(s).to(receive(:[]=).at_least(:once)) { |k, v| h[k] = v }
       FORM.new(session: s)
       token = s['token']
       expect(FORM.new(session: s)).to include(HIDDEN.new(name: 'token', value: token))
@@ -426,13 +426,13 @@ module Module.new::M
 
   describe EimXML::XHTML::Formatter do
     describe '#write' do
-      it 'should set :preservers=>PRESERVE_SPACES to default option' do
+      it 'sets :preservers=>PRESERVE_SPACES to default option' do
         e = EimXML::XHTML::HTML.new
         expect(EimXML::Formatter).to receive(:write).with(e, preservers: EimXML::XHTML::PRESERVE_SPACES, opt: :dummy)
         described_class.write(e, opt: :dummy)
       end
 
-      it 'should return string' do
+      it 'returns string' do
         h = EimXML::XHTML::DSL.html do
           head do
             style.add("style\ntext")

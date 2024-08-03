@@ -3,12 +3,12 @@ require 'eim_xml/dsl'
 
 describe EimXML::Formatter do
   describe '.write' do
-    it 'should return output object' do
+    it 'returns output object' do
       s = ''
       expect(described_class.write(EimXML::Element.new(:e), out: s)).to be_equal(s)
     end
 
-    it 'should return string when destination not given' do
+    it 'returns string when destination not given' do
       r = described_class.write(EimXML::Element.new(:e))
       expect(r).to be_kind_of(String)
     end
@@ -215,11 +215,12 @@ describe EimXML::Formatter do
 end
 
 describe EimXML::Formatter::ElementWrapper do
-  before do
-    @out = ''
-    @opt = { out: @out, preservers: [], a: 10, b: 20 }
-    @formatter = EimXML::Formatter.new(@opt)
-    @wrapper_class = Class.new(EimXML::Formatter::ElementWrapper) do
+  let(:out) { '' }
+  let(:opt) { { out: out, preservers: [], a: 10, b: 20 } }
+  let(:formatter) { EimXML::Formatter.new(opt) }
+
+  let(:wrapper_class) do
+    Class.new(EimXML::Formatter::ElementWrapper) do
       def initialize(mocks)
         @mocks = mocks
       end
@@ -228,32 +229,36 @@ describe EimXML::Formatter::ElementWrapper do
         @mocks
       end
     end
-    @mocks = [double(:m1).as_null_object, double(:m2).as_null_object]
-    @wrapper = @wrapper_class.new(@mocks)
-    @xml = EimXML::Element.new(:e) do |e|
-      e << @wrapper
+  end
+
+  let(:mocks) { [double(:m1).as_null_object, double(:m2).as_null_object] }
+  let(:wrapper) { wrapper_class.new(mocks) }
+
+  let(:xml) do
+    EimXML::Element.new(:e) do |e|
+      e << wrapper
     end
   end
 
   describe '#each' do
     it 'will give options from formatter' do
-      expect(@wrapper).to receive(:contents).with(a: 10, b: 20).and_return([])
-      @formatter.write(@xml)
+      expect(wrapper).to receive(:contents).with(a: 10, b: 20).and_return([])
+      formatter.write(xml)
     end
 
     it 'yield result of contents' do
-      @mocks.each_with_index do |mock, index|
+      mocks.each_with_index do |mock, index|
         expect(mock).to receive(:to_s).and_return("m#{index}")
       end
-      @formatter.write(@xml)
-      expect(@out).to eq("<e>\n  m0\n  m1\n</e>\n")
+      formatter.write(xml)
+      expect(out).to eq("<e>\n  m0\n  m1\n</e>\n")
     end
 
     it 'raise error when subclass of ElementWrapper is not implement #contents' do
-      @wrapper_class2 = Class.new(described_class)
-      @xml << @wrapper_class2.new
+      wrapper_class2 = Class.new(described_class)
+      xml << wrapper_class2.new
 
-      expect { @formatter.write(@xml) }.to raise_error(NoMethodError)
+      expect { formatter.write(xml) }.to raise_error(NoMethodError)
     end
   end
 end

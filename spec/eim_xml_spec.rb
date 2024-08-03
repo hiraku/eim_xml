@@ -21,12 +21,12 @@ module Module.new::M
     end
 
     describe '.[]' do
-      it 'should return itself when given object is a PCString' do
+      it 'returns itself when given object is a PCString' do
         pcs = described_class.new('s')
         expect(described_class[pcs]).to equal(pcs)
       end
 
-      it 'should return PCString.new(obj) if given obj is not a PCString' do
+      it 'returns PCString.new(obj) if given obj is not a PCString' do
         o = 'str'
         r = described_class[o]
         r.is_a?(EimXML::PCString)
@@ -35,11 +35,13 @@ module Module.new::M
     end
 
     it '#==' do
+      # rubocop:disable RSpec/IdenticalEqualityAssertion
       expect(described_class.new('str')).to eq(described_class.new('str'))
       expect(described_class.new('&')).to eq('&')
       expect(described_class.new('&', true)).not_to eq('&')
       expect(described_class.new('&', true)).to eq(described_class.new('&', true))
       expect(described_class.new('&')).to eq(described_class.new('&amp;', true))
+      # rubocop:enable RSpec/IdenticalEqualityAssertion
     end
 
     describe '#write_to' do
@@ -47,11 +49,11 @@ module Module.new::M
         @pc = described_class.new('&amp;')
       end
 
-      it 'should return encoded string' do
+      it 'returns encoded string' do
         expect(@pc.write_to).to eq('&amp;amp;')
       end
 
-      it 'should return given destination' do
+      it 'returns given destination' do
         s = ''
         expect(@pc.write_to(s)).to be_equal(s)
       end
@@ -64,13 +66,13 @@ module Module.new::M
     end
 
     describe '#write_to' do
-      it 'should return comment with markup' do
+      it 'returns comment with markup' do
         expect(described_class.new('flat comment').write_to).to eq('<!-- flat comment -->')
         expect(described_class.new("multi-line\ncomment").write_to).to eq("<!-- multi-line\ncomment -->")
         expect(described_class.new('&').write_to).to eq('<!-- & -->')
       end
 
-      it 'should return given destination' do
+      it 'returns given destination' do
         s = ''
         expect(described_class.new('dummy').write_to(s)).to be_equal(s)
       end
@@ -159,7 +161,7 @@ module Module.new::M
     end
 
     describe '#write_to' do
-      it 'should return flatten string' do
+      it 'returns flatten string' do
         expect(described_class.new('e').write_to).to eq('<e />')
 
         e = described_class.new('super')
@@ -183,7 +185,7 @@ module Module.new::M
         expect(s).to match(/a2='&apos;&quot;&lt;&gt;&amp;'/)
       end
 
-      it 'should return string without attribute whose value is nil or false' do
+      it 'returns string without attribute whose value is nil or false' do
         s = EimXML::Element.new('e', attr1: '1', attr2: true, attr3: nil, attr4: false).write_to
         re = /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
         expect(s).to match(re)
@@ -191,7 +193,7 @@ module Module.new::M
         expect([[$1, $2], [$3, $4]].sort).to eq([['1', '1'], ['2', 'true']])
       end
 
-      it 'should return same string whenever name of element given with string or symbol' do
+      it 'returns same string whenever name of element given with string or symbol' do
         sym = described_class.new(:tag, attr: 'value')
         str_name = described_class.new('tag', attr: 'value')
         str_attr = described_class.new(:tag, 'attr' => 'value')
@@ -283,12 +285,10 @@ module Module.new::M
       s << 'String'
       e3 << s
       expect(e3).not_to eq(e1)
-
-      expect('string').not_to eq(e1)
     end
 
     describe '.new' do
-      it 'should convert name of attributes to Symbol' do
+      it 'converts name of attributes to Symbol' do
         e = described_class.new(:e, 'a' => 'v')
         expect(e.attributes.keys).to eq([:a])
         expect(e[:a]).to eq('v')

@@ -73,7 +73,7 @@ module Module.new::M
         end
       end
 
-      it 'should return given container' do
+      it 'returns given container' do
         a = []
         expect(@dsl.new.call_push(a)).to be_equal(a)
         expect(a).to eq([EimXML::Element.new(:e)])
