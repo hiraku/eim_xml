@@ -3,7 +3,7 @@
 # Copyright (C) 2006, KURODA Hiraku <hiraku@hinet.mydns.jp>
 # You can redistribute it and/or modify it under GPL2.
 
-$LOAD_PATH.unshift "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/lib"
+$LOAD_PATH.unshift "#{File.dirname(File.expand_path(__FILE__), 2)}/lib"
 require 'test/unit'
 require 'eim_xml/assertions'
 

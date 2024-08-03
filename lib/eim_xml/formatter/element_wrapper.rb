@@ -1,8 +1,8 @@
 module EimXML
   class Formatter
     class ElementWrapper
-      def each(option, &proc)
-        contents(**option).each(&proc)
+      def each(option, &)
+        contents(**option).each(&)
       end
     end
   end

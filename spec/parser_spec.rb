@@ -44,10 +44,10 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
     it '#parse with string' do
       e = parse('string&amp;')
-      expect(e).to be_kind_of(PCString)
+      expect(e).to be_a(PCString)
       expect(e.to_s).to eq('string&amp;')
       e = parse(' string &amp; ')
-      expect(e).to be_kind_of(PCString)
+      expect(e).to be_a(PCString)
       expect(e.to_s).to eq(' string &amp; ')
 
       e = Element.new('e')

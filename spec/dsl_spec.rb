@@ -19,17 +19,17 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       end
 
       expect(block_executed).to be(true)
-      expect(outer).to be_kind_of(EDSL)
-      expect(inner).to be_kind_of(EDSL)
-      expect(outer).to be_equal(inner)
+      expect(outer).to be_a(EDSL)
+      expect(inner).to be_a(EDSL)
+      expect(outer).to equal(inner)
 
       expect(e.name).to eq(:out)
       expect(e[:k1]).to eq('v1')
       expect(e[0].name).to eq(:in)
       expect(e[0][:k2]).to eq('v2')
       expect(e[0][0].name).to eq(:deep)
-      expect(e2).to be_equal(e[0])
-      expect(e3).to be_equal(e[0][0])
+      expect(e2).to equal(e[0])
+      expect(e3).to equal(e[0][0])
     end
 
     it '#comment' do
@@ -47,7 +47,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       o.instance_variable_set('@_container', :t)
       orig_c = d.instance_variable_get('@_container')
 
-      expect(d.import_variables(o)).to be_equal(d)
+      expect(d.import_variables(o)).to equal(d)
 
       expect(d.instance_variable_get('@_container')).to eq(orig_c)
       expect(d.instance_variables.map(&:to_s).sort).to eq(['@v1', '@v2', '@__v4'].sort)
@@ -75,7 +75,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
       it 'returns given container' do
         a = []
-        expect(@dsl.new.call_push(a)).to be_equal(a)
+        expect(@dsl.new.call_push(a)).to equal(a)
         expect(a).to eq([EimXML::Element.new(:e)])
 
         expect(@dsl.new.exec).to eq(EimXML::Element.new(:e).add(EimXML::Element.new(:f)))
@@ -96,11 +96,11 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       expect { EDSL.call(:dummy) }.to raise_error(NoMethodError)
       expect { BaseDSL.call(:dummy) }.to raise_error(NoMethodError)
       expect { dsl1.element(:dummy) }.to raise_error(NoMethodError)
-      expect(dsl1.call(:dummy)).to be_kind_of(Element)
-      expect(dsl1.hash).to be_kind_of(Hash)
-      expect(dsl1.string).to be_kind_of(String)
-      expect(dsl1.array).to be_kind_of(Array)
-      expect(dsl1.object).to be_kind_of(Object)
+      expect(dsl1.call(:dummy)).to be_a(Element)
+      expect(dsl1.hash).to be_a(Hash)
+      expect(dsl1.string).to be_a(String)
+      expect(dsl1.array).to be_a(Array)
+      expect(dsl1.object).to be_a(Object)
     end
   end
 
@@ -110,15 +110,15 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       block_executed = false
       OpenDSL.new do |dsl|
         block_executed = true
-        expect(dsl).to be_kind_of(OpenDSL)
+        expect(dsl).to be_a(OpenDSL)
         expect(dsl.container).to be_nil
         dsl.element(:base, key1: 'v1') do
           expect(@scope_checker_variable).to eq(1)
-          expect(self).not_to be_kind_of(Element)
-          expect(dsl.container).to be_kind_of(Element)
+          expect(self).not_to be_a(Element)
+          expect(dsl.container).to be_a(Element)
           expect(dsl.container).to eq(Element.new(:base, key1: 'v1'))
           dsl.element(:sub, key2: 'v2') do
-            expect(dsl.container).to be_kind_of(Element)
+            expect(dsl.container).to be_a(Element)
             expect(dsl.container).to eq(Element.new(:sub, key2: 'v2'))
           end
           expect(dsl.element(:sub2)).to eq(Element.new(:sub2))
@@ -140,10 +140,10 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
     it "DSL method's block given instance of OpenDSL" do
       e = OpenDSL.new.element(:base) do |d|
-        expect(d).to be_kind_of(OpenDSL)
+        expect(d).to be_a(OpenDSL)
         expect(d.container.name).to eq(:base)
         d.element(:sub) do |d2|
-          expect(d2).to be_equal(d)
+          expect(d2).to equal(d)
         end
       end
 

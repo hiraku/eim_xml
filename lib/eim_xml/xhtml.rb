@@ -39,7 +39,7 @@ module EimXML
         if name.is_a?(Hash)
           super(self.class.name[/.*::(.*)/, 1].downcase.to_sym, name)
         else
-          super(name, attributes)
+          super
         end
       end
     end
@@ -62,7 +62,7 @@ module EimXML
           token = s[name] ||= Digest::SHA1.hexdigest("#{$PID}#{Time.now}#{rand}")
         end
         super
-        add(HIDDEN.new(name: name, value: token)) if token
+        add(HIDDEN.new(name:, value: token)) if token
       end
     end
 
@@ -95,11 +95,11 @@ module EimXML
     class OPTION < Simple; end
 
     module Hn
-      def self.new(level, attr = {}, &proc)
+      def self.new(level, attr = {}, &)
         raise ArgumentError unless 1 <= level && level <= 6
 
         klass = EimXML::XHTML.const_get("H#{level}")
-        klass.new(attr, &proc)
+        klass.new(attr, &)
       end
     end
 

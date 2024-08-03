@@ -34,65 +34,65 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
     it 'HEAD' do
       expect(HEAD.new.name).to eq(:head)
-      expect(XDSL.head).to be_kind_of(HEAD)
-      expect(OpenDSL.head).to be_kind_of(HEAD)
+      expect(XDSL.head).to be_a(HEAD)
+      expect(OpenDSL.head).to be_a(HEAD)
     end
 
     it 'META' do
       expect(META.new.name).to eq(:meta)
-      expect(XDSL.meta).to be_kind_of(META)
-      expect(OpenDSL.meta).to be_kind_of(META)
+      expect(XDSL.meta).to be_a(META)
+      expect(OpenDSL.meta).to be_a(META)
     end
 
     it 'LINK' do
       expect(LINK.new.name).to eq(:link)
-      expect(XDSL.link).to be_kind_of(LINK)
-      expect(OpenDSL.link).to be_kind_of(LINK)
+      expect(XDSL.link).to be_a(LINK)
+      expect(OpenDSL.link).to be_a(LINK)
     end
 
     it 'STYLE' do
       expect(STYLE.new.name).to eq(:style)
-      expect(XDSL.style).to be_kind_of(STYLE)
-      expect(OpenDSL.style).to be_kind_of(STYLE)
+      expect(XDSL.style).to be_a(STYLE)
+      expect(OpenDSL.style).to be_a(STYLE)
     end
 
     it 'IMG' do
       expect(IMG.new.name).to eq(:img)
-      expect(XDSL.img).to be_kind_of(IMG)
-      expect(OpenDSL.img).to be_kind_of(IMG)
+      expect(XDSL.img).to be_a(IMG)
+      expect(OpenDSL.img).to be_a(IMG)
     end
 
     it 'SCRIPT' do
       expect(SCRIPT.new.name).to eq(:script)
-      expect(XDSL.script).to be_kind_of(SCRIPT)
-      expect(OpenDSL.script).to be_kind_of(SCRIPT)
+      expect(XDSL.script).to be_a(SCRIPT)
+      expect(OpenDSL.script).to be_a(SCRIPT)
     end
 
     it 'TITLE' do
       expect(TITLE.new.name).to eq(:title)
-      expect(XDSL.title).to be_kind_of(TITLE)
-      expect(OpenDSL.title).to be_kind_of(TITLE)
+      expect(XDSL.title).to be_a(TITLE)
+      expect(OpenDSL.title).to be_a(TITLE)
     end
 
     it 'BODY' do
       expect(BODY.new.name).to eq(:body)
-      expect(XDSL.body).to be_kind_of(BODY)
-      expect(OpenDSL.body).to be_kind_of(BODY)
+      expect(XDSL.body).to be_a(BODY)
+      expect(OpenDSL.body).to be_a(BODY)
     end
 
     it 'PRE' do
       expect(PRE.new.name).to eq(:pre)
-      expect(XDSL.pre).to be_kind_of(PRE)
-      expect(OpenDSL.pre).to be_kind_of(PRE)
+      expect(XDSL.pre).to be_a(PRE)
+      expect(OpenDSL.pre).to be_a(PRE)
     end
 
     it 'Hn' do
       h1 = Hn.new(1)
       h6 = Hn.new(6)
       expect(h1.name).to eq(:h1)
-      expect(h1).to be_kind_of(H1)
+      expect(h1).to be_a(H1)
       expect(h6.name).to eq(:h6)
-      expect(h6).to be_kind_of(H6)
+      expect(h6).to be_a(H6)
       expect { Hn.new(7) }.to raise_error(ArgumentError)
       expect { Hn.new(0) }.to raise_error(ArgumentError)
 
@@ -110,117 +110,117 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
         [H5, XDSL.h5, OpenDSL.h5],
         [H6, XDSL.h6, OpenDSL.h6]
       ].each do |klass, dsl, od|
-        expect(dsl).to be_kind_of(klass)
-        expect(od).to be_kind_of(klass)
+        expect(dsl).to be_a(klass)
+        expect(od).to be_a(klass)
       end
     end
 
     it 'P' do
       expect(P.new.name).to eq(:p)
-      expect(XDSL.p).to be_kind_of(P)
-      expect(OpenDSL.p).to be_kind_of(P)
+      expect(XDSL.p).to be_a(P)
+      expect(OpenDSL.p).to be_a(P)
     end
 
     it 'A' do
       expect(A.new.name).to eq(:a)
-      expect(XDSL.a).to be_kind_of(A)
-      expect(OpenDSL.a).to be_kind_of(A)
+      expect(XDSL.a).to be_a(A)
+      expect(OpenDSL.a).to be_a(A)
     end
 
     it 'EM' do
       expect(EM.new.name).to eq(:em)
-      expect(XDSL.em).to be_kind_of(EM)
-      expect(OpenDSL.em).to be_kind_of(EM)
+      expect(XDSL.em).to be_a(EM)
+      expect(OpenDSL.em).to be_a(EM)
     end
 
     it 'STRONG' do
       expect(STRONG.new.name).to eq(:strong)
-      expect(XDSL.strong).to be_kind_of(STRONG)
-      expect(OpenDSL.strong).to be_kind_of(STRONG)
+      expect(XDSL.strong).to be_a(STRONG)
+      expect(OpenDSL.strong).to be_a(STRONG)
     end
 
     it 'DIV' do
       expect(DIV.new.name).to eq(:div)
-      expect(XDSL.div).to be_kind_of(DIV)
-      expect(OpenDSL.div).to be_kind_of(DIV)
+      expect(XDSL.div).to be_a(DIV)
+      expect(OpenDSL.div).to be_a(DIV)
     end
 
     it 'SPAN' do
       expect(SPAN.new.name).to eq(:span)
-      expect(XDSL.span).to be_kind_of(SPAN)
-      expect(OpenDSL.span).to be_kind_of(SPAN)
+      expect(XDSL.span).to be_a(SPAN)
+      expect(OpenDSL.span).to be_a(SPAN)
     end
 
     it 'UL' do
       expect(UL.new.name).to eq(:ul)
-      expect(XDSL.ul).to be_kind_of(UL)
-      expect(OpenDSL.ul).to be_kind_of(UL)
+      expect(XDSL.ul).to be_a(UL)
+      expect(OpenDSL.ul).to be_a(UL)
     end
 
     it 'OL' do
       expect(OL.new.name).to eq(:ol)
-      expect(XDSL.ol).to be_kind_of(OL)
-      expect(OpenDSL.ol).to be_kind_of(OL)
+      expect(XDSL.ol).to be_a(OL)
+      expect(OpenDSL.ol).to be_a(OL)
     end
 
     it 'LI' do
       expect(LI.new.name).to eq(:li)
-      expect(XDSL.li).to be_kind_of(LI)
-      expect(OpenDSL.li).to be_kind_of(LI)
+      expect(XDSL.li).to be_a(LI)
+      expect(OpenDSL.li).to be_a(LI)
     end
 
     it 'DL' do
       expect(DL.new.name).to eq(:dl)
-      expect(XDSL.dl).to be_kind_of(DL)
-      expect(OpenDSL.dl).to be_kind_of(DL)
+      expect(XDSL.dl).to be_a(DL)
+      expect(OpenDSL.dl).to be_a(DL)
     end
 
     it 'DT' do
       expect(DT.new.name).to eq(:dt)
-      expect(XDSL.dt).to be_kind_of(DT)
-      expect(OpenDSL.dt).to be_kind_of(DT)
+      expect(XDSL.dt).to be_a(DT)
+      expect(OpenDSL.dt).to be_a(DT)
     end
 
     it 'DD' do
       expect(DD.new.name).to eq(:dd)
-      expect(XDSL.dd).to be_kind_of(DD)
-      expect(OpenDSL.dd).to be_kind_of(DD)
+      expect(XDSL.dd).to be_a(DD)
+      expect(OpenDSL.dd).to be_a(DD)
     end
 
     it 'TABLE' do
       expect(TABLE.new.name).to eq(:table)
-      expect(XDSL.table).to be_kind_of(TABLE)
-      expect(OpenDSL.table).to be_kind_of(TABLE)
+      expect(XDSL.table).to be_a(TABLE)
+      expect(OpenDSL.table).to be_a(TABLE)
     end
 
     it 'CAPTION' do
       expect(CAPTION.new.name).to eq(:caption)
-      expect(XDSL.caption).to be_kind_of(CAPTION)
-      expect(OpenDSL.caption).to be_kind_of(CAPTION)
+      expect(XDSL.caption).to be_a(CAPTION)
+      expect(OpenDSL.caption).to be_a(CAPTION)
     end
 
     it 'TR' do
       expect(TR.new.name).to eq(:tr)
-      expect(XDSL.tr).to be_kind_of(TR)
-      expect(OpenDSL.tr).to be_kind_of(TR)
+      expect(XDSL.tr).to be_a(TR)
+      expect(OpenDSL.tr).to be_a(TR)
     end
 
     it 'TH' do
       expect(TH.new.name).to eq(:th)
-      expect(XDSL.th).to be_kind_of(TH)
-      expect(OpenDSL.th).to be_kind_of(TH)
+      expect(XDSL.th).to be_a(TH)
+      expect(OpenDSL.th).to be_a(TH)
     end
 
     it 'TD' do
       expect(TD.new.name).to eq(:td)
-      expect(XDSL.td).to be_kind_of(TD)
-      expect(OpenDSL.td).to be_kind_of(TD)
+      expect(XDSL.td).to be_a(TD)
+      expect(OpenDSL.td).to be_a(TD)
     end
 
     it 'FORM' do
       expect(FORM.new.name).to eq(:form)
-      expect(XDSL.form).to be_kind_of(FORM)
-      expect(OpenDSL.form).to be_kind_of(FORM)
+      expect(XDSL.form).to be_a(FORM)
+      expect(OpenDSL.form).to be_a(FORM)
 
       expect(FORM.new).not_to include(HIDDEN)
     end
@@ -261,11 +261,11 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       expect(TEXTAREA.new(name: 'item', class: 'cv')).to eq(Element.new(:textarea, name: 'item', class: 'cv'))
 
       t = XDSL.textarea(name: 't')
-      expect(t).to be_kind_of(TEXTAREA)
+      expect(t).to be_a(TEXTAREA)
       expect(t[:name]).to eq('t')
 
       t = OpenDSL.textarea(name: 't')
-      expect(t).to be_kind_of(TEXTAREA)
+      expect(t).to be_a(TEXTAREA)
       expect(t[:name]).to eq('t')
     end
 
@@ -285,11 +285,11 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       expect(INPUT.new(type: :submit, name: 'item')).to eq(Element.new(:input, type: :submit, name: 'item'))
 
       i = XDSL.input(type: :dummy, name: :n, value: :v)
-      expect(i).to be_kind_of(INPUT)
+      expect(i).to be_a(INPUT)
       expect(i).to match(INPUT.new(type: :dummy, name: :n, value: :v))
 
       i = OpenDSL.input(type: :dummy, name: :n, value: :v)
-      expect(i).to be_kind_of(INPUT)
+      expect(i).to be_a(INPUT)
       expect(i).to eq(INPUT.new(type: :dummy, name: :n, value: :v))
     end
 
@@ -300,11 +300,11 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
         .to eq(Element.new(:input, type: :hidden, name: :item, value: 'v', class: 'c'))
 
       h = XDSL.hidden(name: :n, value: :v)
-      expect(h).to be_kind_of(HIDDEN)
+      expect(h).to be_a(HIDDEN)
       expect(h).to match(HIDDEN.new(name: :n, value: :v))
 
       h = OpenDSL.hidden(name: :n, value: :v)
-      expect(h).to be_kind_of(HIDDEN)
+      expect(h).to be_a(HIDDEN)
       expect(h).to eq(HIDDEN.new(name: :n, value: :v))
     end
 
@@ -318,7 +318,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       expect(opt2).to eq(opt)
 
       s = XDSL.submit
-      expect(s).to be_kind_of(SUBMIT)
+      expect(s).to be_a(SUBMIT)
       expect(s).to match(SUBMIT.new)
       expect(!s[:name]).to be true
       expect(!s[:value]).to be true
@@ -327,7 +327,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       expect(s[:value]).to eq(:v)
 
       s = OpenDSL.submit
-      expect(s).to be_kind_of(SUBMIT)
+      expect(s).to be_a(SUBMIT)
       expect(s).to eq(SUBMIT.new)
       expect(s[:name]).to be_nil
       expect(s[:value]).to be_nil
@@ -344,11 +344,11 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
                                                              value: 'txt', class: 'c'))
 
       t = XDSL.text(name: :n, value: :v)
-      expect(t).to be_kind_of(TEXT)
+      expect(t).to be_a(TEXT)
       expect(t).to match(TEXT.new(name: :n, value: :v))
 
       t = OpenDSL.text(name: :n, value: :v)
-      expect(t).to be_kind_of(TEXT)
+      expect(t).to be_a(TEXT)
       expect(t).to eq(TEXT.new(name: :n, value: :v))
     end
 
@@ -363,11 +363,11 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
                                                                  name: :item, value: 'txt', class: 'c'))
 
       t = XDSL.password(name: :n, value: :v)
-      expect(t).to be_kind_of(PASSWORD)
+      expect(t).to be_a(PASSWORD)
       expect(t).to match(PASSWORD.new(name: :n, value: :v))
 
       t = OpenDSL.password(name: :n, value: :v)
-      expect(t).to be_kind_of(PASSWORD)
+      expect(t).to be_a(PASSWORD)
       expect(t).to eq(PASSWORD.new(name: :n, value: :v))
     end
 
@@ -398,14 +398,14 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
     it 'BR' do
       expect(BR.new.name).to eq(:br)
-      expect(XDSL.br).to be_kind_of(BR)
-      expect(OpenDSL.br).to be_kind_of(BR)
+      expect(XDSL.br).to be_a(BR)
+      expect(OpenDSL.br).to be_a(BR)
     end
 
     it 'HR' do
       expect(HR.new.name).to eq(:hr)
-      expect(XDSL.hr).to be_kind_of(HR)
-      expect(OpenDSL.hr).to be_kind_of(HR)
+      expect(XDSL.hr).to be_a(HR)
+      expect(OpenDSL.hr).to be_a(HR)
     end
   end
 

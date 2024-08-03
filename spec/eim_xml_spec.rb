@@ -55,7 +55,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
       it 'returns given destination' do
         s = ''
-        expect(@pc.write_to(s)).to be_equal(s)
+        expect(@pc.write_to(s)).to equal(s)
       end
     end
   end
@@ -74,7 +74,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
       it 'returns given destination' do
         s = ''
-        expect(described_class.new('dummy').write_to(s)).to be_equal(s)
+        expect(described_class.new('dummy').write_to(s)).to equal(s)
       end
     end
   end
@@ -139,7 +139,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
 
     it '#add' do
       e = described_class.new('el').add(described_class.new('sub'))
-      expect(e).to be_kind_of(described_class)
+      expect(e).to be_a(described_class)
       expect(e.name).to eq(:el)
 
       e = described_class.new('el')
@@ -208,7 +208,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       e = described_class.new('el') << "&\"'<>"
       e << PCString.new("&\"'<>", true)
       e.attributes['key'] = PCString.new("&\"'<>", true)
-      expect(e.to_s).to eq(%(<el key='&\"'<>'>&amp;&quot;&apos;&lt;&gt;&\"'<></el>))
+      expect(e.to_s).to eq(%(<el key='&"'<>'>&amp;&quot;&apos;&lt;&gt;&"'<></el>))
     end
 
     it '#dup' do
@@ -432,7 +432,7 @@ module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
       e = described_class.new(:base)
       e << '1st' << s1 << s2
 
-      expect(e.find(:deep)).to be_kind_of(described_class)
+      expect(e.find(:deep)).to be_a(described_class)
       expect(e.find(:deep).name).to eq(:found)
       expect(e.find(:deep).contents).to eq([d])
       expect(e.find(:sub).contents).to eq([s1, s2])

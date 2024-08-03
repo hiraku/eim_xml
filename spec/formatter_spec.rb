@@ -5,12 +5,12 @@ describe EimXML::Formatter do
   describe '.write' do
     it 'returns output object' do
       s = ''
-      expect(described_class.write(EimXML::Element.new(:e), out: s)).to be_equal(s)
+      expect(described_class.write(EimXML::Element.new(:e), out: s)).to equal(s)
     end
 
     it 'returns string when destination not given' do
       r = described_class.write(EimXML::Element.new(:e))
-      expect(r).to be_kind_of(String)
+      expect(r).to be_a(String)
     end
 
     describe 'should return formatted elements string' do
@@ -219,12 +219,13 @@ end
 
 describe EimXML::Formatter::ElementWrapper do
   let(:out) { '' }
-  let(:opt) { { out: out, preservers: [], a: 10, b: 20 } }
+  let(:opt) { { out:, preservers: [], a: 10, b: 20 } }
   let(:formatter) { EimXML::Formatter.new(opt) }
 
   let(:wrapper_class) do
     Class.new(EimXML::Formatter::ElementWrapper) do
       def initialize(mocks)
+        super()
         @mocks = mocks
       end
 
@@ -244,7 +245,7 @@ describe EimXML::Formatter::ElementWrapper do
   end
 
   describe '#each' do
-    it 'will give options from formatter' do
+    it 'gives options from formatter' do
       expect(wrapper).to receive(:contents).with(a: 10, b: 20).and_return([])
       formatter.write(xml)
     end

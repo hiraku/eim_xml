@@ -89,8 +89,8 @@ module EimXML
       end
     end
 
-    def self.register(*args)
-      register_base(self, binding, *args)
+    def self.register(*)
+      register_base(self, binding, *)
     end
 
     def initialize
