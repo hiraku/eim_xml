@@ -462,7 +462,7 @@ module Module.new::M
           end
         end
 
-        s = <<~EOT
+        s = <<~XML
           <html>
             <head>
               <style>style
@@ -516,7 +516,7 @@ module Module.new::M
           t</button>
             </body>
           </html>
-        EOT
+        XML
         expect(EimXML::XHTML::Formatter.write(h)).to eq(s)
       end
     end

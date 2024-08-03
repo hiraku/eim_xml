@@ -8,8 +8,8 @@ require 'eim_xml'
 
 module EimXML
   class BaseDSL
-    def add(v)
-      @_container << v
+    def add(content)
+      @_container << content
     end
     alias << add
 
@@ -92,8 +92,8 @@ module EimXML
       yield(self) if block_given?
     end
 
-    def add(v)
-      @_container.add(v)
+    def add(content)
+      @_container.add(content)
     end
     alias :<< :add
 

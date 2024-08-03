@@ -60,9 +60,9 @@ module EimXML
       out << "\n" unless @preserve_space
     end
 
-    def write_comment(c)
+    def write_comment(commend)
       write_indent
-      c.write_to(out)
+      commend.write_to(out)
       write_newline
     end
 

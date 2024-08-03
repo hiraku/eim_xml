@@ -32,11 +32,11 @@ describe EimXML::Formatter do
         e = EimXML::DSL.element(:e) do
           element(:s)
         end
-        expect(write(e)).to eq <<~EOT
+        expect(write(e)).to eq <<~XML
           <e>
             <s />
           </e>
-        EOT
+        XML
       end
 
       it '(elements in element)' do
@@ -44,26 +44,26 @@ describe EimXML::Formatter do
           element(:s1)
           element(:s2)
         end
-        expect(write(e)).to eq <<~EOT
+        expect(write(e)).to eq <<~XML
           <e>
             <s1 />
             <s2 />
           </e>
-        EOT
+        XML
       end
 
       it '(comment in element)' do
         e = EimXML::DSL.element(:e) do
           comment("multi\nline\n pre-indented\n  comment")
         end
-        expect(write(e)).to eq <<~EOT
+        expect(write(e)).to eq <<~XML
           <e>
             <!-- multi
           line
            pre-indented
             comment -->
           </e>
-        EOT
+        XML
       end
 
       it '(string in element)' do
@@ -79,12 +79,12 @@ describe EimXML::Formatter do
       it '(multi-line string in element)' do
         e = EimXML::Element.new(:e)
         e.add("multi\nline")
-        expect(write(e)).to eq <<~EOT
+        expect(write(e)).to eq <<~XML
           <e>
             multi
             line
           </e>
-        EOT
+        XML
       end
 
       describe '(preserve spaces' do
@@ -97,7 +97,7 @@ describe EimXML::Formatter do
             element(:pre2).add("multi\nline\ntext")
             element(:sub1).add('text')
           end
-          s = <<~EOT
+          s = <<~XML
             <e>
               <pre1><sub1>text</sub1><sub2 /></pre1>
               <pre2>multi
@@ -107,21 +107,21 @@ describe EimXML::Formatter do
                 text
               </sub1>
             </e>
-          EOT
+          XML
 
           expect(write(e, preservers: [:pre1, :pre2])).to eq(s)
         end
 
         it 'class of element' do
           m_pre = Class.new(EimXML::Element) do
-            def initialize(n = nil)
-              super(n || 'pre')
+            def initialize(name = nil)
+              super(name || 'pre')
             end
           end
 
           m_p1 = Class.new(m_pre) do
-            def initialize(n = nil)
-              super(n || 'p1')
+            def initialize(name = nil)
+              super(name || 'p1')
             end
           end
 
@@ -140,7 +140,7 @@ describe EimXML::Formatter do
           e << m_p2.new.add(EimXML::Element.new(:s).add("t\ns2"))
           e << EimXML::Element.new(:s).add(EimXML::Element.new(:s).add("t\ns"))
 
-          s = <<~EOT
+          s = <<~XML
             <e>
               <pre>text
             with
@@ -162,13 +162,13 @@ describe EimXML::Formatter do
                 </s>
               </s>
             </e>
-          EOT
+          XML
           expect(write(e, preservers: [m_pre])).to eq(s)
         end
       end
 
       it '(all)' do
-        s = <<~EOT
+        s = <<~XML
           <base>
             <sub1 />
             <sub2>
@@ -192,7 +192,7 @@ describe EimXML::Formatter do
               sub54-2
             </sub5>
           </base>
-        EOT
+        XML
         e = EimXML::DSL.element(:base) do
           element(:sub1)
           element(:sub2).add('text2')

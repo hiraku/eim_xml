@@ -6,10 +6,10 @@ module EimXML::XHTML
     XHTML_MATHML = %[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">]
   end
 
-  class Base_ < EimXML::Element
+  class Base < EimXML::Element
   end
 
-  class HTML < Base_
+  class HTML < Base
     attr_accessor :prefix
 
     module NameSpace
@@ -26,13 +26,13 @@ module EimXML::XHTML
     end
   end
 
-  class Simple_ < Base_
+  class Simple < Base
     def initialize(attributes = {})
       super(self.class.name[/.*::(.*)/, 1].downcase.to_sym, attributes)
     end
   end
 
-  class PreserveSpace_ < Base_
+  class PreserveSpace < Base
     def initialize(name = {}, attributes = {})
       if name.is_a?(Hash)
         super(self.class.name[/.*::(.*)/, 1].downcase.to_sym, name)
@@ -42,17 +42,17 @@ module EimXML::XHTML
     end
   end
 
-  class HEAD < Simple_; end
-  class META < Simple_; end
-  class LINK < Simple_; end
-  class IMG < Simple_; end
-  class STYLE < PreserveSpace_; end
-  class SCRIPT < PreserveSpace_; end
-  class TITLE < Simple_; end
-  class BODY < Simple_; end
-  class PRE < PreserveSpace_; end
+  class HEAD < Simple; end
+  class META < Simple; end
+  class LINK < Simple; end
+  class IMG < Simple; end
+  class STYLE < PreserveSpace; end
+  class SCRIPT < PreserveSpace; end
+  class TITLE < Simple; end
+  class BODY < Simple; end
+  class PRE < PreserveSpace; end
 
-  class FORM < Simple_
+  class FORM < Simple
     def initialize(attributes = {})
       if attributes
         if (s = attributes.delete(:session))
@@ -66,33 +66,33 @@ module EimXML::XHTML
     end
   end
 
-  class H1 < PreserveSpace_; end
-  class H2 < PreserveSpace_; end
-  class H3 < PreserveSpace_; end
-  class H4 < PreserveSpace_; end
-  class H5 < PreserveSpace_; end
-  class H6 < PreserveSpace_; end
-  class P < PreserveSpace_; end
-  class A < PreserveSpace_; end
-  class EM < PreserveSpace_; end
-  class STRONG < PreserveSpace_; end
-  class DIV < Simple_; end
-  class SPAN < PreserveSpace_; end
-  class UL < Simple_; end
-  class OL < Simple_; end
-  class LI < PreserveSpace_; end
-  class DL < Simple_; end
-  class DT < PreserveSpace_; end
-  class DD < PreserveSpace_; end
-  class TABLE < Simple_; end
-  class CAPTION < PreserveSpace_; end
-  class TR < Simple_; end
-  class TH < PreserveSpace_; end
-  class TD < PreserveSpace_; end
-  class BR < Simple_; end
-  class HR < Simple_; end
-  class SELECT < Simple_; end
-  class OPTION < Simple_; end
+  class H1 < PreserveSpace; end
+  class H2 < PreserveSpace; end
+  class H3 < PreserveSpace; end
+  class H4 < PreserveSpace; end
+  class H5 < PreserveSpace; end
+  class H6 < PreserveSpace; end
+  class P < PreserveSpace; end
+  class A < PreserveSpace; end
+  class EM < PreserveSpace; end
+  class STRONG < PreserveSpace; end
+  class DIV < Simple; end
+  class SPAN < PreserveSpace; end
+  class UL < Simple; end
+  class OL < Simple; end
+  class LI < PreserveSpace; end
+  class DL < Simple; end
+  class DT < PreserveSpace; end
+  class DD < PreserveSpace; end
+  class TABLE < Simple; end
+  class CAPTION < PreserveSpace; end
+  class TR < Simple; end
+  class TH < PreserveSpace; end
+  class TD < PreserveSpace; end
+  class BR < Simple; end
+  class HR < Simple; end
+  class SELECT < Simple; end
+  class OPTION < Simple; end
 
   module Hn
     def self.new(level, attr = {}, &proc)
@@ -103,15 +103,15 @@ module EimXML::XHTML
     end
   end
 
-  class TEXTAREA < PreserveSpace_; end
+  class TEXTAREA < PreserveSpace; end
 
-  class INPUT < Base_
+  class INPUT < Base
     def initialize(opt = {})
       super(:input, opt)
     end
   end
 
-  class BUTTON < PreserveSpace_
+  class BUTTON < PreserveSpace
     def initialize(opt = {})
       super(:button, opt)
     end
@@ -147,7 +147,7 @@ module EimXML::XHTML
     end
   end
 
-  PRESERVE_SPACES = [PreserveSpace_]
+  PRESERVE_SPACES = [PreserveSpace]
   class Formatter < EimXML::Formatter
     def self.write(element, opt = {})
       EimXML::Formatter.write(element, opt.merge(preservers: PRESERVE_SPACES))

@@ -59,8 +59,8 @@ module Module.new::M
     describe '#_push' do
       before do
         @dsl = Class.new(EimXML::DSL) do
-          def call_push(c)
-            _push(c) do
+          def call_push(content)
+            _push(content) do
               element(:e)
             end
           end

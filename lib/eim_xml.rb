@@ -11,8 +11,8 @@ module EimXML
     attr_reader :encoded_string, :src
     alias to_s encoded_string
 
-    def self.encode(s)
-      s.to_s.gsub(/[&\"\'<>]/) do |m|
+    def self.encode(src)
+      src.to_s.gsub(/[&\"\'<>]/) do |m|
         case m
         when '&'
           '&amp;'
@@ -32,9 +32,9 @@ module EimXML
       obj.is_a?(PCString) ? obj : PCString.new(obj)
     end
 
-    def initialize(s, encoded = false)
-      @src = s
-      @encoded_string = encoded ? s : PCString.encode(s)
+    def initialize(src, encoded = false)
+      @src = src
+      @encoded_string = encoded ? src : PCString.encode(src)
     end
 
     def ==(other)
@@ -80,14 +80,14 @@ module EimXML
     end
     protected :name=
 
-    def add(v)
-      case v
+    def add(content)
+      case content
       when nil
         # nothing to do
       when Array
-        v.each { |i| self.add(i) }
+        content.each { |i| self.add(i) }
       else
-        @contents << v
+        @contents << content
       end
       self
     end
@@ -127,10 +127,10 @@ module EimXML
     alias :to_s :write_to
     alias :inspect :to_s
 
-    def ==(xml)
-      return false unless xml.is_a?(Element)
+    def ==(other)
+      return false unless other.is_a?(Element)
 
-      @name == xml.name && @attributes == xml.attributes && @contents == xml.contents
+      @name == other.name && @attributes == other.attributes && @contents == other.contents
     end
 
     def add_attribute(key, value)
