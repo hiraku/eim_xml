@@ -85,11 +85,6 @@ RSpec/VerifiedDoubles:
     - 'spec/xhtml_spec.rb'
 
 # Offense count: 4
-Security/Eval:
-  Exclude:
-    - 'lib/eim_xml/dsl.rb'
-
-# Offense count: 4
 # This cop supports safe auto-correction (--auto-correct).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: prefer_alias, prefer_alias_method

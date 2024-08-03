@@ -51,8 +51,11 @@ module EimXML
     def self.register(*args)
       args.each do |klass, name|
         name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
+
+        # rubocop:disable Security/Eval
         eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)
         eval("def self.#{name}(*a, &p);new.#{name}(*a, &p);end", binding)
+        # rubocop:enable Security/Eval
       end
     end
   end
@@ -78,8 +81,11 @@ module EimXML
     def self.register_base(_dsl, binding, *args)
       args.each do |klass, name|
         name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
+
+        # rubocop:disable Security/Eval
         eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)
         eval("def self.#{name}(*a, &p);self.new.#{name}(*a, &p);end", binding)
+        # rubocop:enable Security/Eval
       end
     end
 
