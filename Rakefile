@@ -34,14 +34,12 @@ end
 RSpec::Core::RakeTask.new do |s|
 	s.rspec_opts ||= []
 	s.rspec_opts << "-c"
-	s.rspec_opts << "-I" << "./lib"
 end
 
 namespace :spec do
 	RSpec::Core::RakeTask.new(:coverage) do |s|
 		s.rspec_opts ||= []
 		s.rspec_opts << "-c"
-		s.rspec_opts << "-I" << "./lib"
 		s.rspec_opts << "-r" << "./spec/helper_coverage"
 	end
 
@@ -49,7 +47,6 @@ namespace :spec do
 		s.verbose = false
 		s.rspec_opts ||= []
 		s.rspec_opts << "-c"
-		s.rspec_opts << "-I" << "./lib"
 		s.rspec_opts << "-p"
 	end
 end
