@@ -18,7 +18,7 @@ module Module.new::M
         end
       end
 
-      expect(block_executed).to eq(true)
+      expect(block_executed).to be(true)
       expect(outer).to be_kind_of(EDSL)
       expect(inner).to be_kind_of(EDSL)
       expect(outer).to be_equal(inner)
@@ -170,7 +170,7 @@ module Module.new::M
         rescue RuntimeError => e
           raise unless e.message == 'OK'
 
-          expect(d.container).to eq(nil)
+          expect(d.container).to be_nil
         end
       end
     end
