@@ -1,6 +1,6 @@
 require 'eim_xml/dsl'
 
-module Module.new::M
+module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
   include EimXML
   EDSL = EimXML::DSL
 
@@ -154,24 +154,20 @@ module Module.new::M
 
     it 'ensure reset container when error raised' do
       OpenDSL.new do |d|
-        begin
-          d.element(:base) do
-            begin
-              d.element(:sub) do
-                raise 'OK'
-              end
-            rescue RuntimeError => e
-              raise unless e.message == 'OK'
-
-              expect(d.container.name).to eq(:base)
-              raise
-            end
+        d.element(:base) do
+          d.element(:sub) do
+            raise 'OK'
           end
         rescue RuntimeError => e
           raise unless e.message == 'OK'
 
-          expect(d.container).to be_nil
+          expect(d.container.name).to eq(:base)
+          raise
         end
+      rescue RuntimeError => e
+        raise unless e.message == 'OK'
+
+        expect(d.container).to be_nil
       end
     end
 

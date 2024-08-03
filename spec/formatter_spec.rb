@@ -23,9 +23,9 @@ describe EimXML::Formatter do
       end
 
       it '(empty element which has attributes)' do
-        r = (write(EimXML::DSL.element(:e, a1: 'v1', a2: 'v2')) =~ %r[<e (a.='v.') (a.='v.') />])
+        r = (write(EimXML::DSL.element(:e, a1: 'v1', a2: 'v2')) =~ %r{<e (a.='v.') (a.='v.') />})
         expect(r).not_to be_nil
-        expect([$1, $2].sort).to eq(["a1='v1'", "a2='v2'"])
+        expect([Regexp.last_match(1), Regexp.last_match(2)].sort).to eq(["a1='v1'", "a2='v2'"])
       end
 
       it '(element in element)' do
@@ -71,9 +71,12 @@ describe EimXML::Formatter do
         e.add('string')
         expect(write(e)).to eq("<e>\n  string\n</e>\n")
 
-        expect(write(EimXML::Element.new(:e, a: "&<>\n'\"").add("&<>\n'\""))).to eq("<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &amp;&lt;&gt;\n  &apos;&quot;\n</e>\n")
-        expect(write(EimXML::Element.new(:e,
-                                         a: "&<>\n'\"").add(EimXML::PCString.new("&<>\n'\"", true)))).to eq("<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &<>\n  '\"\n</e>\n")
+        expect(write(EimXML::Element.new(:e, a: "&<>\n'\"").add("&<>\n'\""))).to eq(
+          "<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &amp;&lt;&gt;\n  &apos;&quot;\n</e>\n"
+        )
+        expect(write(EimXML::Element.new(:e, a: "&<>\n'\"").add(EimXML::PCString.new("&<>\n'\"", true)))).to eq(
+          "<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &<>\n  '\"\n</e>\n"
+        )
       end
 
       it '(multi-line string in element)' do
@@ -109,7 +112,7 @@ describe EimXML::Formatter do
             </e>
           XML
 
-          expect(write(e, preservers: [:pre1, :pre2])).to eq(s)
+          expect(write(e, preservers: %i[pre1 pre2])).to eq(s)
         end
 
         it 'class of element' do

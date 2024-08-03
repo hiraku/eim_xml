@@ -1,7 +1,7 @@
 require 'stringio'
 require 'eim_xml/xhtml/dsl'
 
-module Module.new::M
+module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
   include EimXML
   include EimXML::XHTML
   XDSL = XHTML::DSL
@@ -29,7 +29,7 @@ module Module.new::M
       h = HTML.new
       expect(h.write_to).to eq('<html />')
       h.prefix = '<?xml version="1.0"?>'
-      expect(h.write_to).to eq(%[<?xml version="1.0"?>\n<html />])
+      expect(h.write_to).to eq(%(<?xml version="1.0"?>\n<html />))
     end
 
     it 'HEAD' do
@@ -274,9 +274,12 @@ module Module.new::M
     end
 
     it 'INPUT' do
-      expect(INPUT.new(type: :test, name: :item, value: 'v')).to eq(Element.new(:input, type: :test, name: :item, value: 'v'))
-      expect(INPUT.new(type: 'test', name: 'item', value: 'v')).to eq(Element.new(:input, type: 'test', name: 'item', value: 'v'))
-      expect(INPUT.new(type: :test, name: :item, value: 'v', class: 'c')).to eq(Element.new(:input, type: :test, name: :item, value: 'v', class: 'c'))
+      expect(INPUT.new(type: :test, name: :item, value: 'v'))
+        .to eq(Element.new(:input, type: :test, name: :item, value: 'v'))
+      expect(INPUT.new(type: 'test', name: 'item', value: 'v'))
+        .to eq(Element.new(:input, type: 'test', name: 'item', value: 'v'))
+      expect(INPUT.new(type: :test, name: :item, value: 'v', class: 'c'))
+        .to eq(Element.new(:input, type: :test, name: :item, value: 'v', class: 'c'))
 
       expect(INPUT.new(type: :submit, value: 'v')).to eq(Element.new(:input, type: :submit, value: 'v'))
       expect(INPUT.new(type: :submit, name: 'item')).to eq(Element.new(:input, type: :submit, name: 'item'))
@@ -293,7 +296,8 @@ module Module.new::M
     it 'HIDDEN' do
       expect(HIDDEN.new(name: 'item', value: 'v')).to eq(Element.new(:input, type: :hidden, name: 'item', value: 'v'))
       expect(HIDDEN.new(name: :item, value: 'v')).to eq(Element.new(:input, type: :hidden, name: :item, value: 'v'))
-      expect(HIDDEN.new(name: :item, value: 'v', class: 'c')).to eq(Element.new(:input, type: :hidden, name: :item, value: 'v', class: 'c'))
+      expect(HIDDEN.new(name: :item, value: 'v', class: 'c'))
+        .to eq(Element.new(:input, type: :hidden, name: :item, value: 'v', class: 'c'))
 
       h = XDSL.hidden(name: :n, value: :v)
       expect(h).to be_kind_of(HIDDEN)
@@ -335,7 +339,9 @@ module Module.new::M
       expect(TEXT.new(name: :item)).to eq(Element.new(:input, type: :text, name: :item))
       expect(TEXT.new(name: 'item')).to eq(Element.new(:input, type: :text, name: 'item'))
       expect(TEXT.new(name: :item, value: 'txt')).to eq(Element.new(:input, type: :text, name: :item, value: 'txt'))
-      expect(TEXT.new(name: :item, value: 'txt', class: 'c')).to eq(Element.new(:input, type: :text, name: :item, value: 'txt', class: 'c'))
+      expect(TEXT.new(name: :item, value: 'txt',
+                      class: 'c')).to eq(Element.new(:input, type: :text, name: :item,
+                                                             value: 'txt', class: 'c'))
 
       t = XDSL.text(name: :n, value: :v)
       expect(t).to be_kind_of(TEXT)
@@ -349,8 +355,12 @@ module Module.new::M
     it 'PASSWORD' do
       expect(PASSWORD.new(name: :item)).to eq(Element.new(:input, type: :password, name: :item))
       expect(PASSWORD.new(name: 'item')).to eq(Element.new(:input, type: :password, name: 'item'))
-      expect(PASSWORD.new(name: :item, value: 'txt')).to eq(Element.new(:input, type: :password, name: :item, value: 'txt'))
-      expect(PASSWORD.new(name: :item, value: 'txt', class: 'c')).to eq(Element.new(:input, type: :password, name: :item, value: 'txt', class: 'c'))
+      expect(PASSWORD.new(name: :item,
+                          value: 'txt')).to eq(Element.new(:input, type: :password,
+                                                                   name: :item, value: 'txt'))
+      expect(PASSWORD.new(name: :item, value: 'txt',
+                          class: 'c')).to eq(Element.new(:input, type: :password,
+                                                                 name: :item, value: 'txt', class: 'c'))
 
       t = XDSL.password(name: :n, value: :v)
       expect(t).to be_kind_of(PASSWORD)
@@ -376,7 +386,11 @@ module Module.new::M
     end
 
     it 'OPTION' do
-      expect(OPTION.new(value: :bar, selected: true) { |e| e << 'TEXT' }).to eq(Element.new(:option, value: :bar, selected: true) { |e| e.add('TEXT') })
+      expect(OPTION.new(value: :bar, selected: true) do |e|
+               e << 'TEXT'
+             end).to eq(Element.new(:option, value: :bar, selected: true) do |e|
+                          e.add('TEXT')
+                        end)
       expect(XDSL.option(value: :bar)).to eq(OPTION.new(value: :bar))
 
       expect(OpenDSL.option(value: :bar)).to eq(OPTION.new(value: :bar))

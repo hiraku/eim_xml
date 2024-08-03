@@ -5,26 +5,23 @@
 #
 
 module EimXML
-  XML_DECLARATION = %[<?xml version="1.0"?>]
+  XML_DECLARATION = %(<?xml version="1.0"?>)
 
   class PCString
     attr_reader :encoded_string, :src
     alias to_s encoded_string
 
+    ENCODING_MAP = {
+      '&' => '&amp;',
+      '"' => '&quot;',
+      "'" => '&apos;',
+      '<' => '&lt;',
+      '>' => '&gt;'
+    }
+
     def self.encode(src)
-      src.to_s.gsub(/[&\"\'<>]/) do |m|
-        case m
-        when '&'
-          '&amp;'
-        when '"'
-          '&quot;'
-        when "'"
-          '&apos;'
-        when '<'
-          '&lt;'
-        when '>'
-          '&gt;'
-        end
+      src.to_s.gsub(/[&"'<>]/) do |m|
+        ENCODING_MAP[m]
       end
     end
 
@@ -32,7 +29,7 @@ module EimXML
       obj.is_a?(PCString) ? obj : PCString.new(obj)
     end
 
-    def initialize(src, encoded = false)
+    def initialize(src, encoded = false) # rubocop:disable Style/OptionalBooleanParameter
       @src = src
       @encoded_string = encoded ? src : PCString.encode(src)
     end
@@ -65,8 +62,8 @@ module EimXML
 
     def initialize(name, attributes = {})
       @name = name.to_sym
-      @attributes = Hash.new
-      @contents = Array.new
+      @attributes = {}
+      @contents = []
 
       attributes.each do |k, v|
         @attributes[k.to_sym] = v
@@ -85,7 +82,7 @@ module EimXML
       when nil
         # nothing to do
       when Array
-        content.each { |i| self.add(i) }
+        content.each { |i| add(i) }
       else
         @contents << content
       end
@@ -94,11 +91,11 @@ module EimXML
     alias << add
 
     def name_and_attributes(out = '')
-      out << "#{@name}"
+      out << @name.to_s
       @attributes.each do |k, v|
         next unless v
 
-        out << " #{k}='#{PCString === v ? v : PCString.encode(v.to_s)}'"
+        out << " #{k}='#{v.is_a?(PCString) ? v : PCString.encode(v.to_s)}'"
       end
     end
 
@@ -124,8 +121,8 @@ module EimXML
       end
       out
     end
-    alias :to_s :write_to
-    alias :inspect :to_s
+    alias to_s write_to
+    alias inspect to_s
 
     def ==(other)
       return false unless other.is_a?(Element)
@@ -180,7 +177,7 @@ module EimXML
         end
       end
     end
-    alias :=~ :match
+    alias =~ match
 
     def has?(obj, attr = nil)
       return has?(Element.new(obj, attr)) if attr
@@ -201,10 +198,9 @@ module EimXML
 
       dst << self if match(obj)
       @contents.each do |i|
-        case
-        when i.is_a?(Element)
+        if i.is_a?(Element)
           i.find(obj, dst)
-        when obj.is_a?(Module) && i.is_a?(obj)
+        elsif obj.is_a?(Module) && i.is_a?(obj)
           dst << i
         end
       end

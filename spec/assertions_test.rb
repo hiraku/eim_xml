@@ -3,7 +3,7 @@
 # Copyright (C) 2006, KURODA Hiraku <hiraku@hinet.mydns.jp>
 # You can redistribute it and/or modify it under GPL2.
 
-$:.unshift "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/lib"
+$LOAD_PATH.unshift "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/lib"
 require 'test/unit'
 require 'eim_xml/assertions'
 
@@ -23,8 +23,8 @@ class EimXMLAssertionsTest < Test::Unit::TestCase
     a = assert_raises(Test::Unit::AssertionFailedError) do
       assert_has(:no, e)
     end
-    assert(!a.backtrace.any? { |i|
-      i =~ /eim_xml\/assertions\.rb/
-    })
+    assert(a.backtrace.none? do |i|
+      i =~ %r{eim_xml/assertions\.rb}
+    end)
   end
 end

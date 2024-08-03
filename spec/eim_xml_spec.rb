@@ -1,6 +1,6 @@
 require 'eim_xml/dsl'
 
-module Module.new::M
+module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
   include EimXML
   EDSL = EimXML::DSL
 
@@ -180,17 +180,18 @@ module Module.new::M
         e.attributes['a1'] = 'v1'
         e.attributes['a2'] = "'\"<>&"
         s = e.write_to
-        expect(s).to match(/\A<el ([^>]*) \/>\z/)
+        expect(s).to match(%r{\A<el ([^>]*) />\z})
         expect(s).to match(/a1='v1'/)
         expect(s).to match(/a2='&apos;&quot;&lt;&gt;&amp;'/)
       end
 
       it 'returns string without attribute whose value is nil or false' do
         s = EimXML::Element.new('e', attr1: '1', attr2: true, attr3: nil, attr4: false).write_to
-        re = /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
+        re = %r{\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' />\z}
         expect(s).to match(re)
-        s =~ /\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' \/>\z/
-        expect([[$1, $2], [$3, $4]].sort).to eq([['1', '1'], ['2', 'true']])
+        s =~ %r{\A<e attr(.*?)='(.*?)' attr(.*?)='(.*?)' />\z}
+        expect([[Regexp.last_match(1), Regexp.last_match(2)], [Regexp.last_match(3), Regexp.last_match(4)]].sort)
+          .to eq([%w[1 1], %w[2 true]])
       end
 
       it 'returns same string whenever name of element given with string or symbol' do
@@ -207,7 +208,7 @@ module Module.new::M
       e = described_class.new('el') << "&\"'<>"
       e << PCString.new("&\"'<>", true)
       e.attributes['key'] = PCString.new("&\"'<>", true)
-      expect(e.to_s).to eq(%[<el key='&\"'<>'>&amp;&quot;&apos;&lt;&gt;&\"'<></el>])
+      expect(e.to_s).to eq(%(<el key='&\"'<>'>&amp;&quot;&apos;&lt;&gt;&\"'<></el>))
     end
 
     it '#dup' do
@@ -344,8 +345,8 @@ module Module.new::M
       expect(e.match(described_class.new(:tag, attr: nil))).to be false
       expect(e.match(described_class.new(:tag, nonattr: nil))).to be true
 
-      expect(!!e.match(/ag/)).to be true
-      expect(!!e.match(/elem/)).to be false
+      expect(e.match(/ag/)).to eq 1
+      expect(e.match(/elem/)).to be_nil
 
       expect(e.match(described_class)).to be true
       expect(e.match(dummy_class)).to be false
@@ -437,7 +438,7 @@ module Module.new::M
       expect(e.find(:sub).contents).to eq([s1, s2])
       expect(e.find(//).contents).to eq([e, s1, d, s2])
       expect(e.find(:sub, attr: 'value').contents).to eq([s2])
-      expect(e.find(String).contents).to eq(['1st', '2nd', '3rd'])
+      expect(e.find(String).contents).to eq(%w[1st 2nd 3rd])
     end
   end
 end

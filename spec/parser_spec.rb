@@ -1,6 +1,6 @@
 require 'eim_xml/parser'
 
-module Module.new::M
+module Module.new::M # rubocop:disable Style/ClassAndModuleChildren
   include EimXML
 
   describe Parser do
@@ -17,13 +17,13 @@ module Module.new::M
       expect(parse('<e />')).to eq(Element.new('e'))
       expect(parse('<e/>')).to eq(Element.new('e'))
 
-      expect(parse(%[<e key="value"/>])).to eq(Element.new('e', key: 'value'))
-      expect(parse(%[<e key='value'/>])).to eq(Element.new('e', key: 'value'))
-      expect(parse(%[<e key="value" />])).to eq(Element.new('e', key: 'value'))
-      expect(parse(%[<e key='value' />])).to eq(Element.new('e', key: 'value'))
+      expect(parse(%(<e key="value"/>))).to eq(Element.new('e', key: 'value'))
+      expect(parse(%(<e key='value'/>))).to eq(Element.new('e', key: 'value'))
+      expect(parse(%(<e key="value" />))).to eq(Element.new('e', key: 'value'))
+      expect(parse(%(<e key='value' />))).to eq(Element.new('e', key: 'value'))
 
-      expect(parse(%[<e key="value" key2="value2"/>])).to eq(Element.new('e', key: 'value', key2: 'value2'))
-      expect(parse(%[<e key="value" key2="value2" />])).to eq(Element.new('e', key: 'value', key2: 'value2'))
+      expect(parse(%(<e key="value" key2="value2"/>))).to eq(Element.new('e', key: 'value', key2: 'value2'))
+      expect(parse(%(<e key="value" key2="value2" />))).to eq(Element.new('e', key: 'value', key2: 'value2'))
 
       s = ' <e1 /> <e2 /> '
       p = described_class.new(s)

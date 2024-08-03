@@ -50,12 +50,12 @@ module EimXML
 
     def self.register(*args)
       args.each do |klass, name|
-        name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
+        name ||= klass.name.downcase[/(?:.*::)?(.*)$/, 1]
 
-        # rubocop:disable Security/Eval
-        eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)
-        eval("def self.#{name}(*a, &p);new.#{name}(*a, &p);end", binding)
-        # rubocop:enable Security/Eval
+        # rubocop:disable Security/Eval, Layout/LineLength
+        eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding, __FILE__, __LINE__) # def element(*a, &p);_build(Element, *a, &p);end
+        eval("def self.#{name}(*a, &p);new.#{name}(*a, &p);end", binding, __FILE__, __LINE__) # def self.element(*a, &p);new.element(*a, &p);end
+        # rubocop:enable Security/Eval, Layout/LineLength
       end
     end
   end
@@ -70,7 +70,7 @@ module EimXML
       oc << e if oc.is_a?(Element)
       @_container = e
       begin
-        proc.call(self) if proc
+        proc&.call(self)
         e
       ensure
         @_container = oc
@@ -80,12 +80,12 @@ module EimXML
 
     def self.register_base(_dsl, binding, *args)
       args.each do |klass, name|
-        name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
+        name ||= klass.name.downcase[/(?:.*::)?(.*)$/, 1]
 
-        # rubocop:disable Security/Eval
-        eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)
-        eval("def self.#{name}(*a, &p);self.new.#{name}(*a, &p);end", binding)
-        # rubocop:enable Security/Eval
+        # rubocop:disable Security/Eval, Layout/LineLength
+        eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding, __FILE__, __LINE__) # def element(*a, &p);_build(Element, *a, &p);end
+        eval("def self.#{name}(*a, &p);self.new.#{name}(*a, &p);end", binding, __FILE__, __LINE__) # def self.element(*a, &p);self.new.element(*a, &p);end
+        # rubocop:enable Security/Eval, Layout/LineLength
       end
     end
 
@@ -101,9 +101,11 @@ module EimXML
     def add(content)
       @_container.add(content)
     end
-    alias :<< :add
+    alias << add
 
-    def container; @_container; end
+    def container
+      @_container
+    end
   end
 
   DSL.register Element, Comment

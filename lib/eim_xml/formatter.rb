@@ -16,7 +16,7 @@ module EimXML
       @preserve_space = false
       @indent_string = '  '
       @indent_depth = 0
-      @option = opt.dup.tap { |h| [:out, :preservers].each { |k| h.delete(k) } }
+      @option = opt.dup.tap { |h| %i[out preservers].each { |k| h.delete(k) } }
     end
 
     def write(src)
@@ -42,12 +42,12 @@ module EimXML
     end
 
     def preserve_space_element?(elm)
-      @preservers && @preservers.any? do |e|
+      @preservers&.any? do |e|
         case e
         when Symbol
           e == elm.name
         when Class
-          e === elm
+          elm.is_a?(e)
         end
       end
     end
@@ -87,13 +87,12 @@ module EimXML
       case elm.contents.size
       when 0
         out << ' />'
-        write_newline
       else
         out << '>'
         write_contents_of(elm)
         out << "</#{elm.name}>"
-        write_newline
       end
+      write_newline
     end
 
     def write_pcstring(pcs)
