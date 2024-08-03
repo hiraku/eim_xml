@@ -5,11 +5,11 @@ describe EimXML::Formatter do
   describe '.write' do
     it 'should return output object' do
       s = ''
-      expect(EimXML::Formatter.write(EimXML::Element.new(:e), out: s)).to be_equal(s)
+      expect(described_class.write(EimXML::Element.new(:e), out: s)).to be_equal(s)
     end
 
     it 'should return string when destination not given' do
-      r = EimXML::Formatter.write(EimXML::Element.new(:e))
+      r = described_class.write(EimXML::Element.new(:e))
       expect(r).to be_kind_of(String)
     end
 
@@ -250,7 +250,7 @@ describe EimXML::Formatter::ElementWrapper do
     end
 
     it 'raise error when subclass of ElementWrapper is not implement #contents' do
-      @wrapper_class2 = Class.new(EimXML::Formatter::ElementWrapper)
+      @wrapper_class2 = Class.new(described_class)
       @xml << @wrapper_class2.new
 
       expect { @formatter.write(@xml) }.to raise_error(NoMethodError)

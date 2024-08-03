@@ -397,7 +397,7 @@ module Module.new::M
 
   describe EimXML::XHTML::OpenDSL do
     it 'replace EimXML::XHTML::DSL' do
-      e = EimXML::XHTML::OpenDSL.html do |d|
+      e = described_class.html do |d|
         d.head do
           d.title.add 'Title'
         end
@@ -429,7 +429,7 @@ module Module.new::M
       it 'should set :preservers=>PRESERVE_SPACES to default option' do
         e = EimXML::XHTML::HTML.new
         expect(EimXML::Formatter).to receive(:write).with(e, preservers: EimXML::XHTML::PRESERVE_SPACES, opt: :dummy)
-        EimXML::XHTML::Formatter.write(e, opt: :dummy)
+        described_class.write(e, opt: :dummy)
       end
 
       it 'should return string' do
@@ -517,7 +517,7 @@ module Module.new::M
             </body>
           </html>
         XML
-        expect(EimXML::XHTML::Formatter.write(h)).to eq(s)
+        expect(described_class.write(h)).to eq(s)
       end
     end
   end

@@ -10,7 +10,7 @@ module Module.new::M
 
     it "'parser' method for test" do
       s = ' <e /> '
-      expect(parse(s)).to eq(Parser.new(s).parse)
+      expect(parse(s)).to eq(described_class.new(s).parse)
     end
 
     it '#parse with empty element' do
@@ -26,7 +26,7 @@ module Module.new::M
       expect(parse(%[<e key="value" key2="value2" />])).to eq(Element.new('e', key: 'value', key2: 'value2'))
 
       s = ' <e1 /> <e2 /> '
-      p = Parser.new(s)
+      p = described_class.new(s)
       expect(p.parse).to eq(PCString.new(' '))
       expect(p.parse).to eq(Element.new('e1'))
       expect(p.parse).to eq(PCString.new(' '))
