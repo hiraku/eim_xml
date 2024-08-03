@@ -71,8 +71,6 @@ describe EimXML::Formatter do
         e.add('string')
         expect(write(e)).to eq("<e>\n  string\n</e>\n")
 
-        esc = "&<>'\""
-        esc = "&amp;&lt;&gt;\n&apos;&quot;"
         expect(write(EimXML::Element.new(:e, a: "&<>\n'\"").add("&<>\n'\""))).to eq("<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &amp;&lt;&gt;\n  &apos;&quot;\n</e>\n")
         expect(write(EimXML::Element.new(:e,
                                          a: "&<>\n'\"").add(EimXML::PCString.new("&<>\n'\"", true)))).to eq("<e a='&amp;&lt;&gt;\n&apos;&quot;'>\n  &<>\n  '\"\n</e>\n")
@@ -115,32 +113,31 @@ describe EimXML::Formatter do
         end
 
         it 'class of element' do
-          m = Module.new
-          class m::Pre < EimXML::Element
+          m_pre = Class.new(EimXML::Element) do
             def initialize(n = nil)
               super(n || 'pre')
             end
           end
 
-          class m::P1 < m::Pre
+          m_p1 = Class.new(m_pre) do
             def initialize(n = nil)
               super(n || 'p1')
             end
           end
 
-          class m::P2 < m::P1
+          m_p2 = Class.new(m_p1) do
             def initialize
               super('p2')
             end
           end
 
           e = EimXML::Element.new(:e)
-          e << m::Pre.new.add("text\nwith\nnewline")
-          e << m::Pre.new('dummy').add("t\nn")
-          e << m::P1.new.add("t1\nn")
-          e << m::P2.new.add("t2\nn")
-          e << m::Pre.new.add(EimXML::Element.new(:s).add("t\ns"))
-          e << m::P2.new.add(EimXML::Element.new(:s).add("t\ns2"))
+          e << m_pre.new.add("text\nwith\nnewline")
+          e << m_pre.new('dummy').add("t\nn")
+          e << m_p1.new.add("t1\nn")
+          e << m_p2.new.add("t2\nn")
+          e << m_pre.new.add(EimXML::Element.new(:s).add("t\ns"))
+          e << m_p2.new.add(EimXML::Element.new(:s).add("t\ns2"))
           e << EimXML::Element.new(:s).add(EimXML::Element.new(:s).add("t\ns"))
 
           s = <<~EOT
@@ -166,7 +163,7 @@ describe EimXML::Formatter do
               </s>
             </e>
           EOT
-          expect(write(e, preservers: [m::Pre])).to eq(s)
+          expect(write(e, preservers: [m_pre])).to eq(s)
         end
       end
 
@@ -222,18 +219,17 @@ describe EimXML::Formatter::ElementWrapper do
     @out = ''
     @opt = { out: @out, preservers: [], a: 10, b: 20 }
     @formatter = EimXML::Formatter.new(@opt)
-    @m = Module.new
-    class @m::Wrapper < EimXML::Formatter::ElementWrapper
+    @wrapper_class = Class.new(EimXML::Formatter::ElementWrapper) do
       def initialize(mocks)
         @mocks = mocks
       end
 
-      def contents(option)
+      def contents(_option)
         @mocks
       end
     end
     @mocks = [double(:m1).as_null_object, double(:m2).as_null_object]
-    @wrapper = @m::Wrapper.new(@mocks)
+    @wrapper = @wrapper_class.new(@mocks)
     @xml = EimXML::Element.new(:e) do |e|
       e << @wrapper
     end
@@ -254,8 +250,8 @@ describe EimXML::Formatter::ElementWrapper do
     end
 
     it 'raise error when subclass of ElementWrapper is not implement #contents' do
-      class @m::Wrapper2 < EimXML::Formatter::ElementWrapper; end
-      @xml << @m::Wrapper2.new
+      @wrapper_class2 = Class.new(EimXML::Formatter::ElementWrapper)
+      @xml << @wrapper_class2.new
 
       expect { @formatter.write(@xml) }.to raise_error(NoMethodError)
     end

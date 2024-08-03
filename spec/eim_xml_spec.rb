@@ -78,9 +78,11 @@ module Module.new::M
   end
 
   describe Element do
-    class Dummy < Element
-      def chgname(name)
-        self.name = name
+    let(:dummy_class) do
+      Class.new(Element) do
+        def chgname(name)
+          self.name = name
+        end
       end
     end
 
@@ -89,7 +91,7 @@ module Module.new::M
       expect(e.name).to eq(:el)
       expect { e.name = 'changed' }.to raise_error(NoMethodError)
 
-      d = Dummy.new('el1')
+      d = dummy_class.new('el1')
       expect(d.name).to eq(:el1)
       d.chgname(:el2)
       expect(d.name).to eq(:el2)
@@ -305,11 +307,11 @@ module Module.new::M
         e2 << Element.new('sub')
         expect(e2).to eq(e)
 
-        e = Element.new('base') do |e|
-          e <<= Element.new('sub1') do |e|
-            e <<= Element.new('sub12')
+        e = Element.new('base') do |b|
+          b << Element.new('sub1') do |s|
+            s << Element.new('sub12')
           end
-          e <<= Element.new('sub2')
+          b << Element.new('sub2')
         end
         base = Element.new('base')
         sub1 = Element.new('sub1')
@@ -346,7 +348,7 @@ module Module.new::M
       expect(!!e.match(/elem/)).to be false
 
       expect(e.match(Element)).to be true
-      expect(e.match(Dummy)).to be false
+      expect(e.match(dummy_class)).to be false
       expect(e.match(String)).to be false
 
       e = Element.new(:element)
@@ -388,14 +390,14 @@ module Module.new::M
     %w[has? has_element? include?].each do |method|
       it "##{method}" do
         e = Element.new(:base) do |b|
-          b <<= Element.new(:sub) do |s|
-            s <<= Element.new(:deep) do |d|
+          b << Element.new(:sub) do |s|
+            s << Element.new(:deep) do |d|
               d << 'text'
               d << PCString.new('&amp;', true)
               d << '<'
             end
           end
-          b <<= Element.new(:sub, attr: 'value')
+          b << Element.new(:sub, attr: 'value')
         end
 
         expect(e.send(method, :sub)).to be true

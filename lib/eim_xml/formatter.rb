@@ -53,7 +53,7 @@ module EimXML
     end
 
     def write_indent
-      out << @indent_string * @indent_depth unless @preserve_space
+      out << (@indent_string * @indent_depth) unless @preserve_space
     end
 
     def write_newline

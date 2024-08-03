@@ -75,7 +75,7 @@ module EimXML
     end
     private :_build
 
-    def self.register_base(dsl, binding, *args)
+    def self.register_base(_dsl, binding, *args)
       args.each do |klass, name|
         name ||= klass.name.downcase[/(?:.*\:\:)?(.*)$/, 1]
         eval("def #{name}(*a, &p);_build(#{klass}, *a, &p);end", binding)

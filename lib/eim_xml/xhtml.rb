@@ -55,7 +55,7 @@ module EimXML::XHTML
   class FORM < Simple_
     def initialize(attributes = {})
       if attributes
-        if s = attributes.delete(:session)
+        if (s = attributes.delete(:session))
           name = attributes.delete(:session_name) || 'token'
           require 'digest/sha1'
           token = s[name] ||= Digest::SHA1.hexdigest("#{$$}#{Time.now}#{rand}")

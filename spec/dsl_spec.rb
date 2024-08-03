@@ -58,8 +58,7 @@ module Module.new::M
 
     describe '#_push' do
       before do
-        m = Module.new
-        class m::D < EimXML::DSL
+        @dsl = Class.new(EimXML::DSL) do
           def call_push(c)
             _push(c) do
               element(:e)
@@ -72,7 +71,6 @@ module Module.new::M
             end
           end
         end
-        @dsl = m::D
       end
 
       it 'should return given container' do
@@ -86,21 +84,23 @@ module Module.new::M
   end
 
   describe 'Subclass of BaseDSL' do
-    class DSL1 < EimXML::BaseDSL
-      register([EimXML::Element, 'call'])
-      register(Hash)
-      register(String, Array, Object)
+    let(:dsl1) do
+      Class.new(EimXML::BaseDSL) do
+        register([EimXML::Element, 'call'])
+        register(Hash)
+        register(String, Array, Object)
+      end
     end
 
     it 'register' do
       expect { EDSL.call(:dummy) }.to raise_error(NoMethodError)
       expect { BaseDSL.call(:dummy) }.to raise_error(NoMethodError)
-      expect { DSL1.element(:dummy) }.to raise_error(NoMethodError)
-      expect(DSL1.call(:dummy)).to be_kind_of(Element)
-      expect(DSL1.hash).to be_kind_of(Hash)
-      expect(DSL1.string).to be_kind_of(String)
-      expect(DSL1.array).to be_kind_of(Array)
-      expect(DSL1.object).to be_kind_of(Object)
+      expect { dsl1.element(:dummy) }.to raise_error(NoMethodError)
+      expect(dsl1.call(:dummy)).to be_kind_of(Element)
+      expect(dsl1.hash).to be_kind_of(Hash)
+      expect(dsl1.string).to be_kind_of(String)
+      expect(dsl1.array).to be_kind_of(Array)
+      expect(dsl1.object).to be_kind_of(Object)
     end
   end
 
@@ -108,20 +108,20 @@ module Module.new::M
     it 'scope of block is one of outside' do
       @scope_checker_variable = 1
       block_executed = false
-      d = OpenDSL.new do |d|
+      OpenDSL.new do |dsl|
         block_executed = true
-        expect(d).to be_kind_of(OpenDSL)
-        expect(d.container).to be_nil
-        d.element(:base, key1: 'v1') do
+        expect(dsl).to be_kind_of(OpenDSL)
+        expect(dsl.container).to be_nil
+        dsl.element(:base, key1: 'v1') do
           expect(@scope_checker_variable).to eq(1)
           expect(self).not_to be_kind_of(Element)
-          expect(d.container).to be_kind_of(Element)
-          expect(d.container).to eq(Element.new(:base, key1: 'v1'))
-          d.element(:sub, key2: 'v2') do
-            expect(d.container).to be_kind_of(Element)
-            expect(d.container).to eq(Element.new(:sub, key2: 'v2'))
+          expect(dsl.container).to be_kind_of(Element)
+          expect(dsl.container).to eq(Element.new(:base, key1: 'v1'))
+          dsl.element(:sub, key2: 'v2') do
+            expect(dsl.container).to be_kind_of(Element)
+            expect(dsl.container).to eq(Element.new(:sub, key2: 'v2'))
           end
-          expect(d.element(:sub2)).to eq(Element.new(:sub2))
+          expect(dsl.element(:sub2)).to eq(Element.new(:sub2))
         end
       end
       expect(block_executed).to be true

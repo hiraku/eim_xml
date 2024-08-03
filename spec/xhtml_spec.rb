@@ -16,7 +16,7 @@ module Module.new::M
       expect(h).to eq(Element.new(:html, attr: 'value'))
 
       h = HTML.new do |e|
-        e <<= Element.new(:sub)
+        e << Element.new(:sub)
       end
       h2 = HTML.new
       h2 << Element.new(:sub)
@@ -228,8 +228,8 @@ module Module.new::M
     it 'FORM.new should be able to receive CGI::Session object and set random token' do
       s = double('session')
       h = {}
-      expect(s).to receive(:[]).at_least(1).times { |k| h[k] }
-      expect(s).to receive(:[]=).at_least(1).times { |k, v| h[k] = v }
+      expect(s).to receive(:[]).at_least(1).times
+      expect(s).to(receive(:[]=).at_least(1).times) { |k, v| h[k] = v }
       f = FORM.new(session: s)
       expect(h['token'].size).to eq(40)
       expect(h['token']).to match(/\A[0-9a-f]{40}\z/)
@@ -237,8 +237,8 @@ module Module.new::M
 
       s = double('session')
       h = {}
-      expect(s).to receive(:[]).at_least(1).times { |k| h[k] }
-      expect(s).to receive(:[]=).at_least(1).times { |k, v| h[k] = v }
+      expect(s).to(receive(:[]).at_least(1).times)
+      expect(s).to(receive(:[]=).at_least(1).times) { |k, v| h[k] = v }
       f = FORM.new(session: s, session_name: 'random_key')
       expect(h['token']).to be_nil
       expect(h['random_key'].size).to eq(40)
@@ -247,8 +247,8 @@ module Module.new::M
 
       s = double('session')
       h = {}
-      expect(s).to receive(:[]).at_least(1).times { |k| h[k] }
-      expect(s).to receive(:[]=).at_least(1).times { |k, v| h[k] = v }
+      expect(s).to(receive(:[]).at_least(1).times) { |k| h[k] }
+      expect(s).to(receive(:[]=).at_least(1).times) { |k, v| h[k] = v }
       FORM.new(session: s)
       token = s['token']
       expect(FORM.new(session: s)).to include(HIDDEN.new(name: 'token', value: token))

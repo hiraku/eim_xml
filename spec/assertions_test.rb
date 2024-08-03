@@ -12,8 +12,8 @@ class EimXMLAssertionsTest < Test::Unit::TestCase
   include EimXML::Assertions
 
   def test_assert_has
-    e = Element.new(:tag) do |e|
-      e <<= Element.new(:sub)
+    e = Element.new(:tag) do |tag|
+      tag << Element.new(:sub)
     end
 
     assert_nothing_raised do

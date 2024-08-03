@@ -83,6 +83,7 @@ module EimXML
     def add(v)
       case v
       when nil
+        # nothing to do
       when Array
         v.each { |i| self.add(i) }
       else
