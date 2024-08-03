@@ -150,7 +150,7 @@ module EimXML
     PRESERVE_SPACES = [PreserveSpace]
     class Formatter < EimXML::Formatter
       def self.write(element, opt = {})
-        EimXML::Formatter.write(element, opt.merge(preservers: PRESERVE_SPACES))
+        EimXML::Formatter.write(element, **opt.merge(preservers: PRESERVE_SPACES))
       end
     end
   end
