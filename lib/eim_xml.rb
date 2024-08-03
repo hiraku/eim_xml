@@ -139,7 +139,7 @@ module EimXML
     alias []= add_attribute
 
     def [](key)
-      if key.is_a?(Fixnum)
+      if key.is_a?(Integer)
         @contents[key]
       else
         @attributes[key.to_sym]
