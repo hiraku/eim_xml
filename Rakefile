@@ -1,8 +1,5 @@
 require 'rdoc/task'
 require 'rspec/core/rake_task'
-require 'rubygems/package_task'
-
-VER = '0.0.5'
 
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.options << '-S'
@@ -12,23 +9,6 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.title = 'Easy IMplemented XML'
   rdoc.main = 'README'
   rdoc.rdoc_files.include(FileList['lib/**/*.rb', 'README'])
-end
-
-gem_spec = Gem::Specification.new do |s|
-  s.platform = Gem::Platform::RUBY
-  s.files = FileList['Rakefile*', 'lib/**/*', 'spec/**/*']
-
-  s.name = 'eim_xml'
-  s.summary = 'Easy IMplemented XML'
-  s.author = 'KURODA Hiraku'
-  s.email = 'hirakuro@gmail.com'
-  s.homepage = 'http://eimxml.rubyforge.org/'
-  s.rubyforge_project = 'eimxml'
-  s.version = VER
-end
-
-Gem::PackageTask.new(gem_spec) do |t|
-  t.need_tar_gz = true
 end
 
 RSpec::Core::RakeTask.new do |s|

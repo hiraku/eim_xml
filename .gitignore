@@ -1,6 +1,7 @@
-/.bundle
 /Gemfile.lock
+eim_xml-*.gem
 
+/bin
 /html
 /pkg
 /external
