@@ -96,7 +96,7 @@ module EimXML
 
     module Hn
       def self.new(level, attr = {}, &)
-        raise ArgumentError unless 1 <= level && level <= 6
+        raise ArgumentError unless level in (1..5)
 
         klass = EimXML::XHTML.const_get("H#{level}")
         klass.new(attr, &)
